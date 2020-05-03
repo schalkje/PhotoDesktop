@@ -1,0 +1,116 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoDesktopApp", "PhotoDesktopApp\PhotoDesktopApp.csproj", "{1A8D1635-5DEB-47FD-85B7-798DC7439425}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoDesktopWFA", "PhotoDesktopWFA\PhotoDesktopWFA.csproj", "{6AB20934-1112-4F67-89B1-7B2D3377C130}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoDesktopLib", "PhotoDesktopLib\PhotoDesktopLib.csproj", "{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsControlLibrary", "WindowsFormsControlLibrary\WindowsFormsControlLibrary.csproj", "{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Debug|ARM.ActiveCfg = Debug|ARM
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Debug|ARM.Build.0 = Debug|ARM
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Debug|ARM.Deploy.0 = Debug|ARM
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Debug|x64.ActiveCfg = Debug|x64
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Debug|x64.Build.0 = Debug|x64
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Debug|x64.Deploy.0 = Debug|x64
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Debug|x86.ActiveCfg = Debug|x86
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Debug|x86.Build.0 = Debug|x86
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Debug|x86.Deploy.0 = Debug|x86
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Release|Any CPU.ActiveCfg = Release|x86
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Release|ARM.ActiveCfg = Release|ARM
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Release|ARM.Build.0 = Release|ARM
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Release|ARM.Deploy.0 = Release|ARM
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Release|x64.ActiveCfg = Release|x64
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Release|x64.Build.0 = Release|x64
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Release|x64.Deploy.0 = Release|x64
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Release|x86.ActiveCfg = Release|x86
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Release|x86.Build.0 = Release|x86
+		{1A8D1635-5DEB-47FD-85B7-798DC7439425}.Release|x86.Deploy.0 = Release|x86
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Debug|ARM.Build.0 = Debug|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Debug|x64.Build.0 = Debug|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Debug|x86.Build.0 = Debug|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Release|ARM.ActiveCfg = Release|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Release|ARM.Build.0 = Release|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Release|x64.ActiveCfg = Release|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Release|x64.Build.0 = Release|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Release|x86.ActiveCfg = Release|Any CPU
+		{6AB20934-1112-4F67-89B1-7B2D3377C130}.Release|x86.Build.0 = Release|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Debug|ARM.Build.0 = Debug|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Debug|x64.Build.0 = Debug|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Debug|x86.Build.0 = Debug|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Release|ARM.ActiveCfg = Release|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Release|ARM.Build.0 = Release|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Release|x64.ActiveCfg = Release|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Release|x64.Build.0 = Release|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Release|x86.ActiveCfg = Release|Any CPU
+		{E555A837-3AE7-46A0-9FA2-8E79F20DA36F}.Release|x86.Build.0 = Release|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Debug|ARM.Build.0 = Debug|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Debug|x64.Build.0 = Debug|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Debug|x86.Build.0 = Debug|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Release|ARM.ActiveCfg = Release|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Release|ARM.Build.0 = Release|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Release|x64.ActiveCfg = Release|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Release|x64.Build.0 = Release|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Release|x86.ActiveCfg = Release|Any CPU
+		{0EB05A3E-952C-464F-8EFF-4930E86E4F4D}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://schalken.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = PhotoDesktopApp\\PhotoDesktopApp.csproj
+		SccProjectName1 = PhotoDesktopApp
+		SccLocalPath1 = PhotoDesktopApp
+		SccProjectUniqueName2 = PhotoDesktopWFA\\PhotoDesktopWFA.csproj
+		SccProjectName2 = PhotoDesktopWFA
+		SccLocalPath2 = PhotoDesktopWFA
+		SccProjectUniqueName3 = PhotoDesktopLib\\PhotoDesktopLib.csproj
+		SccProjectName3 = PhotoDesktopLib
+		SccLocalPath3 = PhotoDesktopLib
+		SccProjectUniqueName4 = WindowsFormsControlLibrary\\WindowsFormsControlLibrary.csproj
+		SccProjectName4 = WindowsFormsControlLibrary
+		SccLocalPath4 = WindowsFormsControlLibrary
+	EndGlobalSection
+EndGlobal
