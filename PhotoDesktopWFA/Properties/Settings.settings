@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Folders" Type="System.Collections.Specialized.StringCollection" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)" ></Value>
     </Setting>
     <Setting Name="TimerUnit" Type="System.String" Scope="User">
       <Value Profile="(Default)">second</Value>

@@ -144,6 +144,15 @@ namespace Schalken.PhotoDesktop.WFA
 
             StringCollection folders = Properties.Settings.Default.Folders;
 
+#if DEBUG
+            if (folders is null)
+                folders = new StringCollection();
+
+
+                if (folders.Count == 0)
+                    folders.Add("E:\\OneDrive\\Afbeeldingen\\Background Selection");
+#endif
+
             ImageList images = new ImageList(folders);
 
             // store images
@@ -170,7 +179,9 @@ namespace Schalken.PhotoDesktop.WFA
             Next();
         }
 
-
+        /// <summary>
+        /// Change all screens
+        /// </summary>
         private void NextSameTime()
         {
             try
@@ -183,9 +194,9 @@ namespace Schalken.PhotoDesktop.WFA
                     Screen screen = screens[i];
 
                     if (NextMode == NextModes.RandomSameTime)
-                        images[screen.DeviceName] = new DesktopImage(ImageList.NextRandom);
+                        images[screen.DeviceName] = new DesktopImage(ImageList.NextRandom(screen.DeviceName));
                     else
-                        images[screen.DeviceName] = new DesktopImage(ImageList.Next);
+                        images[screen.DeviceName] = new DesktopImage(ImageList.Next(screen.DeviceName));
                 }
 
                 Wallpaper.CreateBackgroundImage(images);
@@ -196,6 +207,10 @@ namespace Schalken.PhotoDesktop.WFA
                 Wallpaper.CreateTestBackgroundImage();
             }
         }
+
+        /// <summary>
+        /// Change one screen and loop through the screens
+        /// </summary>
         int NextAlternatelyCount = 0;
         private void NextAlternately()
         {
@@ -208,9 +223,9 @@ namespace Schalken.PhotoDesktop.WFA
                 Screen screen = screens[NextAlternatelyCount];
 
                 if (NextMode == NextModes.RandomAlternately)
-                    images[screen.DeviceName] = new DesktopImage(ImageList.NextRandom);
+                    images[screen.DeviceName] = new DesktopImage(ImageList.NextRandom(screen.DeviceName));
                 else
-                    images[screen.DeviceName] = new DesktopImage(ImageList.Next);
+                    images[screen.DeviceName] = new DesktopImage(ImageList.Next(screen.DeviceName));
 
                 Wallpaper.CreateBackgroundImage(images);
 
@@ -266,7 +281,7 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void Next()
         {
-            NextMode = NextModes.RandomSameTime; // RandomAlternately; <-- //todo: random alternately erases the other screens !
+            //NextMode = NextModes.RandomSameTime; // RandomAlternately; <-- //todo: random alternately erases the other screens !
 
             if (NextMode == NextModes.SequentialSameTime || NextMode == NextModes.RandomSameTime)
             {
@@ -285,7 +300,7 @@ namespace Schalken.PhotoDesktop.WFA
             for (int i = screens.Length - 1; i >= 0; i--)
             {
                 Screen screen = screens[i];
-                images[screen.DeviceName] = new DesktopImage(ImageList.Previous);
+                images[screen.DeviceName] = new DesktopImage(ImageList.Previous(screen.DeviceName));
             }
 
             Wallpaper.CreateBackgroundImage(images);

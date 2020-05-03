@@ -210,5 +210,10 @@ namespace Schalken.PhotoDesktop.WFA
             else
                 cbStartWithWindows.CheckState = CheckState.Indeterminate;
         }
+
+        private void rbStartupOnly_CheckedChanged(object sender, EventArgs e)
+        {
+            nudTimerValue.Enabled = !rbStartupOnly.Checked;
+        }
     }
 }
