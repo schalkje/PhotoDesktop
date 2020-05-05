@@ -11,12 +11,9 @@ namespace Schalken.PhotoDesktop
 
     public class PhotoDesktop
     {
-        private ImageList _imageList = null;
+        #region Properties
 
-        public PhotoDesktop(ImageList imageList)
-        {
-            this._imageList = imageList;
-        }
+        private ImageList _imageList = null;
 
         public ImageList ImageList
         {
@@ -30,14 +27,34 @@ namespace Schalken.PhotoDesktop
         }
 
 
+        public enum OrderModes
+        {
+            Sequential,
+            Random
+        }
+        public enum MultiSwitchModes
+        {
+            SameTime,
+            Alternately
+        }
+        public OrderModes OrderMode { get; set; }
+        public MultiSwitchModes MultiSwitchMode { get; set; }
+
+
+        #endregion Properties
+
+        public PhotoDesktop(ImageList imageList)
+        {
+            this._imageList = imageList;
+        }
+
+
         public void Next()
         {
             //NextMode = NextModes.RandomSameTime; // RandomAlternately; <-- //todo: random alternately erases the other screens !
 
-            if (NextMode == NextModes.SequentialSameTime || NextMode == NextModes.RandomSameTime)
-            {
+            if (MultiSwitchMode == MultiSwitchModes.SameTime)
                 NextSameTime();
-            }
             else
                 NextAlternately();
         }
@@ -72,7 +89,7 @@ namespace Schalken.PhotoDesktop
 
                 Screen screen = screens[NextAlternatelyCount];
 
-                if (NextMode == NextModes.RandomAlternately)
+                if (OrderMode == OrderModes.Random)
                     images[screen.DeviceName] = new DesktopImage(ImageList.NextRandom(screen.DeviceName));
                 else
                     images[screen.DeviceName] = new DesktopImage(ImageList.Next(screen.DeviceName));
@@ -90,15 +107,6 @@ namespace Schalken.PhotoDesktop
             }
         }
 
-        public enum NextModes
-        {
-            SequentialSameTime,
-            SequentialAlternately,
-            RandomSameTime,
-            RandomAlternately
-        }
-        public NextModes NextMode { get; set; }
-
 
         // <summary>
         /// Change all screens
@@ -114,7 +122,7 @@ namespace Schalken.PhotoDesktop
                 {
                     Screen screen = screens[i];
 
-                    if (NextMode == NextModes.RandomSameTime)
+                    if (OrderMode == OrderModes.Random)
                         images[screen.DeviceName] = new DesktopImage(ImageList.NextRandom(screen.DeviceName));
                     else
                         images[screen.DeviceName] = new DesktopImage(ImageList.Next(screen.DeviceName));
