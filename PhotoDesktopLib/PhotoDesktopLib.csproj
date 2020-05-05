@@ -53,6 +53,7 @@
     <Compile Include="ImageList.cs" />
     <Compile Include="ImageListItem.cs" />
     <Compile Include="MissingImagesException.cs" />
+    <Compile Include="PhotoDesktop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScaledScreen.cs" />
     <Compile Include="ScreenChangeFilter.cs" />

@@ -12,7 +12,30 @@ namespace Schalken.PhotoDesktop
     {
         Dictionary<string, Stack<int>> _screenList = new Dictionary<string, Stack<int>>();
 
-        internal void Push(string screenName, int currentImage)
+        public Dictionary<string, Stack<int>> ScreenList
+        {
+            get { return _screenList;  }
+        }
+
+        public List<string> Content
+        {
+            get
+            {
+                List<string> output = new List<string>();
+                foreach (string screen in _screenList.Keys)
+                {
+                    output.Add(screen);
+                    foreach (int image_number in _screenList[screen].ToList<int>())
+                    {
+                        output.Add(string.Format(" - {0}",image_number));
+                    }
+
+                }
+                return output;
+            }
+        }
+
+        public void Push(string screenName, int currentImage)
         {
             // check if screen exists in the list
             if (_screenList.Keys.Contains(screenName))
@@ -29,7 +52,7 @@ namespace Schalken.PhotoDesktop
             }
         }
 
-        internal int Count(string screenName)
+        public int Count(string screenName)
         {
             // check if screen exists in the list
             if (_screenList.Keys.Contains(screenName))
@@ -41,7 +64,7 @@ namespace Schalken.PhotoDesktop
                 throw new IndexOutOfRangeException("Screen '" + screenName + "' doesn't exist.");
         }
 
-        internal int Pop(string screenName)
+        public int Pop(string screenName)
         {
             // check if screen exists in the list
             if (_screenList.Keys.Contains(screenName))

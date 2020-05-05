@@ -56,6 +56,9 @@
             this.gbTimer = new System.Windows.Forms.GroupBox();
             this.gbLogonImage = new System.Windows.Forms.GroupBox();
             this.btnOpenExplorerOnLogonImageLocation = new System.Windows.Forms.Button();
+            this.btnNext = new System.Windows.Forms.Button();
+            this.btnPrevious = new System.Windows.Forms.Button();
+            this.lbDebug = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudTimerValue)).BeginInit();
             this.gbOrder.SuspendLayout();
             this.gbMultiSwitch.SuspendLayout();
@@ -368,11 +371,46 @@
             this.btnOpenExplorerOnLogonImageLocation.Text = "Open Explorer";
             this.btnOpenExplorerOnLogonImageLocation.UseVisualStyleBackColor = true;
             // 
+            // btnNext
+            // 
+            this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnNext.Location = new System.Drawing.Point(951, 13);
+            this.btnNext.Margin = new System.Windows.Forms.Padding(4);
+            this.btnNext.Name = "btnNext";
+            this.btnNext.Size = new System.Drawing.Size(185, 38);
+            this.btnNext.TabIndex = 35;
+            this.btnNext.Text = "-->";
+            this.btnNext.UseVisualStyleBackColor = true;
+            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
+            // 
+            // btnPrevious
+            // 
+            this.btnPrevious.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnPrevious.Location = new System.Drawing.Point(758, 13);
+            this.btnPrevious.Margin = new System.Windows.Forms.Padding(4);
+            this.btnPrevious.Name = "btnPrevious";
+            this.btnPrevious.Size = new System.Drawing.Size(185, 38);
+            this.btnPrevious.TabIndex = 36;
+            this.btnPrevious.Text = "<--";
+            this.btnPrevious.UseVisualStyleBackColor = true;
+            this.btnPrevious.Click += new System.EventHandler(this.btnPrevious_Click);
+            // 
+            // lbDebug
+            // 
+            this.lbDebug.FormattingEnabled = true;
+            this.lbDebug.Location = new System.Drawing.Point(758, 76);
+            this.lbDebug.Name = "lbDebug";
+            this.lbDebug.Size = new System.Drawing.Size(378, 134);
+            this.lbDebug.TabIndex = 37;
+            // 
             // SettingsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(1296, 710);
+            this.Controls.Add(this.lbDebug);
+            this.Controls.Add(this.btnPrevious);
+            this.Controls.Add(this.btnNext);
             this.Controls.Add(this.gbLogonImage);
             this.Controls.Add(this.gbTimer);
             this.Controls.Add(this.gbMultiSwitch);
@@ -438,5 +476,8 @@
         private System.Windows.Forms.GroupBox gbTimer;
         private System.Windows.Forms.GroupBox gbLogonImage;
         private System.Windows.Forms.Button btnOpenExplorerOnLogonImageLocation;
+        private System.Windows.Forms.Button btnNext;
+        private System.Windows.Forms.Button btnPrevious;
+        private System.Windows.Forms.ListBox lbDebug;
     }
 }

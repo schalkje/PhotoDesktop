@@ -13,10 +13,20 @@ namespace Schalken.PhotoDesktop.WFA
 {
     public partial class SettingsForm : Form
     {
+        private PhotoDesktop _photoDesktop;
+
         public SettingsForm()
         {
             InitializeComponent();
         }
+
+        public SettingsForm(PhotoDesktop photoDesktop) : this()
+        {
+            this._photoDesktop = photoDesktop;
+            RefreshStackDebug();
+        }
+
+
 
         private void Settings_Shown(object sender, EventArgs e)
         {
@@ -31,8 +41,59 @@ namespace Schalken.PhotoDesktop.WFA
             InitializeFromRegistry_cbStartWithWindows();
         }
 
+        #region Settings
+
         private void LoadFromSettings()
         {
+            // Change on start
+            cbChangeOnStartup.Checked = Properties.Settings.Default.ChangeOnStart;
+
+
+            // Folders
+            if (Properties.Settings.Default.Folders != null)
+            {
+                foreach (string settingFolder in Properties.Settings.Default.Folders)
+                {
+                    string[] setting = settingFolder.Split(';');
+                    string folder = setting[0];
+                    string baseFolder = "";
+                    if (setting.Length > 1)
+                        baseFolder = setting[1];
+                    KeyValuePair<string, string> item = new KeyValuePair<string, string>(folder, baseFolder);
+                    lbFolders.Items.Add(item);
+                }
+
+                tbFolder.Text = "";
+                tbBaseFolder.Text = "";
+            }
+
+
+            // Order
+            if (Properties.Settings.Default.Order.Equals("Random", StringComparison.CurrentCultureIgnoreCase))
+            {
+                rbOrderRandom.Checked = true;
+            }
+            else if (Properties.Settings.Default.Order.Equals("Sequential", StringComparison.CurrentCultureIgnoreCase))
+            {
+                rbOrderSequential.Checked = true;
+            }
+
+            // Multi switch
+            if (Properties.Settings.Default.MultiSwitch.Equals("Same time", StringComparison.CurrentCultureIgnoreCase))
+            {
+                rbSwitchSameTime.Checked = true;
+            }
+            else if (Properties.Settings.Default.MultiSwitch.Equals("Alternate", StringComparison.CurrentCultureIgnoreCase))
+            {
+                rbSwitchAlternately.Checked = true;
+            }
+
+            // Logon image
+            cbLogonImage.Checked = Properties.Settings.Default.CreateLogonImage;
+            //Properties.Settings.Default.LogonImageFolder // TODO: implement changeable Logon Image Folder
+
+
+            // Timer Value
             nudTimerValue.Value = Properties.Settings.Default.TimerValue;
 
             if (Properties.Settings.Default.TimerUnit.Equals("second", StringComparison.CurrentCultureIgnoreCase))
@@ -52,40 +113,54 @@ namespace Schalken.PhotoDesktop.WFA
                 rbStartupOnly.Checked = true;
             }
 
-            if (Properties.Settings.Default.Folders != null)
-            {
-                foreach (string settingFolder in Properties.Settings.Default.Folders)
-                {
-                    string[] setting = settingFolder.Split(';');
-                    string folder = setting[0];
-                    string baseFolder = "";
-                    if (setting.Length > 1)
-                        baseFolder = setting[1];
-                    KeyValuePair<string, string> item = new KeyValuePair<string, string>(folder, baseFolder);
-                    lbFolders.Items.Add(item);
-                }
 
-                tbFolder.Text = "";
-                tbBaseFolder.Text = "";
-            }
-
-            cbChangeOnStartup.Checked = Properties.Settings.Default.ChangeOnStart;
-
-        }
-
-        private void Settings_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.Cancel)
-            {
-                // do not persist the changes
-            }
-            else
-                SaveSettings();
 
         }
 
         private void SaveSettings()
         {
+            // Change on start
+            Properties.Settings.Default.ChangeOnStart = cbChangeOnStartup.Checked;
+
+            // Folders
+            if (Properties.Settings.Default.Folders == null)
+                Properties.Settings.Default.Folders = new System.Collections.Specialized.StringCollection();
+            else
+                Properties.Settings.Default.Folders.Clear();
+
+            foreach (KeyValuePair<string, string> item in lbFolders.Items)
+            {
+                Properties.Settings.Default.Folders.Add(String.Format("{0};{1}", item.Key, item.Value));
+            }
+
+
+            // Order
+            if (rbOrderRandom.Checked)
+            {
+                Properties.Settings.Default.Order = "Random";
+            }
+            else
+            {
+                Properties.Settings.Default.Order = "Sequential";
+            }
+
+            // Multi switch
+            if (rbSwitchSameTime.Checked)
+            {
+                Properties.Settings.Default.MultiSwitch = "Same time";
+            }
+            else
+            {
+                Properties.Settings.Default.MultiSwitch = "Alternate";
+            }
+
+            // Logon image
+            Properties.Settings.Default.CreateLogonImage = cbLogonImage.Checked;
+            //Properties.Settings.Default.LogonImageFolder // TODO: implement changeable Logon Image Folder
+
+
+
+            // Timer Value
             Properties.Settings.Default.TimerValue = (int)nudTimerValue.Value;
 
             if (rbSeconds.Checked)
@@ -99,20 +174,25 @@ namespace Schalken.PhotoDesktop.WFA
             else
                 Properties.Settings.Default.TimerUnit = "unknown";
 
-            if (Properties.Settings.Default.Folders == null)
-                Properties.Settings.Default.Folders = new System.Collections.Specialized.StringCollection();
-            else
-                Properties.Settings.Default.Folders.Clear();
-            foreach ( KeyValuePair<string,string> item in lbFolders.Items )
-            {
-                Properties.Settings.Default.Folders.Add(String.Format("{0};{1}", item.Key, item.Value));
-            }
 
-            Properties.Settings.Default.ChangeOnStart = cbChangeOnStartup.Checked;
-
-
+            // Store the settings
             Properties.Settings.Default.Save();
         }
+
+        private void Settings_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.Cancel)
+            {
+                // do not persist the changes
+            }
+            else
+                SaveSettings();
+
+        }
+
+        #endregion Settings
+
+        #region Buttons, ea
 
         private void btnAddFolder_Click(object sender, EventArgs e)
         {
@@ -215,5 +295,35 @@ namespace Schalken.PhotoDesktop.WFA
         {
             nudTimerValue.Enabled = !rbStartupOnly.Checked;
         }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            _photoDesktop.Next();
+            RefreshStackDebug();
+        }
+
+        private void btnPrevious_Click(object sender, EventArgs e)
+        {
+            _photoDesktop.Previous();
+            RefreshStackDebug();
+        }
+
+        #endregion Buttons, ea
+
+        #region Helper functions
+
+        /// <summary>
+        /// Refresh the stack viewe listbox
+        /// </summary>
+        private void RefreshStackDebug()
+        {
+            lbDebug.Items.Clear();
+            foreach (string item in _photoDesktop.ImageList.History.Content)
+            {
+                lbDebug.Items.Add(item);
+            }
+        }
+
+        #endregion Helper functions
     }
 }

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using System.IO;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
-using WindowsFormsControlLibrary;
 
 namespace Schalken.PhotoDesktop.WFA
 {
@@ -77,7 +74,7 @@ namespace Schalken.PhotoDesktop.WFA
 
             // on startup switch
             if (Properties.Settings.Default.ChangeOnStart)
-                Next();
+                _photoDesktop.Next();
         }
 
         protected override void OnShown(EventArgs e)
@@ -126,18 +123,6 @@ namespace Schalken.PhotoDesktop.WFA
             Wallpaper.CreateTestBackgroundImage();
         }
 
-        private ImageList _imageList = null;
-        private ImageList ImageList
-        {
-            get
-            {
-                if (_imageList == null)
-                    _imageList = LoadImageListFromSettings();
-
-                return _imageList;
-            }
-        }
-
         private ImageList LoadImageListFromSettings()
         {
 
@@ -176,79 +161,12 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnNextBackground_Click(object sender, EventArgs e)
         {
-            Next();
+            _photoDesktop.Next();
         }
-
-        /// <summary>
-        /// Change all screens
-        /// </summary>
-        private void NextSameTime()
-        {
-            try
-            {
-                Screen[] screens = Screen.AllScreens;
-                Dictionary<string, DesktopImage> images = new Dictionary<string, DesktopImage>(screens.Length);
-
-                for (int i = 0; i < screens.Length; i++)
-                {
-                    Screen screen = screens[i];
-
-                    if (NextMode == NextModes.RandomSameTime)
-                        images[screen.DeviceName] = new DesktopImage(ImageList.NextRandom(screen.DeviceName));
-                    else
-                        images[screen.DeviceName] = new DesktopImage(ImageList.Next(screen.DeviceName));
-                }
-
-                Wallpaper.CreateBackgroundImage(images);
-
-            }
-            catch (MissingImagesException)
-            {
-                Wallpaper.CreateTestBackgroundImage();
-            }
-        }
-
-        /// <summary>
-        /// Change one screen and loop through the screens
-        /// </summary>
-        int NextAlternatelyCount = 0;
-        private void NextAlternately()
-        {
-            try
-            {
-                Screen[] screens = Screen.AllScreens;
-                Dictionary<string, DesktopImage> images = new Dictionary<string, DesktopImage>(screens.Length);
-
-                
-                Screen screen = screens[NextAlternatelyCount];
-
-                if (NextMode == NextModes.RandomAlternately)
-                    images[screen.DeviceName] = new DesktopImage(ImageList.NextRandom(screen.DeviceName));
-                else
-                    images[screen.DeviceName] = new DesktopImage(ImageList.Next(screen.DeviceName));
-
-                Wallpaper.CreateBackgroundImage(images);
-
-                // next wallpaper
-                NextAlternatelyCount = NextAlternatelyCount + 1;
-                if (NextAlternatelyCount >= screens.Length)
-                    NextAlternatelyCount = 0;
-            }
-            catch (MissingImagesException)
-            {
-                Wallpaper.CreateTestBackgroundImage();
-            }
-        }
-        enum NextModes
-        {
-            SequentialSameTime,
-            SequentialAlternately,
-            RandomSameTime,
-            RandomAlternately
-        }
-        private NextModes NextMode { get; set; }
 
         private bool _windowVisible = false;
+        private PhotoDesktop _photoDesktop;
+
         public bool WindowVisible
         {
             get
@@ -276,35 +194,10 @@ namespace Schalken.PhotoDesktop.WFA
         private void Redo()
         {
             // todo: temporary implementation; refresh background based on current
-            Next();
+            _photoDesktop.Next();
         }
 
-        private void Next()
-        {
-            //NextMode = NextModes.RandomSameTime; // RandomAlternately; <-- //todo: random alternately erases the other screens !
 
-            if (NextMode == NextModes.SequentialSameTime || NextMode == NextModes.RandomSameTime)
-            {
-                NextSameTime();
-            }
-            else
-                NextAlternately();
-        }
-
-        private void Previous()
-        {
-            Screen[] screens = Screen.AllScreens;
-            Dictionary<string, DesktopImage> images = new Dictionary<string, DesktopImage>(screens.Length);
-
-            // do in reverse order to keep multimonitors in sync
-            for (int i = screens.Length - 1; i >= 0; i--)
-            {
-                Screen screen = screens[i];
-                images[screen.DeviceName] = new DesktopImage(ImageList.Previous(screen.DeviceName));
-            }
-
-            Wallpaper.CreateBackgroundImage(images);
-        }
 
         private void btnOpenImage_Click(object sender, EventArgs e)
         {
@@ -320,7 +213,7 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void menuNext_Click(object sender, EventArgs e)
         {
-            Next();
+            _photoDesktop.Next();
         }
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
@@ -341,7 +234,7 @@ namespace Schalken.PhotoDesktop.WFA
             photoTimer.Stop();
 
             // show next image
-            this.Next();
+            _photoDesktop.Next();
 
             // reset time
             photoTimer.Start();
@@ -349,7 +242,7 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void photoTimer_Tick(object sender, EventArgs e)
         {
-            //this.Next();
+            _photoDesktop.Next();
         }
 
         private void btnGetCurrentWallPaper_Validated(object sender, EventArgs e)
@@ -360,16 +253,17 @@ namespace Schalken.PhotoDesktop.WFA
         private void LoadSettings()
         {
             SetTimerfromSettings();
-            _imageList = LoadImageListFromSettings();            
+            _photoDesktop = new PhotoDesktop(LoadImageListFromSettings());
+            //_photoDesktop.NextMode = Properties.Settings.Default.
         }
 
         private void menuSettings_Click(object sender, EventArgs e)
         {
-            SettingsForm settingsForm = new SettingsForm();
+            SettingsForm settingsForm = new SettingsForm(_photoDesktop);
             if (settingsForm.ShowDialog() == DialogResult.OK)
             {
                 LoadSettings();
-                Next();
+                _photoDesktop.Next();
             }
             }
 
@@ -384,7 +278,7 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnNext_Click(object sender, EventArgs e)
         {
-            this.Next();
+            _photoDesktop.Next();
         }
 
         private void btnDislike_Click(object sender, EventArgs e)
@@ -394,7 +288,7 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnPrev_Click(object sender, EventArgs e)
         {
-            this.Previous();
+            _photoDesktop.Previous();
         }
 
         private void btnHide_Click(object sender, EventArgs e)

@@ -43,32 +43,34 @@ namespace Schalken.PhotoDesktop
             }
         }
         private HistoryStack _history = new HistoryStack();
+        public HistoryStack History
+        {
+            get { return _history; }
+        }
+
         public ImageListItem Next(string screenName)
         {
-                if (currentImage > -1)
-                    _history.Push(screenName, currentImage);
+            if (Images.Count == 0)
+                throw new MissingImagesException("No images available");
 
-                if (Images.Count == 0)
-                    throw new MissingImagesException("No images available");
+            currentImage += 1;
+            _history.Push(screenName, currentImage);
 
-                currentImage += 1;
-
-                return Images[currentImage];
+            return Images[currentImage];
         }
+
         public ImageListItem NextRandom(string screenName)
         {
-                if (currentImage > -1)
-                    _history.Push(screenName, currentImage);
+            if (Images.Count == 0)
+                throw new MissingImagesException("No images available");
 
-                if (Images.Count == 0)
-                    throw new MissingImagesException("No images available");
-
-                Random r = new Random((int)DateTime.Now.Ticks);
+            Random r = new Random((int)DateTime.Now.Ticks);
 
                 // todo: avoid repeats in random order images
-                currentImage = r.Next(Images.Count);
+            currentImage = r.Next(Images.Count);
+            _history.Push(screenName, currentImage);
 
-                return Images[currentImage];
+            return Images[currentImage];
         }
         public ImageListItem Previous(string screenName)
         {
@@ -87,6 +89,11 @@ namespace Schalken.PhotoDesktop
             {
                 return _folders;
             }
+        }
+
+        public ImageList()
+        {
+            _folders = new List<FolderItem>();
         }
 
         public ImageList(string folder)
