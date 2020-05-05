@@ -35,10 +35,13 @@ namespace Schalken.PhotoDesktop
         public enum MultiSwitchModes
         {
             SameTime,
-            Alternately
+            Alternately,
+            Rotate
         }
         public OrderModes OrderMode { get; set; }
         public MultiSwitchModes MultiSwitchMode { get; set; }
+        public bool LogonImage { get; set; }
+        public string LogonImageFolder { get; set; }
 
 
         #endregion Properties
@@ -49,12 +52,15 @@ namespace Schalken.PhotoDesktop
         }
 
 
+        /// <summary>
+        /// Show next image(s)
+        /// </summary>
         public void Next()
         {
-            //NextMode = NextModes.RandomSameTime; // RandomAlternately; <-- //todo: random alternately erases the other screens !
-
             if (MultiSwitchMode == MultiSwitchModes.SameTime)
                 NextSameTime();
+            else if (MultiSwitchMode == MultiSwitchModes.Rotate)
+                NextRotate();
             else
                 NextAlternately();
         }
@@ -87,17 +93,26 @@ namespace Schalken.PhotoDesktop
                 Dictionary<string, DesktopImage> images = new Dictionary<string, DesktopImage>(screens.Length);
 
 
-                Screen screen = screens[NextAlternatelyCount];
+                for (int i = 0; i < screens.Length; i++)
+                {
+                    Screen screen = screens[i];
 
-                if (OrderMode == OrderModes.Random)
-                    images[screen.DeviceName] = new DesktopImage(ImageList.NextRandom(screen.DeviceName));
-                else
-                    images[screen.DeviceName] = new DesktopImage(ImageList.Next(screen.DeviceName));
+                    if (i == NextAlternatelyCount)
+                    {
+                        if (OrderMode == OrderModes.Random)
+                            images[screen.DeviceName] = new DesktopImage(ImageList.NextRandom(screen.DeviceName));
+                        else
+                            images[screen.DeviceName] = new DesktopImage(ImageList.Next(screen.DeviceName));
+                    }
+                    else
+                        images[screen.DeviceName] = new DesktopImage(ImageList.Current(screen.DeviceName));
+                }
+
 
                 Wallpaper.CreateBackgroundImage(images);
 
                 // next wallpaper
-                NextAlternatelyCount = NextAlternatelyCount + 1;
+                NextAlternatelyCount++;
                 if (NextAlternatelyCount >= screens.Length)
                     NextAlternatelyCount = 0;
             }
@@ -107,6 +122,41 @@ namespace Schalken.PhotoDesktop
             }
         }
 
+        private void NextRotate()
+        {
+            try
+            {
+                Screen[] screens = Screen.AllScreens;
+                Dictionary<string, DesktopImage> images = new Dictionary<string, DesktopImage>(screens.Length);
+
+
+                for (int i = 1; i < screens.Length; i++)
+                {
+                    Screen screen = screens[i];
+
+                    images[screen.DeviceName] = new DesktopImage(ImageList.Rotate(screen.DeviceName, screens[0].DeviceName));
+                }
+                {
+                    Screen screen = screens[0];
+
+                    if (OrderMode == OrderModes.Random)
+                        images[screen.DeviceName] = new DesktopImage(ImageList.NextRandom(screen.DeviceName));
+                    else
+                        images[screen.DeviceName] = new DesktopImage(ImageList.Next(screen.DeviceName));
+                }
+
+                Wallpaper.CreateBackgroundImage(images);
+
+                // next wallpaper
+                NextAlternatelyCount++;
+                if (NextAlternatelyCount >= screens.Length)
+                    NextAlternatelyCount = 0;
+            }
+            catch (MissingImagesException)
+            {
+                Wallpaper.CreateTestBackgroundImage();
+            }
+        }
 
         // <summary>
         /// Change all screens

@@ -59,6 +59,7 @@
             this.btnNext = new System.Windows.Forms.Button();
             this.btnPrevious = new System.Windows.Forms.Button();
             this.lbDebug = new System.Windows.Forms.ListBox();
+            this.rbSwitchRotate = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.nudTimerValue)).BeginInit();
             this.gbOrder.SuspendLayout();
             this.gbMultiSwitch.SuspendLayout();
@@ -325,11 +326,12 @@
             // 
             // gbMultiSwitch
             // 
+            this.gbMultiSwitch.Controls.Add(this.rbSwitchRotate);
             this.gbMultiSwitch.Controls.Add(this.rbSwitchAlternately);
             this.gbMultiSwitch.Controls.Add(this.rbSwitchSameTime);
             this.gbMultiSwitch.Location = new System.Drawing.Point(291, 139);
             this.gbMultiSwitch.Name = "gbMultiSwitch";
-            this.gbMultiSwitch.Size = new System.Drawing.Size(200, 75);
+            this.gbMultiSwitch.Size = new System.Drawing.Size(200, 104);
             this.gbMultiSwitch.TabIndex = 31;
             this.gbMultiSwitch.TabStop = false;
             this.gbMultiSwitch.Text = "Multi switch";
@@ -402,6 +404,17 @@
             this.lbDebug.Name = "lbDebug";
             this.lbDebug.Size = new System.Drawing.Size(378, 134);
             this.lbDebug.TabIndex = 37;
+            // 
+            // rbSwitchRotate
+            // 
+            this.rbSwitchRotate.AutoSize = true;
+            this.rbSwitchRotate.Location = new System.Drawing.Point(8, 73);
+            this.rbSwitchRotate.Margin = new System.Windows.Forms.Padding(4);
+            this.rbSwitchRotate.Name = "rbSwitchRotate";
+            this.rbSwitchRotate.Size = new System.Drawing.Size(57, 17);
+            this.rbSwitchRotate.TabIndex = 27;
+            this.rbSwitchRotate.Text = "Rotate";
+            this.rbSwitchRotate.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -479,5 +492,6 @@
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.Button btnPrevious;
         private System.Windows.Forms.ListBox lbDebug;
+        private System.Windows.Forms.RadioButton rbSwitchRotate;
     }
 }

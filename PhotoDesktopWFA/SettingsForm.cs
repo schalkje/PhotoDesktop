@@ -15,6 +15,9 @@ namespace Schalken.PhotoDesktop.WFA
     {
         private PhotoDesktop _photoDesktop;
 
+        bool _refreshImageList = false;
+        public bool RefreshImageList { get { return _refreshImageList; } }
+
         public SettingsForm()
         {
             InitializeComponent();
@@ -83,6 +86,10 @@ namespace Schalken.PhotoDesktop.WFA
             {
                 rbSwitchSameTime.Checked = true;
             }
+            else if (Properties.Settings.Default.MultiSwitch.Equals("Rotate", StringComparison.CurrentCultureIgnoreCase))
+            {
+                rbSwitchRotate.Checked = true;
+            }
             else if (Properties.Settings.Default.MultiSwitch.Equals("Alternate", StringComparison.CurrentCultureIgnoreCase))
             {
                 rbSwitchAlternately.Checked = true;
@@ -149,6 +156,10 @@ namespace Schalken.PhotoDesktop.WFA
             {
                 Properties.Settings.Default.MultiSwitch = "Same time";
             }
+            else if (rbSwitchRotate.Checked)
+            {
+                Properties.Settings.Default.MultiSwitch = "Rotate";
+            }
             else
             {
                 Properties.Settings.Default.MultiSwitch = "Alternate";
@@ -196,6 +207,8 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnAddFolder_Click(object sender, EventArgs e)
         {
+            _refreshImageList = true;
+
             if (tbFolder.Text.Length == 0)
             {
                 MessageBox.Show("Enter a folder", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -249,6 +262,8 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
+            _refreshImageList = true;
+
             if (lbFolders.SelectedIndex >= 0)
             {
                 lbFolders.Items.RemoveAt(lbFolders.SelectedIndex);
@@ -318,7 +333,7 @@ namespace Schalken.PhotoDesktop.WFA
         private void RefreshStackDebug()
         {
             lbDebug.Items.Clear();
-            foreach (string item in _photoDesktop.ImageList.History.Content)
+            foreach (string item in _photoDesktop.ImageList.History.DebugContent)
             {
                 lbDebug.Items.Add(item);
             }

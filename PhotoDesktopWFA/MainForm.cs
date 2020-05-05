@@ -31,10 +31,10 @@ namespace Schalken.PhotoDesktop.WFA
                 // start redo task, with 500 ms delay
                 var t = Task.Run(async delegate
                 {
-                        await Task.Delay(TimeSpan.FromMilliseconds(500));
-                        Redo();
-                    });
-                }
+                    await Task.Delay(TimeSpan.FromMilliseconds(500));
+                    Redo();
+                });
+            }
 
             //todo: Next code is candidate for removal
             //if (message.Msg == WM_SETTINGCHANGE)
@@ -95,69 +95,12 @@ namespace Schalken.PhotoDesktop.WFA
 
 
 
-        private void SetTimerfromSettings()
-        {
-
-            int interval = Properties.Settings.Default.TimerValue;
-
-            if (Properties.Settings.Default.TimerUnit.Equals("second", StringComparison.CurrentCultureIgnoreCase))
-            {
-                interval = interval * 1000;
-            }
-            else if (Properties.Settings.Default.TimerUnit.Equals("minute", StringComparison.CurrentCultureIgnoreCase))
-            {
-                interval = interval * 60 * 1000;
-            }
-            else if (Properties.Settings.Default.TimerUnit.Equals("hour", StringComparison.CurrentCultureIgnoreCase))
-            {
-            }
-            else
-            {
-                interval = interval * 60 * 60 * 1000;
-            }
-            photoTimer.Interval = interval;
-        }
 
         private void btnTest_Click(object sender, EventArgs e)
         {
             Wallpaper.CreateTestBackgroundImage();
         }
 
-        private ImageList LoadImageListFromSettings()
-        {
-
-
-            StringCollection folders = Properties.Settings.Default.Folders;
-
-#if DEBUG
-            if (folders is null)
-                folders = new StringCollection();
-
-
-                if (folders.Count == 0)
-                    folders.Add("E:\\OneDrive\\Afbeeldingen\\Background Selection");
-#endif
-
-            ImageList images = new ImageList(folders);
-
-            // store images
-            foreach (ImageListItem item in images.Images)
-            {
-                //System.Collections.Specialized.NameValueCollection
-                //if (Properties.ViewedImages.Default.Images.)
-                if (Properties.Settings.Default.Images == null)
-                    Properties.Settings.Default.Images = new NameValueCollection();
-                //if (!Properties.Settings.Default.Images.HasKeys())
-                //    return null;
-                string value = Properties.Settings.Default.Images.Get(item.NameString);
-                if (value == null)
-                    Properties.Settings.Default.Images.Add(item.NameString, item.ValueString);
-                else
-                    Properties.Settings.Default.Images.Set(item.NameString, item.ValueString);
-            }
-        
-            return images;
-        }
 
         private void btnNextBackground_Click(object sender, EventArgs e)
         {
@@ -247,32 +190,100 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnGetCurrentWallPaper_Validated(object sender, EventArgs e)
         {
-            
+
         }
 
-        private void LoadSettings()
+        #region Settings
+
+        private void LoadSettings(bool refreshImageList = false)
         {
+            if (_photoDesktop is null || refreshImageList)
+                _photoDesktop = new PhotoDesktop(LoadImageListFromSettings());
+
             SetTimerfromSettings();
-            _photoDesktop = new PhotoDesktop(LoadImageListFromSettings());
-            //_photoDesktop.NextMode = Properties.Settings.Default.
+            _photoDesktop.OrderMode = Properties.Settings.Default.Order.Equals("Random", StringComparison.CurrentCultureIgnoreCase) ? PhotoDesktop.OrderModes.Random : PhotoDesktop.OrderModes.Sequential;
+            _photoDesktop.MultiSwitchMode = Properties.Settings.Default.MultiSwitch.Equals("Same time", StringComparison.CurrentCultureIgnoreCase) ? PhotoDesktop.MultiSwitchModes.SameTime : Properties.Settings.Default.MultiSwitch.Equals("Rotate", StringComparison.CurrentCultureIgnoreCase) ? PhotoDesktop.MultiSwitchModes.Rotate: PhotoDesktop.MultiSwitchModes.Alternately;
+            _photoDesktop.LogonImage = Properties.Settings.Default.CreateLogonImage;
+            _photoDesktop.LogonImageFolder = Properties.Settings.Default.LogonImageFolder;
         }
+
+        private void SetTimerfromSettings()
+        {
+
+            int interval = Properties.Settings.Default.TimerValue;
+
+            if (Properties.Settings.Default.TimerUnit.Equals("second", StringComparison.CurrentCultureIgnoreCase))
+            {
+                interval = interval * 1000;
+            }
+            else if (Properties.Settings.Default.TimerUnit.Equals("minute", StringComparison.CurrentCultureIgnoreCase))
+            {
+                interval = interval * 60 * 1000;
+            }
+            else if (Properties.Settings.Default.TimerUnit.Equals("hour", StringComparison.CurrentCultureIgnoreCase))
+            {
+            }
+            else
+            {
+                interval = interval * 60 * 60 * 1000;
+            }
+            photoTimer.Interval = interval;
+        }
+
+
+        private ImageList LoadImageListFromSettings()
+        {
+
+
+            StringCollection folders = Properties.Settings.Default.Folders;
+
+#if DEBUG
+            if (folders is null)
+                folders = new StringCollection();
+
+
+            if (folders.Count == 0)
+                folders.Add("E:\\OneDrive\\Afbeeldingen\\Background Selection");
+#endif
+
+            ImageList images = new ImageList(folders);
+
+            // store images
+            foreach (ImageListItem item in images.Images)
+            {
+                //System.Collections.Specialized.NameValueCollection
+                //if (Properties.ViewedImages.Default.Images.)
+                if (Properties.Settings.Default.Images == null)
+                    Properties.Settings.Default.Images = new NameValueCollection();
+                //if (!Properties.Settings.Default.Images.HasKeys())
+                //    return null;
+                string value = Properties.Settings.Default.Images.Get(item.NameString);
+                if (value == null)
+                    Properties.Settings.Default.Images.Add(item.NameString, item.ValueString);
+                else
+                    Properties.Settings.Default.Images.Set(item.NameString, item.ValueString);
+            }
+
+            return images;
+        }
+
+        #endregion Settings
 
         private void menuSettings_Click(object sender, EventArgs e)
         {
             SettingsForm settingsForm = new SettingsForm(_photoDesktop);
             if (settingsForm.ShowDialog() == DialogResult.OK)
             {
-                LoadSettings();
-                _photoDesktop.Next();
+                LoadSettings(settingsForm.RefreshImageList);
             }
-            }
+        }
 
 
 
 
         private void imageButton10_Click(object sender, EventArgs e)
         {
-        
+
 
         }
 
