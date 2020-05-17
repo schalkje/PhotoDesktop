@@ -53,13 +53,14 @@
             this.cbLogonImage = new System.Windows.Forms.CheckBox();
             this.gbOrder = new System.Windows.Forms.GroupBox();
             this.gbMultiSwitch = new System.Windows.Forms.GroupBox();
+            this.rbSwitchRotate = new System.Windows.Forms.RadioButton();
             this.gbTimer = new System.Windows.Forms.GroupBox();
             this.gbLogonImage = new System.Windows.Forms.GroupBox();
             this.btnOpenExplorerOnLogonImageLocation = new System.Windows.Forms.Button();
             this.btnNext = new System.Windows.Forms.Button();
             this.btnPrevious = new System.Windows.Forms.Button();
             this.lbDebug = new System.Windows.Forms.ListBox();
-            this.rbSwitchRotate = new System.Windows.Forms.RadioButton();
+            this.btnTest = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudTimerValue)).BeginInit();
             this.gbOrder.SuspendLayout();
             this.gbMultiSwitch.SuspendLayout();
@@ -163,24 +164,24 @@
             // rbSeconds
             // 
             this.rbSeconds.AutoSize = true;
-            this.rbSeconds.Checked = true;
             this.rbSeconds.Location = new System.Drawing.Point(7, 19);
             this.rbSeconds.Margin = new System.Windows.Forms.Padding(4);
             this.rbSeconds.Name = "rbSeconds";
             this.rbSeconds.Size = new System.Drawing.Size(65, 17);
             this.rbSeconds.TabIndex = 15;
-            this.rbSeconds.TabStop = true;
             this.rbSeconds.Text = "seconds";
             this.rbSeconds.UseVisualStyleBackColor = true;
             // 
             // rbMinutes
             // 
             this.rbMinutes.AutoSize = true;
+            this.rbMinutes.Checked = true;
             this.rbMinutes.Location = new System.Drawing.Point(7, 44);
             this.rbMinutes.Margin = new System.Windows.Forms.Padding(4);
             this.rbMinutes.Name = "rbMinutes";
             this.rbMinutes.Size = new System.Drawing.Size(61, 17);
             this.rbMinutes.TabIndex = 16;
+            this.rbMinutes.TabStop = true;
             this.rbMinutes.Text = "minutes";
             this.rbMinutes.UseVisualStyleBackColor = true;
             // 
@@ -336,6 +337,17 @@
             this.gbMultiSwitch.TabStop = false;
             this.gbMultiSwitch.Text = "Multi switch";
             // 
+            // rbSwitchRotate
+            // 
+            this.rbSwitchRotate.AutoSize = true;
+            this.rbSwitchRotate.Location = new System.Drawing.Point(8, 73);
+            this.rbSwitchRotate.Margin = new System.Windows.Forms.Padding(4);
+            this.rbSwitchRotate.Name = "rbSwitchRotate";
+            this.rbSwitchRotate.Size = new System.Drawing.Size(57, 17);
+            this.rbSwitchRotate.TabIndex = 27;
+            this.rbSwitchRotate.Text = "Rotate";
+            this.rbSwitchRotate.UseVisualStyleBackColor = true;
+            // 
             // gbTimer
             // 
             this.gbTimer.Controls.Add(this.rbSeconds);
@@ -364,7 +376,6 @@
             // btnOpenExplorerOnLogonImageLocation
             // 
             this.btnOpenExplorerOnLogonImageLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOpenExplorerOnLogonImageLocation.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnOpenExplorerOnLogonImageLocation.Location = new System.Drawing.Point(8, 106);
             this.btnOpenExplorerOnLogonImageLocation.Margin = new System.Windows.Forms.Padding(4);
             this.btnOpenExplorerOnLogonImageLocation.Name = "btnOpenExplorerOnLogonImageLocation";
@@ -372,6 +383,7 @@
             this.btnOpenExplorerOnLogonImageLocation.TabIndex = 34;
             this.btnOpenExplorerOnLogonImageLocation.Text = "Open Explorer";
             this.btnOpenExplorerOnLogonImageLocation.UseVisualStyleBackColor = true;
+            this.btnOpenExplorerOnLogonImageLocation.Click += new System.EventHandler(this.btnOpenExplorerOnLogonImageLocation_Click);
             // 
             // btnNext
             // 
@@ -405,22 +417,24 @@
             this.lbDebug.Size = new System.Drawing.Size(378, 134);
             this.lbDebug.TabIndex = 37;
             // 
-            // rbSwitchRotate
+            // btnTest
             // 
-            this.rbSwitchRotate.AutoSize = true;
-            this.rbSwitchRotate.Location = new System.Drawing.Point(8, 73);
-            this.rbSwitchRotate.Margin = new System.Windows.Forms.Padding(4);
-            this.rbSwitchRotate.Name = "rbSwitchRotate";
-            this.rbSwitchRotate.Size = new System.Drawing.Size(57, 17);
-            this.rbSwitchRotate.TabIndex = 27;
-            this.rbSwitchRotate.Text = "Rotate";
-            this.rbSwitchRotate.UseVisualStyleBackColor = true;
+            this.btnTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnTest.Location = new System.Drawing.Point(1144, 13);
+            this.btnTest.Margin = new System.Windows.Forms.Padding(4);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(137, 38);
+            this.btnTest.TabIndex = 38;
+            this.btnTest.Text = "Test";
+            this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
             // SettingsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(1296, 710);
+            this.Controls.Add(this.btnTest);
             this.Controls.Add(this.lbDebug);
             this.Controls.Add(this.btnPrevious);
             this.Controls.Add(this.btnNext);
@@ -493,5 +507,6 @@
         private System.Windows.Forms.Button btnPrevious;
         private System.Windows.Forms.ListBox lbDebug;
         private System.Windows.Forms.RadioButton rbSwitchRotate;
+        private System.Windows.Forms.Button btnTest;
     }
 }

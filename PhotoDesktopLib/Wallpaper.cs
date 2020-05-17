@@ -91,7 +91,9 @@ namespace Schalken.PhotoDesktop
 
             ScaledScreen[] scaledScreens = ScaledScreen.AllScaledScreens;
 
-            using (var virtualScreenBitmap = new Bitmap(ScaledScreen.DesktopRectangle.Width, ScaledScreen.DesktopRectangle.Height))
+
+            //using (var virtualScreenBitmap = new Bitmap(ScaledScreen.DesktopRectangle.Width, ScaledScreen.DesktopRectangle.Height))
+            using (var virtualScreenBitmap = CreateScreenBitmap(scaledScreens))
             {
                 using (var virtualScreenGraphic = Graphics.FromImage(virtualScreenBitmap))
                 {
@@ -141,7 +143,7 @@ namespace Schalken.PhotoDesktop
 
 
                         // https://code.msdn.microsoft.com/DPI-Tutorial-sample-64134744/sourcecode?fileId=86763&pathId=1297537410
-                        Font font = new Font(FontFamily.GenericSansSerif, (int)((float) 10 * scaledScreen.Scale));
+                        Font font = new Font(FontFamily.GenericSansSerif, (int)((float)10 * scaledScreen.Scale));
                         monitorGraphics.DrawString(scaledScreen.DeviceName, font, Brushes.LightBlue,
                             new PointF(scaledScreen.TaskbarLeftWidth + 10 * scaledScreen.Scale,
                                        scaledScreen.TaskbarTopHeight + 10 * scaledScreen.Scale));
@@ -164,6 +166,82 @@ namespace Schalken.PhotoDesktop
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 0u, WallpaperPath + defaultBackgroundFileName, SPIF_UPDATEINIFILE);
         }
 
+        private static Bitmap CreateScreenBitmap(ScaledScreen[] scaledScreens)
+        {
+            Rectangle unscaledDesktopRectangle = new Rectangle();
+            foreach (ScaledScreen scaledScreen in scaledScreens)
+            {
+                unscaledDesktopRectangle.X = Math.Min(unscaledDesktopRectangle.X, scaledScreen.UnscaledBounds.X);
+                unscaledDesktopRectangle.Y = Math.Min(unscaledDesktopRectangle.Y, scaledScreen.Screen.Bounds.Y);
+                unscaledDesktopRectangle.Width = Math.Max(unscaledDesktopRectangle.Width, scaledScreen.UnscaledBounds.Right);
+                unscaledDesktopRectangle.Height = Math.Max(unscaledDesktopRectangle.Height, scaledScreen.UnscaledBounds.Bottom);
+            }
+            // shift to 0,0
+            unscaledDesktopRectangle.Width -= unscaledDesktopRectangle.X;
+            unscaledDesktopRectangle.Height -= unscaledDesktopRectangle.Y;
+            unscaledDesktopRectangle.X = 0;
+            unscaledDesktopRectangle.Y = 0;
+            return new Bitmap(unscaledDesktopRectangle.Width, unscaledDesktopRectangle.Height);
+        }
+
+        public static void CreateLogonScreenImage(DesktopImage desktopImage, string fullfilename)
+        {
+            var result = ScaledScreen.GetPerMonitorDPIAware();
+            if (result != ScaledScreen.PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE)
+                ScaledScreen.SetPerMonitorDPIAware();
+
+            ScaledScreen[] scaledScreens = ScaledScreen.AllScaledScreens;
+            ScaledScreen scaledScreen = scaledScreens[0];
+
+            using (var virtualScreenBitmap = new Bitmap(ScaledScreen.DesktopRectangle.Width, ScaledScreen.DesktopRectangle.Height))
+            {
+                using (var virtualScreenGraphic = Graphics.FromImage(virtualScreenBitmap))
+                {
+                    var monitorBitmap = new Bitmap(scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
+                    var monitorGraphics = Graphics.FromImage(monitorBitmap);
+
+                    // standard background
+                    monitorGraphics.FillRectangle(SystemBrushes.Info, 0, 0, scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
+
+                    // todo: extension add different centering zoom options: fill, fill center
+                    if (desktopImage != null)
+                        DrawImageFillCentered(ref monitorGraphics, desktopImage.Image, new Rectangle(0, 0, monitorBitmap.Width, monitorBitmap.Height));
+
+                    // add text to image
+                    DrawLegenda(monitorGraphics, scaledScreen, desktopImage);
+
+                    // determine rectangle where the image will reside
+                    Rectangle screenRectangle = new Rectangle(scaledScreen.UnscaledBounds.X - ScaledScreen.DesktopRectangle.X, scaledScreen.UnscaledBounds.Y - ScaledScreen.DesktopRectangle.Y, scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
+
+                    // draw the image on the fill desktop image
+                    virtualScreenGraphic.DrawImage(monitorBitmap, screenRectangle);
+
+                    monitorGraphics.Dispose();
+                    monitorBitmap.Dispose();
+
+                    virtualScreenBitmap.Save(fullfilename, ImageFormat.Png);
+
+                    virtualScreenGraphic.Dispose();
+                    virtualScreenBitmap.Dispose();
+
+                // https://docs.microsoft.com/en-us/uwp/api/Windows.System.UserProfile.LockScreen?view=winrt-18362
+                // https://github.com/Microsoft/Windows-universal-samples/tree/master/Samples/Personalization
+
+                // Microsoft.Win32.SessionSwitchReason.SessionLock // http://omegacoder.com/?p=516
+
+                // registry: Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Lock Screen
+                // https://winaero.com/blog/find-the-current-lock-screen-image-file-in-windows-10/
+
+                // https://winaero.com/blog/find-the-current-lock-screen-image-file-in-windows-10/
+
+                    //await LockScreen.SetImageFileAsync(imageFile);
+                    //System.UserProfile.LockScreen.SetImageFileAsync(File);
+                }
+            }
+
+            //SystemParametersInfo(SPI_SETDESKWALLPAPER, 0u, WallpaperPath + defaultBackgroundFileName, SPIF_UPDATEINIFILE);
+        }
+
         public static void CreateBackgroundImage(Dictionary<string, DesktopImage> images)
         {
             var result = ScaledScreen.GetPerMonitorDPIAware();
@@ -172,7 +250,7 @@ namespace Schalken.PhotoDesktop
 
             ScaledScreen[] scaledScreens = ScaledScreen.AllScaledScreens;
 
-            using (var virtualScreenBitmap = new Bitmap(ScaledScreen.DesktopRectangle.Width, ScaledScreen.DesktopRectangle.Height))
+            using (var virtualScreenBitmap = CreateScreenBitmap(scaledScreens))
             {
                 using (var virtualScreenGraphic = Graphics.FromImage(virtualScreenBitmap))
                 {
@@ -261,7 +339,7 @@ namespace Schalken.PhotoDesktop
             GlowText(monitorGraphics, path, textColor, glowColor, glowScale);
         }
 
-        private static void DrawLegenda(Graphics monitorGraphics,ScaledScreen scaledScreen, DesktopImage imageData)
+        private static void DrawLegenda(Graphics monitorGraphics, ScaledScreen scaledScreen, DesktopImage imageData)
         {
             // outine text
             // http://www.codeproject.com/Articles/42529/Outline-Text#singleoutline1
@@ -277,7 +355,7 @@ namespace Schalken.PhotoDesktop
             Rectangle legendaRect = new Rectangle(
                 (int)monitorGraphics.VisibleClipBounds.Width - (int)(400 * textScale)
                 - scaledScreen.TaskbarRightWidth,
-                (int)monitorGraphics.VisibleClipBounds.Height- (int)(100 * textScale)
+                (int)monitorGraphics.VisibleClipBounds.Height - (int)(100 * textScale)
                 - scaledScreen.TaskbarBottomHeight
                 ,
                 (int)(400 * textScale),
@@ -289,7 +367,7 @@ namespace Schalken.PhotoDesktop
             path.AddString(imageData.Filename,
                 FontFamily.GenericSansSerif,
                 (int)FontStyle.Regular,
-                (int)(20 * textScale), 
+                (int)(20 * textScale),
                 new Rectangle(legendaRect.X, legendaRect.Y, legendaRect.Width, (int)(20 * textScale)),
                 stringFormat);
             path.AddString(imageData.DisplayFolder,
@@ -298,7 +376,7 @@ namespace Schalken.PhotoDesktop
                 (int)(25 * textScale),
                 new Rectangle(legendaRect.X, legendaRect.Y + (int)(20 * textScale), legendaRect.Width, (int)(25 * textScale)),
                 stringFormat);
-            path.AddString(string.Format("{0} x {1}", imageData.Image.Width,imageData.Image.Height),
+            path.AddString(string.Format("{0} x {1}", imageData.Image.Width, imageData.Image.Height),
                 FontFamily.GenericSansSerif,
                 (int)FontStyle.Regular,
                 (int)(16 * textScale),
@@ -309,7 +387,7 @@ namespace Schalken.PhotoDesktop
             DateTime dateTaken = DateTime.Now;
             foreach (PropertyItem propItem in imageData.Image.PropertyItems)
             {
-                if (propItem.Id == PropertyTagExifDTOrig )
+                if (propItem.Id == PropertyTagExifDTOrig)
                 {
                     string dateTakenString = dateRegex.Replace(Encoding.UTF8.GetString(propItem.Value), "-", 2);
                     dateTaken = DateTime.Parse(dateTakenString);

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -339,6 +341,60 @@ namespace Schalken.PhotoDesktop.WFA
             }
         }
 
+        private void StartProcess(string path)
+        {
+            ProcessStartInfo StartInformation = new ProcessStartInfo();
+
+            StartInformation.FileName = path;
+
+            Process process = Process.Start(StartInformation);
+
+            if (process != null )
+                process.EnableRaisingEvents = true;
+        }
+
         #endregion Helper functions
+
+        private void btnOpenExplorerOnLogonImageLocation_Click(object sender, EventArgs e)
+        {
+            string imageBaseFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            string imageFolder = imageBaseFolder + @"\PhotoDesktop";
+            string fullfilename = imageBaseFolder + @"\PhotoDesktop" + @"\PhotoDesktopLogongImage.png";
+            // check if folder exists
+            bool exists = System.IO.Directory.Exists(imageFolder);
+
+            if (!exists)
+                System.IO.Directory.CreateDirectory(imageFolder);
+            // create folder
+
+            Screen[] screens = Screen.AllScreens;
+            Screen screen = screens[0];
+
+            DesktopImage logonImage = new DesktopImage(_photoDesktop.ImageList.Next(screen.DeviceName));
+
+            Wallpaper.CreateLogonScreenImage(logonImage, fullfilename);
+
+
+            StartProcess(imageFolder);
+            // https://winaero.com/blog/file-explorer-command-line-arguments-in-windows-10/
+            // explorer.exe /select,"C:\apps\firefox beta\firefox.exe"
+            // explorer.exe /e,folder_path
+
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            if (btnTest.Text.Equals("Test",StringComparison.OrdinalIgnoreCase))
+            {
+                btnTest.Text = "Refresh";
+                _photoDesktop.TestBackground();
+            }
+            else
+            {
+                btnTest.Text = "Test";
+                _photoDesktop.Refresh();
+            }
+
+        }
     }
 }

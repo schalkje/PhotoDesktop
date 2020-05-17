@@ -75,6 +75,8 @@ namespace Schalken.PhotoDesktop.WFA
             // on startup switch
             if (Properties.Settings.Default.ChangeOnStart)
                 _photoDesktop.Next();
+
+            ShowSettings();
         }
 
         protected override void OnShown(EventArgs e)
@@ -271,15 +273,17 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void menuSettings_Click(object sender, EventArgs e)
         {
+            ShowSettings();
+        }
+
+        private void ShowSettings()
+        {
             SettingsForm settingsForm = new SettingsForm(_photoDesktop);
             if (settingsForm.ShowDialog() == DialogResult.OK)
             {
                 LoadSettings(settingsForm.RefreshImageList);
             }
         }
-
-
-
 
         private void imageButton10_Click(object sender, EventArgs e)
         {
