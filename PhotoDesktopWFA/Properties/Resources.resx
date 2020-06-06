@@ -121,13 +121,16 @@
   <data name="Prev_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Prev_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="next_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\next_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="PD_Prev_active_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PD_Prev_active_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="next_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\next_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="PD_Prev_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PD_Prev_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pd_next_t" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pd_next_t.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

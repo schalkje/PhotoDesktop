@@ -50,6 +50,7 @@
     <Compile Include="DesktopImage.cs" />
     <Compile Include="DPI.cs" />
     <Compile Include="FolderItem.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="HistoryStack.cs" />
     <Compile Include="ImageList.cs" />
     <Compile Include="ImageListItem.cs" />

@@ -3,11 +3,15 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
+using WindowsFormsControlLibrary;
+using System.Runtime.CompilerServices;
+using System.Drawing;
+using System.Reflection;
 
 namespace Schalken.PhotoDesktop.WFA
 {
 
-    public partial class MainForm : Form //TransparentForm
+    public partial class MainForm : TransparentForm //   Form //
     {
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -76,7 +80,7 @@ namespace Schalken.PhotoDesktop.WFA
             if (Properties.Settings.Default.ChangeOnStart)
                 _photoDesktop.Next();
 
-            ShowSettings();
+            //ShowSettings();
         }
 
         protected override void OnShown(EventArgs e)
@@ -88,29 +92,28 @@ namespace Schalken.PhotoDesktop.WFA
             // Top = 0;
 
             // if mode = bottom-right
-            Left = windowScreen.UnscaledBounds.Width - Width; //Size.Width;
-            Top = windowScreen.UnscaledBounds.Height - Height;
+            Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
+            Top = windowScreen.UnscaledWorkingArea.Height - Height;
 
 
             base.OnShown(e);
+
+            //Width = 400;
+            //Height = 100;
+            //Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
+            //Top = windowScreen.UnscaledWorkingArea.Height - Height;
         }
 
 
 
 
-        private void btnTest_Click(object sender, EventArgs e)
-        {
-            Wallpaper.CreateTestBackgroundImage();
-        }
-
-
-        private void btnNextBackground_Click(object sender, EventArgs e)
-        {
-            _photoDesktop.Next();
-        }
 
         private bool _windowVisible = false;
         private PhotoDesktop _photoDesktop;
+
+        // store the original size when made invisible by setting dimensions to 0x0
+        private int _storedWidth = 0;
+        private int _storedHeight = 0;
 
         public bool WindowVisible
         {
@@ -124,10 +127,14 @@ namespace Schalken.PhotoDesktop.WFA
                 if (_windowVisible)
                 {
                     this.Width = 440;
-                    this.Height = 190;
+                    this.Height = _storedWidth;
                 }
                 else
                 {
+                    _storedWidth = this.Width;
+                    _storedHeight = this.Height;
+
+                    // hide by setting dimensions to 0x0
                     this.Width = 0;
                     this.Height = 0;
                 }
@@ -143,57 +150,6 @@ namespace Schalken.PhotoDesktop.WFA
         }
 
 
-
-        private void btnOpenImage_Click(object sender, EventArgs e)
-        {
-            // todo: open the image in the default image viewer
-            OpenCurrentImage();
-        }
-
-        private static void OpenCurrentImage()
-        {
-            // to do: determine monitor where this is clicked
-            MessageBox.Show("Not yet implemented", "PhotoDesktop", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-        }
-
-        private void menuNext_Click(object sender, EventArgs e)
-        {
-            _photoDesktop.Next();
-        }
-
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            this.WindowVisible = !this.WindowVisible;
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // todo: persist viewed photo's
-            Application.Exit();
-        }
-
-
-        private void notifyIcon_DoubleClick(object sender, EventArgs e)
-        {
-            // stop timer
-            photoTimer.Stop();
-
-            // show next image
-            _photoDesktop.Next();
-
-            // reset time
-            photoTimer.Start();
-        }
-
-        private void photoTimer_Tick(object sender, EventArgs e)
-        {
-            _photoDesktop.Next();
-        }
-
-        private void btnGetCurrentWallPaper_Validated(object sender, EventArgs e)
-        {
-
-        }
 
         #region Settings
 
@@ -232,6 +188,21 @@ namespace Schalken.PhotoDesktop.WFA
             photoTimer.Interval = interval;
         }
 
+        private void ShowSettings()
+        {
+            SettingsForm settingsForm = new SettingsForm(_photoDesktop);
+            if (settingsForm.ShowDialog() == DialogResult.OK)
+            {
+                LoadSettings(settingsForm.RefreshImageList);
+            }
+        }
+
+
+        private static void OpenCurrentImage()
+        {
+            // to do: determine monitor where this is clicked
+            MessageBox.Show("Not yet implemented", "PhotoDesktop", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
 
         private ImageList LoadImageListFromSettings()
         {
@@ -271,18 +242,22 @@ namespace Schalken.PhotoDesktop.WFA
 
         #endregion Settings
 
+        #region EventHandlers
+
+
+        //private void btnTest_Click(object sender, EventArgs e)
+        //{
+        //    Wallpaper.CreateTestBackgroundImage();
+        //}
+
+
+        private void btnNextBackground_Click(object sender, EventArgs e)
+        {
+            _photoDesktop.Next();
+        }
         private void menuSettings_Click(object sender, EventArgs e)
         {
             ShowSettings();
-        }
-
-        private void ShowSettings()
-        {
-            SettingsForm settingsForm = new SettingsForm(_photoDesktop);
-            if (settingsForm.ShowDialog() == DialogResult.OK)
-            {
-                LoadSettings(settingsForm.RefreshImageList);
-            }
         }
 
         private void imageButton10_Click(object sender, EventArgs e)
@@ -315,5 +290,97 @@ namespace Schalken.PhotoDesktop.WFA
         {
 
         }
+
+
+
+        private void btnOpenImage_Click(object sender, EventArgs e)
+        {
+            // todo: open the image in the default image viewer
+            OpenCurrentImage();
+        }
+
+
+        private void menuNext_Click(object sender, EventArgs e)
+        {
+            _photoDesktop.Next();
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            this.WindowVisible = !this.WindowVisible;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // todo: persist viewed photo's
+            Application.Exit();
+        }
+
+
+        private void notifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            // stop timer
+            photoTimer.Stop();
+
+            // show next image
+            _photoDesktop.Next();
+
+            // reset time
+            photoTimer.Start();
+        }
+
+        private void photoTimer_Tick(object sender, EventArgs e)
+        {
+            _photoDesktop.Next();
+        }
+
+        private void btnGetCurrentWallPaper_Validated(object sender, EventArgs e)
+        {
+
+        }
+        #endregion EventHandlers
+
+
+        //private bool WithinBounds(Control control)
+        private void MainForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            label3.Text = e.X + "," + e.Y; // debug
+
+            bool showHand = false;
+            foreach (Control control in this.Controls)
+            {
+                // check "invisible" each element on the form
+                if (!control.Visible & control.Bounds.Contains(e.X, e.Y) )
+                {
+                    showHand = true;
+                    break;
+                }
+            }
+
+            if ( showHand )
+                this.Cursor = Cursors.Hand;
+            else
+                this.Cursor = Cursors.Arrow;
+
+        }
+
+        private void MainForm_Click(object sender, EventArgs e)
+        {
+            Point point = this.PointToClient(Cursor.Position);
+            int x = point.X;
+            int y = point.Y;
+            foreach (Control control in this.Controls)
+            {
+                // check "invisible" each element on the form
+                if (!control.Visible & control.Bounds.Contains(x, y))
+                {
+                    Helper.PerformClick(control);
+
+                    break;
+                }
+            }
+        }
+
+
     }
 }

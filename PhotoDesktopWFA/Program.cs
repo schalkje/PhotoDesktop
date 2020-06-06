@@ -23,7 +23,7 @@ namespace Schalken.PhotoDesktop.WFA
             Application.SetCompatibleTextRenderingDefault(false);
                         MainForm mainForm = new MainForm();
             mainForm.Visible = true;
-            mainForm.WindowVisible = false;
+            //mainForm.WindowVisible = false;
 
             //Application.AddMessageFilter(new ScreenChangeFilter());
             //Application.RegisterMessageLoop(messageLoopCallback);
