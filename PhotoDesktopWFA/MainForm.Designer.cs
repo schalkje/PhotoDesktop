@@ -43,12 +43,16 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.photoTimer = new System.Windows.Forms.Timer(this.components);
             this.imageList = new System.Windows.Forms.ImageList(this.components);
-            this.btnNext = new WindowsFormsControlLibrary.ImageButton();
-            this.btnPrev = new WindowsFormsControlLibrary.ImageButton();
+            this.star1 = new System.Windows.Forms.Label();
+            this.btnPrev = new System.Windows.Forms.Label();
+            this.btnNext = new System.Windows.Forms.Label();
+            this.star2 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.star3 = new System.Windows.Forms.Label();
+            this.star4 = new System.Windows.Forms.Label();
+            this.star5 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -161,99 +165,135 @@
             this.imageList.Images.SetKeyName(12, "pd_star_active.png");
             this.imageList.Images.SetKeyName(13, "pd_starred.png");
             // 
-            // btnNext
+            // star1
             // 
-            this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNext.BackColor = System.Drawing.Color.DarkRed;
-            this.btnNext.CanbeSelected = false;
-            this.btnNext.FixedSize = true;
-            this.btnNext.ImageKey = "pd_next.png";
-            this.btnNext.ImageKeyActive = "pd_next_active.png";
-            this.btnNext.ImageKeyDefault = "pd_next.png";
-            this.btnNext.ImageKeySelected = "(none)";
-            this.btnNext.ImageList = this.imageList;
-            this.btnNext.IsSelected = false;
-            this.btnNext.Location = new System.Drawing.Point(235, 0);
-            this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(50, 50);
-            this.btnNext.TabIndex = 10;
-            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
+            this.star1.BackColor = System.Drawing.Color.DarkRed;
+            this.star1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.star1.ImageIndex = 13;
+            this.star1.ImageList = this.imageList;
+            this.star1.Location = new System.Drawing.Point(0, 0);
+            this.star1.Name = "star1";
+            this.star1.Size = new System.Drawing.Size(40, 40);
+            this.star1.TabIndex = 11;
             // 
             // btnPrev
             // 
-            this.btnPrev.BackColor = System.Drawing.Color.Transparent;
-            this.btnPrev.CanbeSelected = false;
+            this.btnPrev.BackColor = System.Drawing.Color.DarkRed;
             this.btnPrev.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnPrev.FixedSize = true;
-            this.btnPrev.ImageKey = "PD_Prev.png";
-            this.btnPrev.ImageKeyActive = "PD_Prev_active.png";
-            this.btnPrev.ImageKeyDefault = "PD_Prev.png";
-            this.btnPrev.ImageKeySelected = "(none)";
-            this.btnPrev.ImageList = this.imageList;
-            this.btnPrev.IsSelected = false;
-            this.btnPrev.Location = new System.Drawing.Point(0, 0);
+            this.btnPrev.Image = global::Schalken.PhotoDesktop.WFA.Properties.Resources.PD_Prev_t;
+            this.btnPrev.Location = new System.Drawing.Point(278, 0);
             this.btnPrev.Name = "btnPrev";
-            this.btnPrev.Size = new System.Drawing.Size(43, 41);
-            this.btnPrev.TabIndex = 9;
+            this.btnPrev.Size = new System.Drawing.Size(40, 40);
+            this.btnPrev.TabIndex = 14;
             this.btnPrev.Visible = false;
             this.btnPrev.Click += new System.EventHandler(this.btnPrev_Click);
+            // 
+            // btnNext
+            // 
+            this.btnNext.BackColor = System.Drawing.Color.DarkRed;
+            this.btnNext.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNext.Image = global::Schalken.PhotoDesktop.WFA.Properties.Resources.pd_next_t1;
+            this.btnNext.Location = new System.Drawing.Point(360, 0);
+            this.btnNext.Name = "btnNext";
+            this.btnNext.Size = new System.Drawing.Size(40, 40);
+            this.btnNext.TabIndex = 12;
+            this.btnNext.Visible = false;
+            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
+            // 
+            // star2
+            // 
+            this.star2.BackColor = System.Drawing.Color.DarkRed;
+            this.star2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.star2.ImageIndex = 11;
+            this.star2.ImageList = this.imageList;
+            this.star2.Location = new System.Drawing.Point(40, 0);
+            this.star2.Name = "star2";
+            this.star2.Size = new System.Drawing.Size(40, 40);
+            this.star2.TabIndex = 15;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.DarkRed;
+            this.label4.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label4.ImageIndex = 11;
+            this.label4.ImageList = this.imageList;
+            this.label4.Location = new System.Drawing.Point(166, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(0, 13);
+            this.label4.TabIndex = 16;
+            // 
+            // star3
+            // 
+            this.star3.BackColor = System.Drawing.Color.DarkRed;
+            this.star3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.star3.ImageIndex = 11;
+            this.star3.ImageList = this.imageList;
+            this.star3.Location = new System.Drawing.Point(80, 0);
+            this.star3.Name = "star3";
+            this.star3.Size = new System.Drawing.Size(40, 40);
+            this.star3.TabIndex = 17;
+            // 
+            // star4
+            // 
+            this.star4.BackColor = System.Drawing.Color.DarkRed;
+            this.star4.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.star4.ImageIndex = 11;
+            this.star4.ImageList = this.imageList;
+            this.star4.Location = new System.Drawing.Point(120, 0);
+            this.star4.Name = "star4";
+            this.star4.Size = new System.Drawing.Size(40, 40);
+            this.star4.TabIndex = 18;
+            // 
+            // star5
+            // 
+            this.star5.BackColor = System.Drawing.Color.DarkRed;
+            this.star5.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.star5.ImageIndex = 11;
+            this.star5.ImageList = this.imageList;
+            this.star5.Location = new System.Drawing.Point(160, 0);
+            this.star5.Name = "star5";
+            this.star5.Size = new System.Drawing.Size(40, 40);
+            this.star5.TabIndex = 19;
             // 
             // label1
             // 
             this.label1.BackColor = System.Drawing.Color.DarkRed;
             this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label1.Location = new System.Drawing.Point(107, 27);
+            this.label1.ImageIndex = 4;
+            this.label1.ImageList = this.imageList;
+            this.label1.Location = new System.Drawing.Point(210, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(50, 50);
-            this.label1.TabIndex = 11;
-            this.label1.Text = "label1";
+            this.label1.Size = new System.Drawing.Size(40, 40);
+            this.label1.TabIndex = 20;
             // 
             // label2
             // 
             this.label2.BackColor = System.Drawing.Color.DarkRed;
             this.label2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label2.Location = new System.Drawing.Point(51, 27);
+            this.label2.ImageIndex = 9;
+            this.label2.ImageList = this.imageList;
+            this.label2.Location = new System.Drawing.Point(319, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(50, 50);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "label2";
-            this.label2.Visible = false;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.Black;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label3.Location = new System.Drawing.Point(122, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(46, 17);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "label3";
-            // 
-            // label4
-            // 
-            this.label4.BackColor = System.Drawing.Color.DarkRed;
-            this.label4.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label4.Location = new System.Drawing.Point(163, 27);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(50, 50);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "label4";
-            this.label4.Visible = false;
+            this.label2.Size = new System.Drawing.Size(40, 40);
+            this.label2.TabIndex = 21;
             // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Transparent;
-            this.ClientSize = new System.Drawing.Size(347, 100);
+            this.ClientSize = new System.Drawing.Size(400, 40);
             this.ControlBox = false;
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.btnNext);
+            this.Controls.Add(this.star5);
+            this.Controls.Add(this.star4);
+            this.Controls.Add(this.star3);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.star2);
             this.Controls.Add(this.btnPrev);
+            this.Controls.Add(this.btnNext);
+            this.Controls.Add(this.star1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
@@ -288,12 +328,16 @@
         private System.Windows.Forms.ToolStripMenuItem menuSettings;
         private System.Windows.Forms.Timer photoTimer;
         private System.Windows.Forms.ImageList imageList;
-        private WindowsFormsControlLibrary.ImageButton btnPrev;
-        private WindowsFormsControlLibrary.ImageButton btnNext;
+        private System.Windows.Forms.Label star1;
+        private System.Windows.Forms.Label btnNext;
+        private System.Windows.Forms.Label btnPrev;
+        private System.Windows.Forms.Label star2;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label star3;
+        private System.Windows.Forms.Label star4;
+        private System.Windows.Forms.Label star5;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
     }
 }
 

@@ -24,6 +24,7 @@ namespace Schalken.PhotoDesktop
         private static readonly UInt32 SPI_GETDESKWALLPAPER = 0x73;
         private static readonly int MAX_PATH = 260;
 
+        public static Image buttonImage = null;
 
         // image properties
         private static int PropertyTagExifDTOrig = 0x9003; // date taken
@@ -339,7 +340,89 @@ namespace Schalken.PhotoDesktop
             GlowText(monitorGraphics, path, textColor, glowColor, glowScale);
         }
 
-        private static void DrawLegenda(Graphics monitorGraphics, ScaledScreen scaledScreen, DesktopImage imageData)
+        private static void DrawLegenda(Graphics monitorGraphics, ScaledScreen scaledScreen, DesktopImage imageData )
+        {
+            // outine text
+            // http://www.codeproject.com/Articles/42529/Outline-Text#singleoutline1
+            //System.Drawing.Pen redPen = new System.Drawing.Pen(System.Drawing.Color.Red, 6);
+            //System.Drawing.Pen yellowPen = new System.Drawing.Pen(System.Drawing.Color.Yellow, 2);
+            //System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush(System.Drawing.Color.Blue);
+
+            monitorGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            monitorGraphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+
+
+            float textScale = scaledScreen.Scale;
+
+            Rectangle legendaRect = new Rectangle(
+                (int)monitorGraphics.VisibleClipBounds.Width - (int)(400 * textScale)
+                - scaledScreen.TaskbarRightWidth,
+                (int)monitorGraphics.VisibleClipBounds.Height - (int)(100 * textScale)
+                - scaledScreen.TaskbarBottomHeight
+                ,
+                (int)(400 * textScale),
+                (int)(100 * textScale));
+
+
+            // test image
+            if (buttonImage != null )
+                monitorGraphics.DrawImage(buttonImage, legendaRect.X - 50, legendaRect.Y - 50, 40, 40);
+
+            System.Drawing.StringFormat stringFormat = (StringFormat)StringFormat.GenericDefault.Clone();
+            stringFormat.Trimming = StringTrimming.EllipsisPath;
+            System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+            path.AddString(imageData.Filename,
+                FontFamily.GenericSansSerif,
+                (int)FontStyle.Regular,
+                (int)(20 * textScale),
+                new Rectangle(legendaRect.X, legendaRect.Y, legendaRect.Width, (int)(20 * textScale)),
+                stringFormat);
+            path.AddString(imageData.DisplayFolder,
+                FontFamily.GenericSansSerif,
+                (int)FontStyle.Regular,
+                (int)(25 * textScale),
+                new Rectangle(legendaRect.X, legendaRect.Y + (int)(20 * textScale), legendaRect.Width, (int)(25 * textScale)),
+                stringFormat);
+            path.AddString(string.Format("{0} x {1}", imageData.Image.Width, imageData.Image.Height),
+                FontFamily.GenericSansSerif,
+                (int)FontStyle.Regular,
+                (int)(16 * textScale),
+                new Rectangle(legendaRect.X, legendaRect.Y + (int)(50 * textScale), legendaRect.Width, (int)(16 * textScale)),
+                stringFormat);
+
+            // search for date taken
+            DateTime dateTaken = DateTime.Now;
+            foreach (PropertyItem propItem in imageData.Image.PropertyItems)
+            {
+                if (propItem.Id == PropertyTagExifDTOrig)
+                {
+                    string dateTakenString = dateRegex.Replace(Encoding.UTF8.GetString(propItem.Value), "-", 2);
+                    dateTaken = DateTime.Parse(dateTakenString);
+
+                }
+            }
+
+            path.AddString(dateTaken.ToString("dd-MM-yyyy hh:mm"),
+                FontFamily.GenericSansSerif,
+                (int)FontStyle.Regular,
+                (int)(20 * textScale),
+                new Rectangle(legendaRect.X, legendaRect.Y + (int)(70 * textScale), legendaRect.Width, (int)(20 * textScale)),
+                stringFormat);
+
+
+            //monitorGraphics.DrawPath(redPen, path);
+            //monitorGraphics.DrawPath(yellowPen, path);
+            //monitorGraphics.FillPath(brush, path);
+
+            Color textColor = Color.FromArgb(255, 255, 255);
+            Color glowColor = Color.FromArgb(0, 0, 0);
+            //Color textColor = Color.FromArgb(0, 0, 0);
+            //Color glowColor = Color.FromArgb(255, 255, 255);
+            float glowScale = 1.0F;
+
+            GlowText(monitorGraphics, path, textColor, glowColor, glowScale);
+        }
+        private static void DrawLegenda_orig(Graphics monitorGraphics, ScaledScreen scaledScreen, DesktopImage imageData)
         {
             // outine text
             // http://www.codeproject.com/Articles/42529/Outline-Text#singleoutline1

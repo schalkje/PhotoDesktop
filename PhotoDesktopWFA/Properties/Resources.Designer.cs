@@ -83,6 +83,26 @@ namespace Schalken.PhotoDesktop.WFA.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap pd_next_t1 {
+            get {
+                object obj = ResourceManager.GetObject("pd_next_t1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PD_Prev {
+            get {
+                object obj = ResourceManager.GetObject("PD_Prev", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap PD_Prev_active_icon {
             get {
                 object obj = ResourceManager.GetObject("PD_Prev_active_icon", resourceCulture);
@@ -96,6 +116,26 @@ namespace Schalken.PhotoDesktop.WFA.Properties {
         internal static System.Drawing.Bitmap PD_Prev_icon {
             get {
                 object obj = ResourceManager.GetObject("PD_Prev_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PD_Prev_t {
+            get {
+                object obj = ResourceManager.GetObject("PD_Prev-t", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PD_Prev1 {
+            get {
+                object obj = ResourceManager.GetObject("PD_Prev1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

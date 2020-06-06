@@ -81,6 +81,7 @@ namespace Schalken.PhotoDesktop.WFA
                 _photoDesktop.Next();
 
             //ShowSettings();
+            Wallpaper.buttonImage = btnNext.Image;
         }
 
         protected override void OnShown(EventArgs e)
@@ -260,12 +261,6 @@ namespace Schalken.PhotoDesktop.WFA
             ShowSettings();
         }
 
-        private void imageButton10_Click(object sender, EventArgs e)
-        {
-
-
-        }
-
         private void btnNext_Click(object sender, EventArgs e)
         {
             _photoDesktop.Next();
@@ -344,8 +339,6 @@ namespace Schalken.PhotoDesktop.WFA
         //private bool WithinBounds(Control control)
         private void MainForm_MouseMove(object sender, MouseEventArgs e)
         {
-            label3.Text = e.X + "," + e.Y; // debug
-
             bool showHand = false;
             foreach (Control control in this.Controls)
             {
