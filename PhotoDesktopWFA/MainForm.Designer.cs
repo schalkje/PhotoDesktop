@@ -53,6 +53,8 @@
             this.star5 = new System.Windows.Forms.Label();
             this.btnDislike = new System.Windows.Forms.Label();
             this.btnSettings = new System.Windows.Forms.Label();
+            this.imageList_16x16 = new System.Windows.Forms.ImageList(this.components);
+            this.imageList_20x20 = new System.Windows.Forms.ImageList(this.components);
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -164,16 +166,17 @@
             this.imageList.Images.SetKeyName(11, "pd_star.png");
             this.imageList.Images.SetKeyName(12, "pd_star_active.png");
             this.imageList.Images.SetKeyName(13, "pd_starred.png");
+            this.imageList.Images.SetKeyName(14, "pd_starred_16x16.png");
             // 
             // star1
             // 
             this.star1.BackColor = System.Drawing.Color.DarkRed;
             this.star1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.star1.ImageIndex = 13;
-            this.star1.ImageList = this.imageList;
-            this.star1.Location = new System.Drawing.Point(0, 0);
+            this.star1.ImageIndex = 1;
+            this.star1.ImageList = this.imageList_16x16;
+            this.star1.Location = new System.Drawing.Point(0, 4);
             this.star1.Name = "star1";
-            this.star1.Size = new System.Drawing.Size(40, 40);
+            this.star1.Size = new System.Drawing.Size(16, 16);
             this.star1.TabIndex = 11;
             this.star1.Visible = false;
             this.star1.Click += new System.EventHandler(this.btnStar_Click);
@@ -183,9 +186,9 @@
             this.btnPrev.BackColor = System.Drawing.Color.DarkRed;
             this.btnPrev.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnPrev.Image = global::Schalken.PhotoDesktop.WFA.Properties.Resources.PD_Prev_t;
-            this.btnPrev.Location = new System.Drawing.Point(278, 0);
+            this.btnPrev.Location = new System.Drawing.Point(330, 0);
             this.btnPrev.Name = "btnPrev";
-            this.btnPrev.Size = new System.Drawing.Size(40, 40);
+            this.btnPrev.Size = new System.Drawing.Size(20, 20);
             this.btnPrev.TabIndex = 14;
             this.btnPrev.Visible = false;
             this.btnPrev.Click += new System.EventHandler(this.btnPrev_Click);
@@ -194,10 +197,10 @@
             // 
             this.btnNext.BackColor = System.Drawing.Color.DarkRed;
             this.btnNext.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnNext.Image = global::Schalken.PhotoDesktop.WFA.Properties.Resources.pd_next_t1;
-            this.btnNext.Location = new System.Drawing.Point(360, 0);
+            this.btnNext.Image = ((System.Drawing.Image)(resources.GetObject("btnNext.Image")));
+            this.btnNext.Location = new System.Drawing.Point(368, 0);
             this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(40, 40);
+            this.btnNext.Size = new System.Drawing.Size(20, 20);
             this.btnNext.TabIndex = 12;
             this.btnNext.Visible = false;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
@@ -206,11 +209,11 @@
             // 
             this.star2.BackColor = System.Drawing.Color.DarkRed;
             this.star2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.star2.ImageIndex = 11;
-            this.star2.ImageList = this.imageList;
-            this.star2.Location = new System.Drawing.Point(40, 0);
+            this.star2.ImageIndex = 1;
+            this.star2.ImageList = this.imageList_16x16;
+            this.star2.Location = new System.Drawing.Point(16, 4);
             this.star2.Name = "star2";
-            this.star2.Size = new System.Drawing.Size(40, 40);
+            this.star2.Size = new System.Drawing.Size(16, 16);
             this.star2.TabIndex = 15;
             this.star2.Visible = false;
             this.star2.Click += new System.EventHandler(this.btnStar_Click);
@@ -231,11 +234,11 @@
             // 
             this.star3.BackColor = System.Drawing.Color.DarkRed;
             this.star3.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.star3.ImageIndex = 11;
-            this.star3.ImageList = this.imageList;
-            this.star3.Location = new System.Drawing.Point(80, 0);
+            this.star3.ImageIndex = 1;
+            this.star3.ImageList = this.imageList_16x16;
+            this.star3.Location = new System.Drawing.Point(32, 4);
             this.star3.Name = "star3";
-            this.star3.Size = new System.Drawing.Size(40, 40);
+            this.star3.Size = new System.Drawing.Size(16, 16);
             this.star3.TabIndex = 17;
             this.star3.Visible = false;
             this.star3.Click += new System.EventHandler(this.btnStar_Click);
@@ -244,11 +247,11 @@
             // 
             this.star4.BackColor = System.Drawing.Color.DarkRed;
             this.star4.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.star4.ImageIndex = 11;
-            this.star4.ImageList = this.imageList;
-            this.star4.Location = new System.Drawing.Point(120, 0);
+            this.star4.ImageIndex = 0;
+            this.star4.ImageList = this.imageList_16x16;
+            this.star4.Location = new System.Drawing.Point(48, 4);
             this.star4.Name = "star4";
-            this.star4.Size = new System.Drawing.Size(40, 40);
+            this.star4.Size = new System.Drawing.Size(16, 16);
             this.star4.TabIndex = 18;
             this.star4.Visible = false;
             this.star4.Click += new System.EventHandler(this.btnStar_Click);
@@ -257,11 +260,11 @@
             // 
             this.star5.BackColor = System.Drawing.Color.DarkRed;
             this.star5.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.star5.ImageIndex = 11;
-            this.star5.ImageList = this.imageList;
-            this.star5.Location = new System.Drawing.Point(160, 0);
+            this.star5.ImageIndex = 0;
+            this.star5.ImageList = this.imageList_16x16;
+            this.star5.Location = new System.Drawing.Point(64, 4);
             this.star5.Name = "star5";
-            this.star5.Size = new System.Drawing.Size(40, 40);
+            this.star5.Size = new System.Drawing.Size(16, 16);
             this.star5.TabIndex = 19;
             this.star5.Visible = false;
             this.star5.Click += new System.EventHandler(this.btnStar_Click);
@@ -270,32 +273,50 @@
             // 
             this.btnDislike.BackColor = System.Drawing.Color.DarkRed;
             this.btnDislike.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDislike.ImageIndex = 4;
-            this.btnDislike.ImageList = this.imageList;
-            this.btnDislike.Location = new System.Drawing.Point(210, 0);
+            this.btnDislike.ImageIndex = 2;
+            this.btnDislike.ImageList = this.imageList_16x16;
+            this.btnDislike.Location = new System.Drawing.Point(132, 74);
             this.btnDislike.Name = "btnDislike";
-            this.btnDislike.Size = new System.Drawing.Size(40, 40);
+            this.btnDislike.Size = new System.Drawing.Size(12, 12);
             this.btnDislike.TabIndex = 20;
+            this.btnDislike.Visible = false;
             this.btnDislike.Click += new System.EventHandler(this.btnDislike_Click);
             // 
             // btnSettings
             // 
             this.btnSettings.BackColor = System.Drawing.Color.DarkRed;
             this.btnSettings.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSettings.ImageIndex = 9;
-            this.btnSettings.ImageList = this.imageList;
-            this.btnSettings.Location = new System.Drawing.Point(319, 0);
+            this.btnSettings.ImageIndex = 3;
+            this.btnSettings.ImageList = this.imageList_16x16;
+            this.btnSettings.Location = new System.Drawing.Point(353, 8);
             this.btnSettings.Name = "btnSettings";
-            this.btnSettings.Size = new System.Drawing.Size(40, 40);
+            this.btnSettings.Size = new System.Drawing.Size(12, 12);
             this.btnSettings.TabIndex = 21;
             this.btnSettings.Visible = false;
             this.btnSettings.Click += new System.EventHandler(this.menuSettings_Click);
+            // 
+            // imageList_16x16
+            // 
+            this.imageList_16x16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList_16x16.ImageStream")));
+            this.imageList_16x16.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList_16x16.Images.SetKeyName(0, "pd_star_t_16x16.png");
+            this.imageList_16x16.Images.SetKeyName(1, "pd_starred_16x16.png");
+            this.imageList_16x16.Images.SetKeyName(2, "pd_dislike_16x16 .png");
+            this.imageList_16x16.Images.SetKeyName(3, "pd_settings_16x16.png");
+            // 
+            // imageList_20x20
+            // 
+            this.imageList_20x20.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList_20x20.ImageStream")));
+            this.imageList_20x20.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList_20x20.Images.SetKeyName(0, "pd_dislike_20x20.png");
+            this.imageList_20x20.Images.SetKeyName(1, "pd_settings_20x20.png");
+            this.imageList_20x20.Images.SetKeyName(2, "pd_next_20x20.png");
             // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Transparent;
-            this.ClientSize = new System.Drawing.Size(400, 40);
+            this.ClientSize = new System.Drawing.Size(400, 100);
             this.ControlBox = false;
             this.Controls.Add(this.btnSettings);
             this.Controls.Add(this.btnDislike);
@@ -311,7 +332,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(400, 200);
+            this.MaximumSize = new System.Drawing.Size(400, 100);
             this.MinimizeBox = false;
             this.Name = "MainForm";
             this.ShowIcon = false;
@@ -351,6 +372,8 @@
         private System.Windows.Forms.Label star5;
         private System.Windows.Forms.Label btnDislike;
         private System.Windows.Forms.Label btnSettings;
+        private System.Windows.Forms.ImageList imageList_16x16;
+        private System.Windows.Forms.ImageList imageList_20x20;
     }
 }
 

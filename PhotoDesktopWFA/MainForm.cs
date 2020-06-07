@@ -13,6 +13,7 @@ namespace Schalken.PhotoDesktop.WFA
 
     public partial class MainForm : TransparentForm //   Form //
     {
+        public Point offset = new Point(0,80);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern Int32 SystemParametersInfo(UInt32 action, UInt32 uParam, String vParam, UInt32 winIni);
@@ -101,8 +102,8 @@ namespace Schalken.PhotoDesktop.WFA
 
             // position this window to legenda position
             Rectangle legendaRect = Wallpaper.GetLegendaRect(_photoDesktop.GetMainScreenName());
-            this.Left = legendaRect.Left;
-            this.Top = legendaRect.Top - this.Height;
+            this.Left = legendaRect.Left + offset.X;
+            this.Top = legendaRect.Top - this.Height + offset.Y;
 
 
             base.OnShown(e);
