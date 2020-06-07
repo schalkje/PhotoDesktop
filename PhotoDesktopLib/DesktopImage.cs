@@ -5,6 +5,7 @@ namespace Schalken.PhotoDesktop
 {
     public class DesktopImage
     {
+
         public string Basepath { get; set; }
         public string FullFilename { get; set; }
         public string Filename

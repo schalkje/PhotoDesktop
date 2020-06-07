@@ -80,8 +80,11 @@ namespace Schalken.PhotoDesktop.WFA
             if (Properties.Settings.Default.ChangeOnStart)
                 _photoDesktop.Next();
 
+            // get name for main window; add this mainform to the main screen
+            _photoDesktop.ControlerForms.Add(_photoDesktop.GetMainScreenName(), this);
+
+
             //ShowSettings();
-            Wallpaper.buttonImage = btnNext.Image;
         }
 
         protected override void OnShown(EventArgs e)
@@ -93,8 +96,13 @@ namespace Schalken.PhotoDesktop.WFA
             // Top = 0;
 
             // if mode = bottom-right
-            Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
-            Top = windowScreen.UnscaledWorkingArea.Height - Height;
+            //Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
+            //Top = windowScreen.UnscaledWorkingArea.Height - Height;
+
+            // position this window to legenda position
+            Rectangle legendaRect = Wallpaper.GetLegendaRect(_photoDesktop.GetMainScreenName());
+            this.Left = legendaRect.Left;
+            this.Top = legendaRect.Top - this.Height;
 
 
             base.OnShown(e);
@@ -110,7 +118,7 @@ namespace Schalken.PhotoDesktop.WFA
 
 
         private bool _windowVisible = false;
-        private PhotoDesktop _photoDesktop;
+        private static PhotoDesktop _photoDesktop;
 
         // store the original size when made invisible by setting dimensions to 0x0
         private int _storedWidth = 0;

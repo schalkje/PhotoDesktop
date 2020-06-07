@@ -51,8 +51,8 @@
             this.star3 = new System.Windows.Forms.Label();
             this.star4 = new System.Windows.Forms.Label();
             this.star5 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.btnDislike = new System.Windows.Forms.Label();
+            this.btnSettings = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -175,6 +175,8 @@
             this.star1.Name = "star1";
             this.star1.Size = new System.Drawing.Size(40, 40);
             this.star1.TabIndex = 11;
+            this.star1.Visible = false;
+            this.star1.Click += new System.EventHandler(this.btnStar_Click);
             // 
             // btnPrev
             // 
@@ -210,6 +212,8 @@
             this.star2.Name = "star2";
             this.star2.Size = new System.Drawing.Size(40, 40);
             this.star2.TabIndex = 15;
+            this.star2.Visible = false;
+            this.star2.Click += new System.EventHandler(this.btnStar_Click);
             // 
             // label4
             // 
@@ -233,6 +237,8 @@
             this.star3.Name = "star3";
             this.star3.Size = new System.Drawing.Size(40, 40);
             this.star3.TabIndex = 17;
+            this.star3.Visible = false;
+            this.star3.Click += new System.EventHandler(this.btnStar_Click);
             // 
             // star4
             // 
@@ -244,6 +250,8 @@
             this.star4.Name = "star4";
             this.star4.Size = new System.Drawing.Size(40, 40);
             this.star4.TabIndex = 18;
+            this.star4.Visible = false;
+            this.star4.Click += new System.EventHandler(this.btnStar_Click);
             // 
             // star5
             // 
@@ -255,28 +263,33 @@
             this.star5.Name = "star5";
             this.star5.Size = new System.Drawing.Size(40, 40);
             this.star5.TabIndex = 19;
+            this.star5.Visible = false;
+            this.star5.Click += new System.EventHandler(this.btnStar_Click);
             // 
-            // label1
+            // btnDislike
             // 
-            this.label1.BackColor = System.Drawing.Color.DarkRed;
-            this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label1.ImageIndex = 4;
-            this.label1.ImageList = this.imageList;
-            this.label1.Location = new System.Drawing.Point(210, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(40, 40);
-            this.label1.TabIndex = 20;
+            this.btnDislike.BackColor = System.Drawing.Color.DarkRed;
+            this.btnDislike.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDislike.ImageIndex = 4;
+            this.btnDislike.ImageList = this.imageList;
+            this.btnDislike.Location = new System.Drawing.Point(210, 0);
+            this.btnDislike.Name = "btnDislike";
+            this.btnDislike.Size = new System.Drawing.Size(40, 40);
+            this.btnDislike.TabIndex = 20;
+            this.btnDislike.Click += new System.EventHandler(this.btnDislike_Click);
             // 
-            // label2
+            // btnSettings
             // 
-            this.label2.BackColor = System.Drawing.Color.DarkRed;
-            this.label2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label2.ImageIndex = 9;
-            this.label2.ImageList = this.imageList;
-            this.label2.Location = new System.Drawing.Point(319, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(40, 40);
-            this.label2.TabIndex = 21;
+            this.btnSettings.BackColor = System.Drawing.Color.DarkRed;
+            this.btnSettings.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSettings.ImageIndex = 9;
+            this.btnSettings.ImageList = this.imageList;
+            this.btnSettings.Location = new System.Drawing.Point(319, 0);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(40, 40);
+            this.btnSettings.TabIndex = 21;
+            this.btnSettings.Visible = false;
+            this.btnSettings.Click += new System.EventHandler(this.menuSettings_Click);
             // 
             // MainForm
             // 
@@ -284,8 +297,8 @@
             this.BackColor = System.Drawing.Color.Transparent;
             this.ClientSize = new System.Drawing.Size(400, 40);
             this.ControlBox = false;
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.btnSettings);
+            this.Controls.Add(this.btnDislike);
             this.Controls.Add(this.star5);
             this.Controls.Add(this.star4);
             this.Controls.Add(this.star3);
@@ -336,8 +349,8 @@
         private System.Windows.Forms.Label star3;
         private System.Windows.Forms.Label star4;
         private System.Windows.Forms.Label star5;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label btnDislike;
+        private System.Windows.Forms.Label btnSettings;
     }
 }
 

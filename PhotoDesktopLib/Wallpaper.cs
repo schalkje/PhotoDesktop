@@ -24,9 +24,7 @@ namespace Schalken.PhotoDesktop
         private static readonly UInt32 SPI_GETDESKWALLPAPER = 0x73;
         private static readonly int MAX_PATH = 260;
 
-        public static Image buttonImage = null;
-
-        // image properties
+                // image properties
         private static int PropertyTagExifDTOrig = 0x9003; // date taken
 
         private static Regex dateRegex = new Regex(":");
@@ -209,7 +207,7 @@ namespace Schalken.PhotoDesktop
                         DrawImageFillCentered(ref monitorGraphics, desktopImage.Image, new Rectangle(0, 0, monitorBitmap.Width, monitorBitmap.Height));
 
                     // add text to image
-                    DrawLegenda(monitorGraphics, scaledScreen, desktopImage);
+                    DrawLegenda(monitorGraphics, scaledScreen, desktopImage, null);
 
                     // determine rectangle where the image will reside
                     Rectangle screenRectangle = new Rectangle(scaledScreen.UnscaledBounds.X - ScaledScreen.DesktopRectangle.X, scaledScreen.UnscaledBounds.Y - ScaledScreen.DesktopRectangle.Y, scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
@@ -243,7 +241,26 @@ namespace Schalken.PhotoDesktop
             //SystemParametersInfo(SPI_SETDESKWALLPAPER, 0u, WallpaperPath + defaultBackgroundFileName, SPIF_UPDATEINIFILE);
         }
 
-        public static void CreateBackgroundImage(Dictionary<string, DesktopImage> images)
+        public static Rectangle GetLegendaRect(string deviceName)
+        {
+            ScaledScreen[] scaledScreens = ScaledScreen.AllScaledScreens;
+
+            foreach (var scaledScreen in scaledScreens)
+            {
+                if (deviceName.Equals(scaledScreen.DeviceName))
+                {
+                    var monitorBitmap = new Bitmap(scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
+                    var monitorGraphics = Graphics.FromImage(monitorBitmap);
+
+                    return GetLegendaRect(monitorGraphics, scaledScreen);
+                }
+            }
+
+            throw new KeyNotFoundException(string.Format("Device '{0}' not found", deviceName));
+        }
+
+
+        public static void CreateBackgroundImage(Dictionary<string, DesktopImage> images, Dictionary<string, Form> controlerForms)
         {
             var result = ScaledScreen.GetPerMonitorDPIAware();
             if (result != ScaledScreen.PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE)
@@ -274,7 +291,10 @@ namespace Schalken.PhotoDesktop
                             DrawImageFillCentered(ref monitorGraphics, desktopImage.Image, new Rectangle(0, 0, monitorBitmap.Width, monitorBitmap.Height));
 
                         // add text to image
-                        DrawLegenda(monitorGraphics, scaledScreen, desktopImage);
+                        Form controlerForm = null;
+                        if ( controlerForms.ContainsKey(scaledScreen.DeviceName) )
+                            controlerForm = controlerForms[scaledScreen.DeviceName];
+                        DrawLegenda(monitorGraphics, scaledScreen, desktopImage, controlerForm);
 
                         // determine rectangle where the image will reside
                         Rectangle screenRectangle = new Rectangle(scaledScreen.UnscaledBounds.X - ScaledScreen.DesktopRectangle.X, scaledScreen.UnscaledBounds.Y - ScaledScreen.DesktopRectangle.Y, scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
@@ -340,7 +360,7 @@ namespace Schalken.PhotoDesktop
             GlowText(monitorGraphics, path, textColor, glowColor, glowScale);
         }
 
-        private static void DrawLegenda(Graphics monitorGraphics, ScaledScreen scaledScreen, DesktopImage imageData )
+        private static void DrawLegenda(Graphics monitorGraphics, ScaledScreen scaledScreen, DesktopImage imageData, Form controlerForm )
         {
             // outine text
             // http://www.codeproject.com/Articles/42529/Outline-Text#singleoutline1
@@ -354,19 +374,28 @@ namespace Schalken.PhotoDesktop
 
             float textScale = scaledScreen.Scale;
 
-            Rectangle legendaRect = new Rectangle(
-                (int)monitorGraphics.VisibleClipBounds.Width - (int)(400 * textScale)
-                - scaledScreen.TaskbarRightWidth,
-                (int)monitorGraphics.VisibleClipBounds.Height - (int)(100 * textScale)
-                - scaledScreen.TaskbarBottomHeight
-                ,
-                (int)(400 * textScale),
-                (int)(100 * textScale));
+            Rectangle legendaRect = GetLegendaRect(monitorGraphics, scaledScreen);
 
 
             // test image
-            if (buttonImage != null )
-                monitorGraphics.DrawImage(buttonImage, legendaRect.X - 50, legendaRect.Y - 50, 40, 40);
+            if (controlerForm != null)
+            {
+                // draw each of the invisible controls
+                foreach (Label label in controlerForm.Controls)
+                {
+                    // check "invisible" each element on the form
+                    if (!label.Visible)
+                    {
+                        Image image = label.Image;
+                        int x = label.Left + controlerForm.Left;
+                        int y = label.Top + controlerForm.Top;
+                        int width = label.Width;
+                        int height = label.Height;
+
+                        monitorGraphics.DrawImage(image, x, y, width, height);
+                    }
+                }
+            }
 
             System.Drawing.StringFormat stringFormat = (StringFormat)StringFormat.GenericDefault.Clone();
             stringFormat.Trimming = StringTrimming.EllipsisPath;
@@ -422,6 +451,21 @@ namespace Schalken.PhotoDesktop
 
             GlowText(monitorGraphics, path, textColor, glowColor, glowScale);
         }
+
+        private static Rectangle GetLegendaRect(Graphics monitorGraphics, ScaledScreen scaledScreen)
+        {
+            float textScale = scaledScreen.Scale;
+
+            return new Rectangle(
+                (int)monitorGraphics.VisibleClipBounds.Width - (int)(400 * textScale)
+                - scaledScreen.TaskbarRightWidth,
+                (int)monitorGraphics.VisibleClipBounds.Height - (int)(100 * textScale)
+                - scaledScreen.TaskbarBottomHeight
+                ,
+                (int)(400 * textScale),
+                (int)(100 * textScale));
+        }
+
         private static void DrawLegenda_orig(Graphics monitorGraphics, ScaledScreen scaledScreen, DesktopImage imageData)
         {
             // outine text
