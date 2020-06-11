@@ -156,7 +156,7 @@ namespace Schalken.PhotoDesktop
         {
             get
             {
-                if (Properties.System.Rating == null || Properties.System.Rating.Value < 1U)
+                if (Properties.System.Rating.Value == null || Properties.System.Rating.Value < 1U)
                     return 0;
                 else if (Properties.System.Rating.Value <= 12)
                     return  1;
