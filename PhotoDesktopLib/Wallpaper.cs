@@ -383,8 +383,7 @@ namespace Schalken.PhotoDesktop
 
             // search for date taken
             DateTime dateTaken = DateTime.Now;
-            //String tags = imageData.Image.Tag;
-            int rating = 0;
+            //String tags = imageData.Image.Tag;            
             
             
             foreach (PropertyItem propItem in imageData.Image.PropertyItems)
@@ -395,18 +394,15 @@ namespace Schalken.PhotoDesktop
                     dateTaken = DateTime.Parse(dateTakenString);
 
                 }
-                if (propItem.Id == PropertyTagStarRating)
-                {
-                    string ratingString = SystemProperties.Rating; // https://dzone.com/articles/extracting-file-metadata-c-and
-
-                    string dateTakenString = BitConverter.ToInt16(propItem.Value, 0).ToString();
-                    //dateRegex.Replace(Encoding.UTF8.GetString(propItem.Value), "-", 2);
-                }
             }
 
             // test for controler form
             if (controlerForm != null)
             {
+                // update start
+                controlerForm.Tag = imageData;
+                controlerForm.Refresh();
+                    //UpdateDisplay(imageData);
                 // draw each of the invisible controls
                 foreach (Label label in controlerForm.Controls)
                 {

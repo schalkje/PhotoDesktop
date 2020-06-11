@@ -61,7 +61,7 @@ namespace Schalken.PhotoDesktop.WFA
             base.WndProc(ref message);
         }
 
-
+        private string _displayScreenName = null;
 
 
         /// <summary>
@@ -82,7 +82,8 @@ namespace Schalken.PhotoDesktop.WFA
                 _photoDesktop.Next();
 
             // get name for main window; add this mainform to the main screen
-            _photoDesktop.ControlerForms.Add(_photoDesktop.GetMainScreenName(), this);
+            _displayScreenName = _photoDesktop.GetMainScreenName();
+            _photoDesktop.ControlerForms.Add(_displayScreenName, this);
 
 
             //ShowSettings();
@@ -115,8 +116,20 @@ namespace Schalken.PhotoDesktop.WFA
         }
 
 
+        public override void Refresh()
+        {
+            if (_displayScreenName != null && this.Tag is DesktopImage)
+            {
+                DesktopImage imageData = (DesktopImage)this.Tag;
+                if (imageData.StarRating > 0) star1.ImageIndex = 1; else star1.ImageIndex = 0;
+                if (imageData.StarRating > 1) star2.ImageIndex = 1; else star2.ImageIndex = 0;
+                if (imageData.StarRating > 2) star3.ImageIndex = 1; else star3.ImageIndex = 0;
+                if (imageData.StarRating > 3) star4.ImageIndex = 1; else star4.ImageIndex = 0;
+                if (imageData.StarRating > 4) star5.ImageIndex = 1; else star5.ImageIndex = 0;
+            }
 
-
+            base.Refresh();
+        }
 
         private bool _windowVisible = false;
         private static PhotoDesktop _photoDesktop;
@@ -292,7 +305,17 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnStar_Click(object sender, EventArgs e)
         {
-
+            
+            if (_displayScreenName != null && this.Tag is DesktopImage)
+            {
+                DesktopImage imageData = (DesktopImage)this.Tag;
+                if (sender == star1 && imageData.StarRating != 1) imageData.StarRating = 1;
+                else if (sender == star2 && imageData.StarRating != 2) imageData.StarRating = 2;
+                else if (sender == star3 && imageData.StarRating != 3) imageData.StarRating = 3;
+                else if (sender == star4 && imageData.StarRating != 4) imageData.StarRating = 4;
+                else if (sender == star5 && imageData.StarRating != 5) imageData.StarRating = 5;
+                else imageData.StarRating = 0;
+            }
         }
 
 
