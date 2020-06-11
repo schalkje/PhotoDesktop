@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Windows.Storage;
 
 namespace Schalken.PhotoDesktop
 {
@@ -24,8 +25,11 @@ namespace Schalken.PhotoDesktop
         private static readonly UInt32 SPI_GETDESKWALLPAPER = 0x73;
         private static readonly int MAX_PATH = 260;
 
-                // image properties
+        // image properties
+        // https://docs.microsoft.com/en-us/dotnet/api/system.drawing.imaging.propertyitem.id?redirectedfrom=MSDN&view=dotnet-plat-ext-3.1#System_Drawing_Imaging_PropertyItem_Id
         private static int PropertyTagExifDTOrig = 0x9003; // date taken
+        private static int PropertyTagExifUserComment = 0x9286; // user comment
+        private static int PropertyTagStarRating = 18246; // star rating taken
 
         private static Regex dateRegex = new Regex(":");
 
@@ -377,7 +381,30 @@ namespace Schalken.PhotoDesktop
             Rectangle legendaRect = GetLegendaRect(monitorGraphics, scaledScreen);
 
 
-            // test image
+            // search for date taken
+            DateTime dateTaken = DateTime.Now;
+            //String tags = imageData.Image.Tag;
+            int rating = 0;
+            
+            
+            foreach (PropertyItem propItem in imageData.Image.PropertyItems)
+            {
+                if (propItem.Id == PropertyTagExifDTOrig)
+                {
+                    string dateTakenString = dateRegex.Replace(Encoding.UTF8.GetString(propItem.Value), "-", 2);
+                    dateTaken = DateTime.Parse(dateTakenString);
+
+                }
+                if (propItem.Id == PropertyTagStarRating)
+                {
+                    string ratingString = SystemProperties.Rating; // https://dzone.com/articles/extracting-file-metadata-c-and
+
+                    string dateTakenString = BitConverter.ToInt16(propItem.Value, 0).ToString();
+                    //dateRegex.Replace(Encoding.UTF8.GetString(propItem.Value), "-", 2);
+                }
+            }
+
+            // test for controler form
             if (controlerForm != null)
             {
                 // draw each of the invisible controls
@@ -419,17 +446,7 @@ namespace Schalken.PhotoDesktop
                 new Rectangle(legendaRect.X, legendaRect.Y + (int)(50 * textScale), legendaRect.Width, (int)(16 * textScale)),
                 stringFormat);
 
-            // search for date taken
-            DateTime dateTaken = DateTime.Now;
-            foreach (PropertyItem propItem in imageData.Image.PropertyItems)
-            {
-                if (propItem.Id == PropertyTagExifDTOrig)
-                {
-                    string dateTakenString = dateRegex.Replace(Encoding.UTF8.GetString(propItem.Value), "-", 2);
-                    dateTaken = DateTime.Parse(dateTakenString);
 
-                }
-            }
 
             path.AddString(dateTaken.ToString("dd-MM-yyyy hh:mm"),
                 FontFamily.GenericSansSerif,
