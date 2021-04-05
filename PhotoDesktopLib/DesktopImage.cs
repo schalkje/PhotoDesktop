@@ -1,14 +1,18 @@
-﻿using System;
+﻿using Microsoft.WindowsAPICodePack.Shell;
+using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
+using Shell32;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+//using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
+//using Microsoft.WindowsAPICodePack.Shell;
 
 namespace Schalken.PhotoDesktop
 {
     public class DesktopImage
     {
+
         public string Basepath { get; set; }
         public string FullFilename { get; set; }
         public string Filename
@@ -45,6 +49,8 @@ namespace Schalken.PhotoDesktop
 
         public Image Image { get; set; }
 
+        #region Constructors
+
         public DesktopImage(string basepath, string filename)
         {
             try
@@ -54,6 +60,9 @@ namespace Schalken.PhotoDesktop
 
                 // load image
                 Image = Image.FromFile(filename);
+                //Image.pro
+
+                //GetProperties();
             }
             catch (Exception)
             {
@@ -62,40 +71,167 @@ namespace Schalken.PhotoDesktop
             }
 
         }
-        public DesktopImage(ImageListItem image)
+
+
+        public DesktopImage(ImageListItem image) : this(image.Folder.DisplayFolder, image.Filename) { }
+
+        public DesktopImage(string filename) : this(System.IO.Path.GetDirectoryName(filename), filename) { }
+
+        #endregion Constructors
+
+        #region File properties
+
+        //private Dictionary<string, string> _properties = new Dictionary<string, string>();
+
+        //public string this[string property]
+        //{
+        //    get
+        //    {
+        //        if (_properties.ContainsKey(property))
+        //            return _properties[property];
+        //        else
+        //            return "";
+        //    }
+        //}
+
+        /// <summary>
+        /// Size: 287 KB  
+        // Item type: JPEG image
+        //Date modified: 3/17/2015 1:01 PM
+        //Date created: 2/2/2018 9:01 PM
+        //Date accessed: 6/10/2020 8:25 PM
+        //Date taken: ‎8/‎9/‎2016 ‏‎7:31 AM
+        //Rating: Unrated
+        //Tags:   
+        //Title:   
+        //Categories:   
+        //Comments:   
+        //Copyright:   
+        //Camera model: Lumia 930  
+        //Dimensions: ‪5376 x 3024‬  
+        //Camera maker: Microsoft
+        /// </summary>
+        // https://dzone.com/articles/extracting-file-metadata-c-and
+        //private void GetProperties()
+        //{
+            
+        //    // based on: https://blog.dotnetframework.org/2014/12/10/read-extended-properties-of-a-file-in-c/
+        //    List<string> arrHeaders = new List<string>();
+
+        //    Shell32.Shell shell = new Shell32.Shell();
+        //    var strFileName = this.FullFilename;
+        //    Shell32.Folder objFolder = shell.NameSpace(System.IO.Path.GetDirectoryName(strFileName));
+        //    Shell32.FolderItem folderItem = objFolder.ParseName(System.IO.Path.GetFileName(strFileName));
+
+        //    for (int i = 0; i < short.MaxValue; i++)
+        //    {
+        //        string header = objFolder.GetDetailsOf(null, i);
+        //        if (String.IsNullOrEmpty(header))
+        //            break;
+        //        arrHeaders.Add(header);
+        //    }
+        //    string result = "";
+        //    for (int i = 0; i < arrHeaders.Count; i++)
+        //    {
+        //        _properties.Add(arrHeaders[i], objFolder.GetDetailsOf(folderItem, i));
+        //    }
+        //}
+
+        //private ShellProperties _shellProperties = null;
+
+        //public ShellProperties Properties
+        //{
+        //    get {
+        //        if (_shellProperties == null)
+        //        {
+        //            var file = ShellFile.FromFilePath(this.FullFilename);
+        //            _shellProperties = file.Properties;
+        //        }
+
+        //        return _shellProperties;
+        //    }
+        //}
+
+
+        public int StarRating
         {
-            try
+            get
             {
-                FullFilename = image.Filename;
-                Basepath = image.Folder.DisplayFolder;
-
-                // load image
-                Image = Image.FromFile(FullFilename);
+                ShellFile file = ShellFile.FromFilePath(this.FullFilename);
+                int result = 0;
+                var value = file.Properties.System.Rating.Value;
+                if (value == null || value < 1U)
+                    result = 0;
+                else if (value <= 12)
+                    result = 1;
+                else if (value <= 37)
+                    result = 2;
+                else if (value <= 62)
+                    result = 3;
+                else if (value <= 87)
+                    result = 4;
+                else
+                    result = 5;
+                file.Dispose(); 
+                return result;
             }
-            catch (Exception)
+            set
             {
+                ShellFile file = ShellFile.FromFilePath(this.FullFilename); //"E:\\OneDrive\\Afbeeldingen\\test.jpg");
+                uint ratingValue = 0;
+                if (value < 1)
+                    ratingValue = 0;
+                else if (value == 1)
+                    ratingValue = 12;
+                else if (value == 2)
+                    ratingValue = 37;
+                else if (value == 3)
+                    ratingValue = 62;
+                else if (value == 4)
+                    ratingValue = 87;
+                else
+                    ratingValue = 100;
 
-                throw;
+                file.Properties.System.Rating.Value = ratingValue;
             }
+        }
+        /// <summary>
+        /// Base on: https://www.exceptionshub.com/readwrite-extended-file-properties-c.html
+        /// </summary>
+
+            //private void GetProperties()
+            //{
+            //    // based on: https://blog.dotnetframework.org/2014/12/10/read-extended-properties-of-a-file-in-c/
+            //    List<string> arrHeaders = new List<string>();
+
+            //    Shell32.Shell shell = new Shell32.Shell();
+            //    var strFileName = this.FullFilename;
+            //    Shell32.Folder objFolder = shell.NameSpace(System.IO.Path.GetDirectoryName(strFileName));
+            //    Shell32.FolderItem folderItem = objFolder.ParseName(System.IO.Path.GetFileName(strFileName));
+            //    Shell32.FolderItem2 item2;
+
+            //    // https://docs.microsoft.com/en-us/windows/win32/shell/shellfolderitem-extendedproperty?redirectedfrom=MSDN
+            //    //https://github.com/Microsoft/Windows-classic-samples/tree/master/Samples/Win7Samples/winui/shell/appplatform/PropertyEdit
+            //    item2.ExtendedProperty("Tag") = "test";
+
+            //    for (int i = 0; i < short.MaxValue; i++)
+            //    {
+            //        string header = objFolder.GetDetailsOf(null, i);
+            //        if (String.IsNullOrEmpty(header))
+            //            break;
+            //        arrHeaders.Add(header);
+            //    }
+            //    string result = "";
+            //    for (int i = 0; i < arrHeaders.Count; i++)
+            //    {
+            //        //https://www.exceptionshub.com/readwrite-extended-file-properties-c.html
+            //        //ShellPropertyWriter
+
+            //        //folderItem.Verbs.
+            //        _properties.Add(arrHeaders[i], objFolder.GetDetailsOf(folderItem, i));
+            //    }
+            //}
+            #endregion File properties
 
         }
-
-        public DesktopImage(string filename)
-        {
-            try
-            {
-                FullFilename = filename;
-
-                // load image
-                Image = Image.FromFile(filename);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-        }
-
     }
-}

@@ -323,8 +323,8 @@ namespace Schalken.PhotoDesktop
                                         (int)(screen.Bounds.Height));
             else
                 UnscaledBounds = new Rectangle(
-                                        (int)(Math.Round(screen.Bounds.X * scale)),
-                                        (int)(Math.Round(screen.Bounds.Y * scale)),
+                                        screen.Bounds.X, // location doesn't scale
+                                        screen.Bounds.Y,
                                         (int)(Math.Round(screen.Bounds.Width * scale)),
                                         (int)(Math.Round(screen.Bounds.Height * scale)));
 

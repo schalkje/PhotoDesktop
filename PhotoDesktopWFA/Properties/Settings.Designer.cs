@@ -12,7 +12,7 @@ namespace Schalken.PhotoDesktop.WFA.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.5.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -60,6 +60,18 @@ namespace Schalken.PhotoDesktop.WFA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ChangeOnStart {
+            get {
+                return ((bool)(this["ChangeOnStart"]));
+            }
+            set {
+                this["ChangeOnStart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         public global::System.Collections.Specialized.NameValueCollection Images {
             get {
                 return ((global::System.Collections.Specialized.NameValueCollection)(this["Images"]));
@@ -71,13 +83,49 @@ namespace Schalken.PhotoDesktop.WFA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ChangeOnStart {
+        [global::System.Configuration.DefaultSettingValueAttribute("Random")]
+        public string Order {
             get {
-                return ((bool)(this["ChangeOnStart"]));
+                return ((string)(this["Order"]));
             }
             set {
-                this["ChangeOnStart"] = value;
+                this["Order"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Same time")]
+        public string MultiSwitch {
+            get {
+                return ((string)(this["MultiSwitch"]));
+            }
+            set {
+                this["MultiSwitch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CreateLogonImage {
+            get {
+                return ((bool)(this["CreateLogonImage"]));
+            }
+            set {
+                this["CreateLogonImage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Pictures/PhotoDesktop")]
+        public string LogonImageFolder {
+            get {
+                return ((string)(this["LogonImageFolder"]));
+            }
+            set {
+                this["LogonImageFolder"] = value;
             }
         }
     }

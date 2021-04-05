@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,10 +15,23 @@ namespace Schalken.PhotoDesktop.WFA
 {
     public partial class SettingsForm : Form
     {
+        private PhotoDesktop _photoDesktop;
+
+        bool _refreshImageList = false;
+        public bool RefreshImageList { get { return _refreshImageList; } }
+
         public SettingsForm()
         {
             InitializeComponent();
         }
+
+        public SettingsForm(PhotoDesktop photoDesktop) : this()
+        {
+            this._photoDesktop = photoDesktop;
+            RefreshStackDebug();
+        }
+
+
 
         private void Settings_Shown(object sender, EventArgs e)
         {
@@ -31,8 +46,63 @@ namespace Schalken.PhotoDesktop.WFA
             InitializeFromRegistry_cbStartWithWindows();
         }
 
+        #region Settings
+
         private void LoadFromSettings()
         {
+            // Change on start
+            cbChangeOnStartup.Checked = Properties.Settings.Default.ChangeOnStart;
+
+
+            // Folders
+            if (Properties.Settings.Default.Folders != null)
+            {
+                foreach (string settingFolder in Properties.Settings.Default.Folders)
+                {
+                    string[] setting = settingFolder.Split(';');
+                    string folder = setting[0];
+                    string baseFolder = "";
+                    if (setting.Length > 1)
+                        baseFolder = setting[1];
+                    KeyValuePair<string, string> item = new KeyValuePair<string, string>(folder, baseFolder);
+                    lbFolders.Items.Add(item);
+                }
+
+                tbFolder.Text = "";
+                tbBaseFolder.Text = "";
+            }
+
+
+            // Order
+            if (Properties.Settings.Default.Order.Equals("Random", StringComparison.CurrentCultureIgnoreCase))
+            {
+                rbOrderRandom.Checked = true;
+            }
+            else if (Properties.Settings.Default.Order.Equals("Sequential", StringComparison.CurrentCultureIgnoreCase))
+            {
+                rbOrderSequential.Checked = true;
+            }
+
+            // Multi switch
+            if (Properties.Settings.Default.MultiSwitch.Equals("Same time", StringComparison.CurrentCultureIgnoreCase))
+            {
+                rbSwitchSameTime.Checked = true;
+            }
+            else if (Properties.Settings.Default.MultiSwitch.Equals("Rotate", StringComparison.CurrentCultureIgnoreCase))
+            {
+                rbSwitchRotate.Checked = true;
+            }
+            else if (Properties.Settings.Default.MultiSwitch.Equals("Alternate", StringComparison.CurrentCultureIgnoreCase))
+            {
+                rbSwitchAlternately.Checked = true;
+            }
+
+            // Logon image
+            cbLogonImage.Checked = Properties.Settings.Default.CreateLogonImage;
+            //Properties.Settings.Default.LogonImageFolder // TODO: implement changeable Logon Image Folder
+
+
+            // Timer Value
             nudTimerValue.Value = Properties.Settings.Default.TimerValue;
 
             if (Properties.Settings.Default.TimerUnit.Equals("second", StringComparison.CurrentCultureIgnoreCase))
@@ -52,40 +122,58 @@ namespace Schalken.PhotoDesktop.WFA
                 rbStartupOnly.Checked = true;
             }
 
-            if (Properties.Settings.Default.Folders != null)
-            {
-                foreach (string settingFolder in Properties.Settings.Default.Folders)
-                {
-                    string[] setting = settingFolder.Split(';');
-                    string folder = setting[0];
-                    string baseFolder = "";
-                    if (setting.Length > 1)
-                        baseFolder = setting[1];
-                    KeyValuePair<string, string> item = new KeyValuePair<string, string>(folder, baseFolder);
-                    lbFolders.Items.Add(item);
-                }
 
-                tbFolder.Text = "";
-                tbBaseFolder.Text = "";
-            }
-
-            cbChangeOnStartup.Checked = Properties.Settings.Default.ChangeOnStart;
-
-        }
-
-        private void Settings_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.Cancel)
-            {
-                // do not persist the changes
-            }
-            else
-                SaveSettings();
 
         }
 
         private void SaveSettings()
         {
+            // Change on start
+            Properties.Settings.Default.ChangeOnStart = cbChangeOnStartup.Checked;
+
+            // Folders
+            if (Properties.Settings.Default.Folders == null)
+                Properties.Settings.Default.Folders = new System.Collections.Specialized.StringCollection();
+            else
+                Properties.Settings.Default.Folders.Clear();
+
+            foreach (KeyValuePair<string, string> item in lbFolders.Items)
+            {
+                Properties.Settings.Default.Folders.Add(String.Format("{0};{1}", item.Key, item.Value));
+            }
+
+
+            // Order
+            if (rbOrderRandom.Checked)
+            {
+                Properties.Settings.Default.Order = "Random";
+            }
+            else
+            {
+                Properties.Settings.Default.Order = "Sequential";
+            }
+
+            // Multi switch
+            if (rbSwitchSameTime.Checked)
+            {
+                Properties.Settings.Default.MultiSwitch = "Same time";
+            }
+            else if (rbSwitchRotate.Checked)
+            {
+                Properties.Settings.Default.MultiSwitch = "Rotate";
+            }
+            else
+            {
+                Properties.Settings.Default.MultiSwitch = "Alternate";
+            }
+
+            // Logon image
+            Properties.Settings.Default.CreateLogonImage = cbLogonImage.Checked;
+            //Properties.Settings.Default.LogonImageFolder // TODO: implement changeable Logon Image Folder
+
+
+
+            // Timer Value
             Properties.Settings.Default.TimerValue = (int)nudTimerValue.Value;
 
             if (rbSeconds.Checked)
@@ -99,23 +187,30 @@ namespace Schalken.PhotoDesktop.WFA
             else
                 Properties.Settings.Default.TimerUnit = "unknown";
 
-            if (Properties.Settings.Default.Folders == null)
-                Properties.Settings.Default.Folders = new System.Collections.Specialized.StringCollection();
-            else
-                Properties.Settings.Default.Folders.Clear();
-            foreach ( KeyValuePair<string,string> item in lbFolders.Items )
-            {
-                Properties.Settings.Default.Folders.Add(String.Format("{0};{1}", item.Key, item.Value));
-            }
 
-            Properties.Settings.Default.ChangeOnStart = cbChangeOnStartup.Checked;
-
-
+            // Store the settings
             Properties.Settings.Default.Save();
         }
 
+        private void Settings_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.Cancel)
+            {
+                // do not persist the changes
+            }
+            else
+                SaveSettings();
+
+        }
+
+        #endregion Settings
+
+        #region Buttons, ea
+
         private void btnAddFolder_Click(object sender, EventArgs e)
         {
+            _refreshImageList = true;
+
             if (tbFolder.Text.Length == 0)
             {
                 MessageBox.Show("Enter a folder", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -169,6 +264,8 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
+            _refreshImageList = true;
+
             if (lbFolders.SelectedIndex >= 0)
             {
                 lbFolders.Items.RemoveAt(lbFolders.SelectedIndex);
@@ -209,6 +306,95 @@ namespace Schalken.PhotoDesktop.WFA
                 cbStartWithWindows.CheckState = CheckState.Checked;
             else
                 cbStartWithWindows.CheckState = CheckState.Indeterminate;
+        }
+
+        private void rbStartupOnly_CheckedChanged(object sender, EventArgs e)
+        {
+            nudTimerValue.Enabled = !rbStartupOnly.Checked;
+        }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            _photoDesktop.Next();
+            RefreshStackDebug();
+        }
+
+        private void btnPrevious_Click(object sender, EventArgs e)
+        {
+            _photoDesktop.Previous();
+            RefreshStackDebug();
+        }
+
+        #endregion Buttons, ea
+
+        #region Helper functions
+
+        /// <summary>
+        /// Refresh the stack viewe listbox
+        /// </summary>
+        private void RefreshStackDebug()
+        {
+            lbDebug.Items.Clear();
+            foreach (string item in _photoDesktop.ImageList.History.DebugContent)
+            {
+                lbDebug.Items.Add(item);
+            }
+        }
+
+        private void StartProcess(string path)
+        {
+            ProcessStartInfo StartInformation = new ProcessStartInfo();
+
+            StartInformation.FileName = path;
+
+            Process process = Process.Start(StartInformation);
+
+            if (process != null )
+                process.EnableRaisingEvents = true;
+        }
+
+        #endregion Helper functions
+
+        private void btnOpenExplorerOnLogonImageLocation_Click(object sender, EventArgs e)
+        {
+            string imageBaseFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            string imageFolder = imageBaseFolder + @"\PhotoDesktop";
+            string fullfilename = imageBaseFolder + @"\PhotoDesktop" + @"\PhotoDesktopLogongImage.png";
+            // check if folder exists
+            bool exists = System.IO.Directory.Exists(imageFolder);
+
+            if (!exists)
+                System.IO.Directory.CreateDirectory(imageFolder);
+            // create folder
+
+            Screen[] screens = Screen.AllScreens;
+            Screen screen = screens[0];
+
+            DesktopImage logonImage = new DesktopImage(_photoDesktop.ImageList.Next(screen.DeviceName));
+
+            Wallpaper.CreateLogonScreenImage(logonImage, fullfilename);
+
+
+            StartProcess(imageFolder);
+            // https://winaero.com/blog/file-explorer-command-line-arguments-in-windows-10/
+            // explorer.exe /select,"C:\apps\firefox beta\firefox.exe"
+            // explorer.exe /e,folder_path
+
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            if (btnTest.Text.Equals("Test",StringComparison.OrdinalIgnoreCase))
+            {
+                btnTest.Text = "Refresh";
+                _photoDesktop.TestBackground();
+            }
+            else
+            {
+                btnTest.Text = "Test";
+                _photoDesktop.Refresh();
+            }
+
         }
     }
 }

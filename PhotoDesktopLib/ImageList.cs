@@ -10,8 +10,6 @@ namespace Schalken.PhotoDesktop
 {
     public class ImageList
     {
-        public int currentImage = -1;
-
         // todo: create a list with randomized images
         // do not revisit images as long as there are new ones to visit
 
@@ -42,52 +40,38 @@ namespace Schalken.PhotoDesktop
                 return images;
             }
         }
-        private Stack<int> _history = new Stack<int>();
-        public ImageListItem Next
+        private HistoryStack _history = new HistoryStack();
+        public HistoryStack History
         {
-            get
-            {
-                if (currentImage > -1)
-                    _history.Push(currentImage);
-
-                if (Images.Count == 0)
-                    throw new MissingImagesException("No images available");
-
-                currentImage += 1;
-
-                return Images[currentImage];
-            }
+            get { return _history; }
         }
-        public ImageListItem NextRandom
+
+        public ImageListItem Next(string screenName)
         {
-            get
-            {
-                if (currentImage > -1)
-                    _history.Push(currentImage);
-
-                if (Images.Count == 0)
-                    throw new MissingImagesException("No images available");
-
-                Random r = new Random((int)DateTime.Now.Ticks);
-
-                // todo: avoid repeats in random order images
-                currentImage = r.Next(Images.Count);
-
-                return Images[currentImage];
-            }
+            if (Images.Count == 0)
+                throw new MissingImagesException("No images available");
+            
+            return Images[_history.Next(screenName, Images.Count, PhotoDesktop.OrderModes.Sequential)];
         }
-        public ImageListItem Previous
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="screenName"></param>
+        /// <returns></returns>
+        public ImageListItem NextRandom(string screenName)
         {
-            get
-            {
-                if (_history.Count > 0)
-                    currentImage = _history.Pop();
-                else
-                    return null;
+            if (Images.Count == 0)
+                throw new MissingImagesException("No images available");
 
-                return Images[currentImage];
-            }
+            return Images[_history.Next(screenName, Images.Count, PhotoDesktop.OrderModes.Random)];
+        }
+        public ImageListItem Previous(string screenName)
+        {
+            if (Images.Count == 0)
+                throw new MissingImagesException("No images available");
 
+            return Images[_history.Previous(screenName)];
         }
 
         private List<FolderItem> _folders;
@@ -99,6 +83,11 @@ namespace Schalken.PhotoDesktop
             }
         }
 
+        public ImageList()
+        {
+            _folders = new List<FolderItem>();
+        }
+
         public ImageList(string folder)
         {
             _folders = new List<FolderItem>();
@@ -108,6 +97,14 @@ namespace Schalken.PhotoDesktop
         public ImageList(List<FolderItem> folders)
         {
             _folders = folders;
+        }
+
+        public ImageListItem Current(string screenName)
+        {
+            if (Images.Count == 0)
+                throw new MissingImagesException("No images available");
+
+            return Images[_history.Current(screenName)];
         }
 
         public ImageList(StringCollection folders)
@@ -123,5 +120,12 @@ namespace Schalken.PhotoDesktop
             }
         }
 
+        public ImageListItem Rotate(string screenName, string fromScreenName)
+        {
+            if (Images.Count == 0)
+                throw new MissingImagesException("No images available");
+
+            return Images[_history.Rotate(screenName, fromScreenName)];
+        }
     }
 }
