@@ -60,6 +60,7 @@ namespace Schalken.PhotoDesktop
 
                 // load image
                 Image = Image.FromFile(filename);
+                //Image.pro
 
                 //GetProperties();
             }
@@ -80,18 +81,18 @@ namespace Schalken.PhotoDesktop
 
         #region File properties
 
-        private Dictionary<string, string> _properties = new Dictionary<string, string>();
+        //private Dictionary<string, string> _properties = new Dictionary<string, string>();
 
-        public string this[string property]
-        {
-            get
-            {
-                if (_properties.ContainsKey(property))
-                    return _properties[property];
-                else
-                    return "";
-            }
-        }
+        //public string this[string property]
+        //{
+        //    get
+        //    {
+        //        if (_properties.ContainsKey(property))
+        //            return _properties[property];
+        //        else
+        //            return "";
+        //    }
+        //}
 
         /// <summary>
         /// Size: 287 KB  
@@ -111,78 +112,87 @@ namespace Schalken.PhotoDesktop
         //Camera maker: Microsoft
         /// </summary>
         // https://dzone.com/articles/extracting-file-metadata-c-and
-        private void GetProperties()
-        {
+        //private void GetProperties()
+        //{
             
-            // based on: https://blog.dotnetframework.org/2014/12/10/read-extended-properties-of-a-file-in-c/
-            List<string> arrHeaders = new List<string>();
+        //    // based on: https://blog.dotnetframework.org/2014/12/10/read-extended-properties-of-a-file-in-c/
+        //    List<string> arrHeaders = new List<string>();
 
-            Shell32.Shell shell = new Shell32.Shell();
-            var strFileName = this.FullFilename;
-            Shell32.Folder objFolder = shell.NameSpace(System.IO.Path.GetDirectoryName(strFileName));
-            Shell32.FolderItem folderItem = objFolder.ParseName(System.IO.Path.GetFileName(strFileName));
+        //    Shell32.Shell shell = new Shell32.Shell();
+        //    var strFileName = this.FullFilename;
+        //    Shell32.Folder objFolder = shell.NameSpace(System.IO.Path.GetDirectoryName(strFileName));
+        //    Shell32.FolderItem folderItem = objFolder.ParseName(System.IO.Path.GetFileName(strFileName));
 
-            for (int i = 0; i < short.MaxValue; i++)
-            {
-                string header = objFolder.GetDetailsOf(null, i);
-                if (String.IsNullOrEmpty(header))
-                    break;
-                arrHeaders.Add(header);
-            }
-            string result = "";
-            for (int i = 0; i < arrHeaders.Count; i++)
-            {
-                _properties.Add(arrHeaders[i], objFolder.GetDetailsOf(folderItem, i));
-            }
-        }
+        //    for (int i = 0; i < short.MaxValue; i++)
+        //    {
+        //        string header = objFolder.GetDetailsOf(null, i);
+        //        if (String.IsNullOrEmpty(header))
+        //            break;
+        //        arrHeaders.Add(header);
+        //    }
+        //    string result = "";
+        //    for (int i = 0; i < arrHeaders.Count; i++)
+        //    {
+        //        _properties.Add(arrHeaders[i], objFolder.GetDetailsOf(folderItem, i));
+        //    }
+        //}
 
-        private ShellProperties _shellProperties = null;
+        //private ShellProperties _shellProperties = null;
 
-        public ShellProperties Properties
-        {
-            get {
-                if (_shellProperties == null)
-                {
-                    var file = ShellFile.FromFilePath(this.FullFilename);
-                    _shellProperties = file.Properties;
-                }
+        //public ShellProperties Properties
+        //{
+        //    get {
+        //        if (_shellProperties == null)
+        //        {
+        //            var file = ShellFile.FromFilePath(this.FullFilename);
+        //            _shellProperties = file.Properties;
+        //        }
 
-                return _shellProperties;
-            }
-        }
+        //        return _shellProperties;
+        //    }
+        //}
 
 
         public int StarRating
         {
             get
             {
-                if (Properties.System.Rating.Value == null || Properties.System.Rating.Value < 1U)
-                    return 0;
-                else if (Properties.System.Rating.Value <= 12)
-                    return  1;
-                else if (Properties.System.Rating.Value <= 37)
-                    return  2;
-                else if (Properties.System.Rating.Value <= 62)
-                    return  3;
-                else if (Properties.System.Rating.Value <= 87)
-                    return  4;
+                ShellFile file = ShellFile.FromFilePath(this.FullFilename);
+                int result = 0;
+                var value = file.Properties.System.Rating.Value;
+                if (value == null || value < 1U)
+                    result = 0;
+                else if (value <= 12)
+                    result = 1;
+                else if (value <= 37)
+                    result = 2;
+                else if (value <= 62)
+                    result = 3;
+                else if (value <= 87)
+                    result = 4;
                 else
-                    return  5;
+                    result = 5;
+                file.Dispose(); 
+                return result;
             }
             set
             {
+                ShellFile file = ShellFile.FromFilePath(this.FullFilename); //"E:\\OneDrive\\Afbeeldingen\\test.jpg");
+                uint ratingValue = 0;
                 if (value < 1)
-                    Properties.System.Rating.Value = 0;
+                    ratingValue = 0;
                 else if (value == 1)
-                    Properties.System.Rating.Value = 1;
+                    ratingValue = 12;
                 else if (value == 2)
-                    Properties.System.Rating.Value = 2;
+                    ratingValue = 37;
                 else if (value == 3)
-                    Properties.System.Rating.Value = 3;
+                    ratingValue = 62;
                 else if (value == 4)
-                    Properties.System.Rating.Value = 4;
+                    ratingValue = 87;
                 else
-                    Properties.System.Rating.Value = 5;
+                    ratingValue = 100;
+
+                file.Properties.System.Rating.Value = ratingValue;
             }
         }
         /// <summary>
