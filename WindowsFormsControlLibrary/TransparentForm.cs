@@ -12,21 +12,21 @@ namespace WindowsFormsControlLibrary
 {
     public partial class TransparentForm : Form
     {
-        public TransparentForm()
+        public TransparentForm() : base()
         {
-            InitializeComponent();
+            //InitializeComponent();
 
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            this.BackColor = Color.Transparent;
+            //this.BackColor = Color.Transparent;
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             if (this.DesignMode)
-              e.Graphics.FillRectangle(Brushes.Black, e.ClipRectangle);
+                e.Graphics.FillRectangle(Brushes.Green, e.ClipRectangle);
 
             // empty function, so no background
-            //base.OnPaintBackground(e);
+            // base.OnPaintBackground(e);
         }
     }
 }

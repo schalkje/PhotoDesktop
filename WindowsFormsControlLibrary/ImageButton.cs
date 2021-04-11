@@ -63,14 +63,14 @@ namespace WindowsFormsControlLibrary
                 base.ImageList = value;
 
                 // on first setup initialize image indexes
-                if (imageKeyActive == null &&
-                    imageKeyDefault == null &&
-                    imageKeySelected == null &&
-                    ImageList.Images.Count > 0)
-                {
-                    ImageKeyDefault = ImageList.Images.Keys[Math.Min(0, ImageList.Images.Count - 1)];
-                    ImageKeyActive = ImageList.Images.Keys[Math.Min(1, ImageList.Images.Count - 1)];
-                }
+                //if (imageKeyActive == null &&
+                //    imageKeyDefault == null &&
+                //    imageKeySelected == null &&
+                //    ImageList.Images.Count > 0)
+                //{
+                //    ImageKeyDefault = ImageList.Images.Keys[Math.Min(0, ImageList.Images.Count - 1)];
+                //    ImageKeyActive = ImageList.Images.Keys[Math.Min(1, ImageList.Images.Count - 1)];
+                //}
             }
         }
 
@@ -209,9 +209,9 @@ namespace WindowsFormsControlLibrary
             Text = "";
             AutoSize = false;
 
-            //SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            //this.BackColor = Color.Transparent;
-            this.BackColor = Color.Black;
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            this.BackColor = Color.White;
+            //this.BackColor = Color.Black;
 
             MouseEnter += ImageButton_MouseEnter;
             MouseLeave += ImageButton_MouseLeave;
@@ -232,23 +232,24 @@ namespace WindowsFormsControlLibrary
         private void ImageButton_MouseEnter(object sender, EventArgs e)
         {
             base.ImageKey = ImageKeyActive;
+            
         }
 
-        //protected override void OnPaintBackground(PaintEventArgs e)
-        //{
-        //    // empty function, so no background
-        //    if (this.DesignMode)
-        //    {
-        //        e.Graphics.FillRectangle(Brushes.Black, e.ClipRectangle);
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            // empty function, so no background
+            //if (this.DesignMode)
+            //{
+            //    e.Graphics.FillRectangle(Brushes.Black, e.ClipRectangle);
 
-        //        Pen border = new Pen(Color.White);
-        //        border.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+            //    Pen border = new Pen(Color.White);
+            //    border.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
 
-        //        e.Graphics.DrawRectangle(border, 0,0,e.ClipRectangle.Width-1, e.ClipRectangle.Height-1);
-        //    }
-        //    base.OnPaintBackground(e);
+            //    e.Graphics.DrawRectangle(border, 0, 0, e.ClipRectangle.Width - 1, e.ClipRectangle.Height - 1);
+            //}
+            //base.OnPaintBackground(e);
 
-        //}
+        }
 
     }
 }

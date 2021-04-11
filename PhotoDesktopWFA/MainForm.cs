@@ -3,17 +3,20 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
+using WindowsFormsControlLibrary;
+using System.Runtime.CompilerServices;
+using System.Drawing;
+using System.Reflection;
 
 namespace Schalken.PhotoDesktop.WFA
 {
 
-    public partial class MainForm : Form //TransparentForm
+    public partial class MainForm : TransparentForm //   Form //
     {
+        public Point offset = new Point(0,80);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern Int32 SystemParametersInfo(UInt32 action, UInt32 uParam, String vParam, UInt32 winIni);
-
-
 
         /// <summary>
         /// Parameter documentation:
@@ -58,7 +61,7 @@ namespace Schalken.PhotoDesktop.WFA
             base.WndProc(ref message);
         }
 
-
+        private string _displayScreenName = null;
 
 
         /// <summary>
@@ -67,6 +70,7 @@ namespace Schalken.PhotoDesktop.WFA
         /// http://www.codeproject.com/Articles/101272/Creation-of-Multi-monitor-Screenshots-Using-WinAPI
         /// http://connect.microsoft.com/VisualStudio/feedback/details/526951/screen-object-physicalwidthincentimeters-physicalheightincentimeters-displaymode
         /// </summary>
+
         public MainForm()
         {
             InitializeComponent();
@@ -76,12 +80,17 @@ namespace Schalken.PhotoDesktop.WFA
             // on startup switch
             if (Properties.Settings.Default.ChangeOnStart)
                 _photoDesktop.Next();
+
+            // get name for main window; add this mainform to the main screen
+            _displayScreenName = _photoDesktop.GetMainScreenName();
+            _photoDesktop.ControlerForms.Add(_displayScreenName, this);
+
+
+            //ShowSettings();
         }
 
         protected override void OnShown(EventArgs e)
         {
-            // JS: make 0 flexivle
-
             ScaledScreen windowScreen = ScaledScreen.AllScaledScreens[0];
 
             // if mode = top-right
@@ -89,12 +98,22 @@ namespace Schalken.PhotoDesktop.WFA
             // Top = 0;
 
             // if mode = bottom-right
-            Left = windowScreen.UnscaledBounds.Width - Width; //Size.Width;
-            Top = windowScreen.UnscaledBounds.Height - Height;
+            //Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
+            //Top = windowScreen.UnscaledWorkingArea.Height - Height;
+
+            // position this window to legenda position
+            Rectangle legendaRect = Wallpaper.GetLegendaRect(_photoDesktop.GetMainScreenName());
+            this.Left = legendaRect.Left + offset.X;
+            this.Top = legendaRect.Top - this.Height + offset.Y;
 
 
             base.OnShown(e);
 
+            //Width = 400;
+            //Height = 100;
+            //Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
+            //Top = windowScreen.UnscaledWorkingArea.Height - Height;
+            
             // if debug mode; show settings
 #if DEBUG
             SettingsForm settingsForm = new SettingsForm(_photoDesktop);
@@ -103,34 +122,30 @@ namespace Schalken.PhotoDesktop.WFA
                 LoadSettings(settingsForm.RefreshImageList);
             }
 #endif
-
         }
 
 
-
-
-        private void btnTest_Click(object sender, EventArgs e)
+        public override void Refresh()
         {
-            if (photoTimer.Enabled)
+            if (_displayScreenName != null && this.Tag is DesktopImage)
             {
-                photoTimer.Enabled = false;
-                Wallpaper.CreateTestBackgroundImage();
+                DesktopImage imageData = (DesktopImage)this.Tag;
+                if (imageData.StarRating > 0) star1.ImageIndex = 1; else star1.ImageIndex = 0;
+                if (imageData.StarRating > 1) star2.ImageIndex = 1; else star2.ImageIndex = 0;
+                if (imageData.StarRating > 2) star3.ImageIndex = 1; else star3.ImageIndex = 0;
+                if (imageData.StarRating > 3) star4.ImageIndex = 1; else star4.ImageIndex = 0;
+                if (imageData.StarRating > 4) star5.ImageIndex = 1; else star5.ImageIndex = 0;
             }
-            else
-            {
-                photoTimer.Enabled = true;
-                _photoDesktop.Next();
-            }
-        }
 
-
-        private void btnNextBackground_Click(object sender, EventArgs e)
-        {
-            _photoDesktop.Next();
+            base.Refresh();
         }
 
         private bool _windowVisible = false;
-        private PhotoDesktop _photoDesktop;
+        private static PhotoDesktop _photoDesktop;
+
+        // store the original size when made invisible by setting dimensions to 0x0
+        private int _storedWidth = 0;
+        private int _storedHeight = 0;
 
         public bool WindowVisible
         {
@@ -144,10 +159,14 @@ namespace Schalken.PhotoDesktop.WFA
                 if (_windowVisible)
                 {
                     this.Width = 440;
-                    this.Height = 190;
+                    this.Height = _storedWidth;
                 }
                 else
                 {
+                    _storedWidth = this.Width;
+                    _storedHeight = this.Height;
+
+                    // hide by setting dimensions to 0x0
                     this.Width = 0;
                     this.Height = 0;
                 }
@@ -164,57 +183,6 @@ namespace Schalken.PhotoDesktop.WFA
 
 
 
-        private void btnOpenImage_Click(object sender, EventArgs e)
-        {
-            // todo: open the image in the default image viewer
-            OpenCurrentImage();
-        }
-
-        private static void OpenCurrentImage()
-        {
-            // to do: determine monitor where this is clicked
-            MessageBox.Show("Not yet implemented", "PhotoDesktop", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-        }
-
-        private void menuNext_Click(object sender, EventArgs e)
-        {
-            _photoDesktop.Next();
-        }
-
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            this.WindowVisible = !this.WindowVisible;
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // todo: persist viewed photo's
-            Application.Exit();
-        }
-
-
-        private void notifyIcon_DoubleClick(object sender, EventArgs e)
-        {
-            // stop timer
-            photoTimer.Stop();
-
-            // show next image
-            _photoDesktop.Next();
-
-            // reset time
-            photoTimer.Start();
-        }
-
-        private void photoTimer_Tick(object sender, EventArgs e)
-        {
-            _photoDesktop.Next();
-        }
-
-        private void btnGetCurrentWallPaper_Validated(object sender, EventArgs e)
-        {
-
-        }
-
         #region Settings
 
         private void LoadSettings(bool refreshImageList = false)
@@ -224,7 +192,7 @@ namespace Schalken.PhotoDesktop.WFA
 
             SetTimerfromSettings();
             _photoDesktop.OrderMode = Properties.Settings.Default.Order.Equals("Random", StringComparison.CurrentCultureIgnoreCase) ? PhotoDesktop.OrderModes.Random : PhotoDesktop.OrderModes.Sequential;
-            _photoDesktop.MultiSwitchMode = Properties.Settings.Default.MultiSwitch.Equals("Same time", StringComparison.CurrentCultureIgnoreCase) ? PhotoDesktop.MultiSwitchModes.SameTime : Properties.Settings.Default.MultiSwitch.Equals("Rotate", StringComparison.CurrentCultureIgnoreCase) ? PhotoDesktop.MultiSwitchModes.Rotate : PhotoDesktop.MultiSwitchModes.Alternately;
+            _photoDesktop.MultiSwitchMode = Properties.Settings.Default.MultiSwitch.Equals("Same time", StringComparison.CurrentCultureIgnoreCase) ? PhotoDesktop.MultiSwitchModes.SameTime : Properties.Settings.Default.MultiSwitch.Equals("Rotate", StringComparison.CurrentCultureIgnoreCase) ? PhotoDesktop.MultiSwitchModes.Rotate: PhotoDesktop.MultiSwitchModes.Alternately;
             _photoDesktop.LogonImage = Properties.Settings.Default.CreateLogonImage;
             _photoDesktop.LogonImageFolder = Properties.Settings.Default.LogonImageFolder;
         }
@@ -252,6 +220,21 @@ namespace Schalken.PhotoDesktop.WFA
             photoTimer.Interval = interval;
         }
 
+        private void ShowSettings()
+        {
+            SettingsForm settingsForm = new SettingsForm(_photoDesktop);
+            if (settingsForm.ShowDialog() == DialogResult.OK)
+            {
+                LoadSettings(settingsForm.RefreshImageList);
+            }
+        }
+
+
+        private static void OpenCurrentImage()
+        {
+            // to do: determine monitor where this is clicked
+            MessageBox.Show("Not yet implemented", "PhotoDesktop", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
 
         private ImageList LoadImageListFromSettings()
         {
@@ -291,22 +274,22 @@ namespace Schalken.PhotoDesktop.WFA
 
         #endregion Settings
 
+        #region EventHandlers
+
+
+        //private void btnTest_Click(object sender, EventArgs e)
+        //{
+        //    Wallpaper.CreateTestBackgroundImage();
+        //}
+
+
+        private void btnNextBackground_Click(object sender, EventArgs e)
+        {
+            _photoDesktop.Next();
+        }
         private void menuSettings_Click(object sender, EventArgs e)
         {
-            SettingsForm settingsForm = new SettingsForm(_photoDesktop);
-            if (settingsForm.ShowDialog() == DialogResult.OK)
-            {
-                LoadSettings(settingsForm.RefreshImageList);
-            }
-        }
-
-
-
-
-        private void imageButton10_Click(object sender, EventArgs e)
-        {
-
-
+            ShowSettings();
         }
 
         private void btnNext_Click(object sender, EventArgs e)
@@ -331,12 +314,107 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnStar_Click(object sender, EventArgs e)
         {
-
+            
+            if (_displayScreenName != null && this.Tag is DesktopImage)
+            {
+                DesktopImage imageData = (DesktopImage)this.Tag;
+                if (sender == star1 && imageData.StarRating != 1) imageData.StarRating = 1;
+                else if (sender == star2 && imageData.StarRating != 2) imageData.StarRating = 2;
+                else if (sender == star3 && imageData.StarRating != 3) imageData.StarRating = 3;
+                else if (sender == star4 && imageData.StarRating != 4) imageData.StarRating = 4;
+                else if (sender == star5 && imageData.StarRating != 5) imageData.StarRating = 5;
+                else imageData.StarRating = 0;
+            }
         }
 
-        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+
+
+        private void btnOpenImage_Click(object sender, EventArgs e)
         {
-            btnTest_Click(this, e);
+            // todo: open the image in the default image viewer
+            OpenCurrentImage();
         }
+
+
+        private void menuNext_Click(object sender, EventArgs e)
+        {
+            _photoDesktop.Next();
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            this.WindowVisible = !this.WindowVisible;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // todo: persist viewed photo's
+            Application.Exit();
+        }
+
+
+        private void notifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            // stop timer
+            photoTimer.Stop();
+
+            // show next image
+            _photoDesktop.Next();
+
+            // reset time
+            photoTimer.Start();
+        }
+
+        private void photoTimer_Tick(object sender, EventArgs e)
+        {
+            _photoDesktop.Next();
+        }
+
+        private void btnGetCurrentWallPaper_Validated(object sender, EventArgs e)
+        {
+
+        }
+        #endregion EventHandlers
+
+
+        //private bool WithinBounds(Control control)
+        private void MainForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            bool showHand = false;
+            foreach (Control control in this.Controls)
+            {
+                // check "invisible" each element on the form
+                if (!control.Visible & control.Bounds.Contains(e.X, e.Y) )
+                {
+                    showHand = true;
+                    break;
+                }
+            }
+
+            if ( showHand )
+                this.Cursor = Cursors.Hand;
+            else
+                this.Cursor = Cursors.Arrow;
+
+        }
+
+        private void MainForm_Click(object sender, EventArgs e)
+        {
+            Point point = this.PointToClient(Cursor.Position);
+            int x = point.X;
+            int y = point.Y;
+            foreach (Control control in this.Controls)
+            {
+                // check "invisible" each element on the form
+                if (!control.Visible & control.Bounds.Contains(x, y))
+                {
+                    Helper.PerformClick(control);
+
+                    break;
+                }
+            }
+        }
+
+
     }
 }

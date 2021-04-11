@@ -26,6 +26,11 @@ namespace Schalken.PhotoDesktop
             }
         }
 
+        private Dictionary<string, Form> _controlerForms = new Dictionary<string, Form>();
+        public Dictionary<string, Form> ControlerForms
+        {
+            get { return _controlerForms;  }
+        }
 
         public enum OrderModes
         {
@@ -69,6 +74,10 @@ namespace Schalken.PhotoDesktop
         {
         }
 
+        public string GetMainScreenName()
+        {
+            return Screen.AllScreens[0].DeviceName;
+        }
 
         public void Previous()
         {
@@ -82,7 +91,7 @@ namespace Schalken.PhotoDesktop
                 images[screen.DeviceName] = new DesktopImage(ImageList.Previous(screen.DeviceName));
             }
 
-            Wallpaper.CreateBackgroundImage(images);
+            Wallpaper.CreateBackgroundImage(images, _controlerForms);
         }
 
         /// <summary>
@@ -113,7 +122,7 @@ namespace Schalken.PhotoDesktop
                 }
 
 
-                Wallpaper.CreateBackgroundImage(images);
+                Wallpaper.CreateBackgroundImage(images, _controlerForms);
 
                 // next wallpaper
                 NextAlternatelyCount++;
@@ -149,7 +158,7 @@ namespace Schalken.PhotoDesktop
                         images[screen.DeviceName] = new DesktopImage(ImageList.Next(screen.DeviceName));
                 }
 
-                Wallpaper.CreateBackgroundImage(images);
+                Wallpaper.CreateBackgroundImage(images, _controlerForms);
 
                 // next wallpaper
                 NextAlternatelyCount++;
@@ -182,13 +191,44 @@ namespace Schalken.PhotoDesktop
                         images[screen.DeviceName] = new DesktopImage(ImageList.Next(screen.DeviceName));
                 }
 
-                Wallpaper.CreateBackgroundImage(images);
+                Wallpaper.CreateBackgroundImage(images, _controlerForms);
 
             }
             catch (MissingImagesException)
             {
                 Wallpaper.CreateTestBackgroundImage();
             }
+        }
+
+        /// <summary>
+        /// Display the current images on the background
+        /// </summary>
+        public void Refresh()
+        {
+            try
+            {
+                Screen[] screens = Screen.AllScreens;
+                Dictionary<string, DesktopImage> images = new Dictionary<string, DesktopImage>(screens.Length);
+
+                for (int i = 0; i < screens.Length; i++)
+                {
+                    Screen screen = screens[i];
+
+                    images[screen.DeviceName] = new DesktopImage(ImageList.Current(screen.DeviceName));
+                }
+
+                Wallpaper.CreateBackgroundImage(images, _controlerForms);
+
+            }
+            catch (MissingImagesException)
+            {
+                Wallpaper.CreateTestBackgroundImage();
+            }
+        }
+
+        public void TestBackground()
+        {
+            Wallpaper.CreateTestBackgroundImage();
         }
     }
 }

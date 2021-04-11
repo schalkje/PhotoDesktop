@@ -14,6 +14,7 @@ Features:
 ## Versions
 
 ## Backlog
+[![Board Status](https://schalken.visualstudio.com/c9c88b49-e06f-4c36-9141-93e3e1f5d85b/234dfde6-b2a4-4476-94c4-1bcdcfb0b232/_apis/work/boardbadge/247a400f-a3f9-42f3-9b7e-415a2c8616fa?columnOptions=1)](https://schalken.visualstudio.com/c9c88b49-e06f-4c36-9141-93e3e1f5d85b/_boards/board/t/234dfde6-b2a4-4476-94c4-1bcdcfb0b232/Microsoft.RequirementCategory/)
 
 Future features:
 - Put a different photo on your startup screen everytime you startup

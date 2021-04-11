@@ -26,7 +26,7 @@ namespace Schalken.PhotoDesktop.WFA
 
             MainForm mainForm = new MainForm();
             mainForm.Visible = true;
-            mainForm.WindowVisible = false;
+            //mainForm.WindowVisible = false;
 
             //Application.AddMessageFilter(new ScreenChangeFilter());
             //Application.RegisterMessageLoop(messageLoopCallback);
