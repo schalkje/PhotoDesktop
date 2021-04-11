@@ -113,14 +113,10 @@ namespace Schalken.PhotoDesktop.WFA
             //Height = 100;
             //Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
             //Top = windowScreen.UnscaledWorkingArea.Height - Height;
-            
+
             // if debug mode; show settings
 #if DEBUG
-            SettingsForm settingsForm = new SettingsForm(_photoDesktop);
-            if (settingsForm.ShowDialog() == DialogResult.OK)
-            {
-                LoadSettings(settingsForm.RefreshImageList);
-            }
+            ShowSettings();
 #endif
         }
 
@@ -222,11 +218,18 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void ShowSettings()
         {
+            // disable timer
+            this.photoTimer.Enabled = false;
+
+            // show settings form
             SettingsForm settingsForm = new SettingsForm(_photoDesktop);
             if (settingsForm.ShowDialog() == DialogResult.OK)
             {
                 LoadSettings(settingsForm.RefreshImageList);
             }
+
+            // enable timer again
+            this.photoTimer.Enabled = true;
         }
 
 

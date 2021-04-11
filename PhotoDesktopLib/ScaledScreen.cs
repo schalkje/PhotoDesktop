@@ -58,8 +58,6 @@ namespace Schalken.PhotoDesktop
         }
 
 
-
-
         public enum DpiType
         {
             Effective = 0,
@@ -111,29 +109,6 @@ namespace Schalken.PhotoDesktop
             return awareness;
         }
 
-        // https://gist.github.com/emoacht/5a140a816e4a887fba11
-        //   public static Dpi GetSystemDpi()
-        //{ 
-        // var screen = IntPtr.Zero; 
-
-
-        // try 
-        // { 
-        //  screen = GetDC(IntPtr.Zero); 
-
-
-        //  return new Dpi( 
-        //   (uint)GetDeviceCaps(screen, LOGPIXELSX), 
-        //   (uint)GetDeviceCaps(screen, LOGPIXELSY)); 
-        // } 
-        // finally 
-        // { 
-        //  if (screen != IntPtr.Zero) 
-        //   ReleaseDC(IntPtr.Zero, screen); 
-        // } 
-        //} 
-
-
         public static bool SetPerMonitorDPIAware()
         {
             var result = SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
@@ -180,6 +155,7 @@ namespace Schalken.PhotoDesktop
                     throw new COMException("Unknown error. See https://msdn.microsoft.com/en-us/library/windows/desktop/dn280510.aspx for more information.");
             }
         }
+
         public static Dpi GetDpi(Screen screen, DpiType dpiType)
         {
             uint dpiX, dpiY;
@@ -197,8 +173,6 @@ namespace Schalken.PhotoDesktop
                     throw new COMException("Unknown error. See https://msdn.microsoft.com/en-us/library/windows/desktop/dn280510.aspx for more information.");
             }
         }
-
-
 
         public static ScaledScreen[] AllScaledScreens
         {
@@ -225,27 +199,32 @@ namespace Schalken.PhotoDesktop
                     scaledScreen.DpiSystem = GetSystemDpi();
 
                     // determine desktop properties
-                    if (scaledScreen.UnscaledBounds.X < minX)
-                        minX = scaledScreen.UnscaledBounds.X;
-                    if (scaledScreen.UnscaledBounds.Y < minY)
-                        minY = (int)scaledScreen.UnscaledBounds.Y;
-                    if (scaledScreen.UnscaledBounds.X + scaledScreen.UnscaledBounds.Width > maxX)
-                        maxX = (int)(scaledScreen.UnscaledBounds.X + scaledScreen.UnscaledBounds.Width);
-                    if (scaledScreen.UnscaledBounds.Y + scaledScreen.UnscaledBounds.Height > maxY)
-                        maxY = (int)(scaledScreen.UnscaledBounds.Y + scaledScreen.UnscaledBounds.Height);
+                    if (scaledScreen.Origin.X < minX)
+                        minX = scaledScreen.Origin.X;
+                    if (scaledScreen.Origin.Y < minY)
+                        minY = (int)scaledScreen.Origin.Y;
+                    if ((scaledScreen.Origin.X + scaledScreen.Size.Width) > maxX)
+                        maxX = (int)(scaledScreen.Origin.X + scaledScreen.Size.Width);
+                    if ((scaledScreen.Origin.Y + scaledScreen.Size.Height) > maxY)
+                        maxY = (int)(scaledScreen.Origin.Y + scaledScreen.Size.Height);
                 }
 
                 // store the desktop settings
-                ScaledScreen.DesktopRectangle = new Rectangle(minX, minY, maxX - minX, maxY - minY);
+                ScaledScreen.DesktopOrigin = new Point(minX, minY);
+                ScaledScreen.DesktopSize = new Size(maxX - minX, maxY - minY);
 
                 return scaledScreens;
             }
         }
 
         public Screen Screen { get; }
-        static public Rectangle DesktopRectangle { get; set; }
-        public Rectangle UnscaledBounds { get; set; }
-        public Rectangle UnscaledWorkingArea { get; set; }
+        static public Point DesktopOrigin { get; set; }
+        static public Size DesktopSize { get; set; }
+
+        public Point Origin { get; set; }
+        public Size Size { get; set; }
+        public Rectangle WorkingArea { get; set; }
+
         public Dpi DpiEffective { get; set; }
         public Dpi DpiRaw { get; set; }
         public Dpi DpiAngular { get; set; }
@@ -262,18 +241,33 @@ namespace Schalken.PhotoDesktop
         {
             get
             {
-                return UnscaledBounds.Width;
+                return this.Size.Width;
             }
         }
         public int Height
         {
             get
             {
-                return UnscaledBounds.Height;
+                return this.Size.Height;
             }
         }
 
-        public float Scale { get; }
+        public int X
+        {
+            get
+            {
+                return this.Origin.X;
+            }
+        }
+        public int Y
+        {
+            get
+            {
+                return this.Origin.Y;
+            }
+        }
+
+    public float Scale { get; }
         public int TaskbarBottomHeight
         {
             get
@@ -281,17 +275,17 @@ namespace Schalken.PhotoDesktop
                 if ((this.Screen.Bounds.Width == this.Screen.WorkingArea.Width) || (this.Screen.Bounds.Height == this.Screen.WorkingArea.Height))
                     return (int)(this.Screen.Bounds.Height - this.Screen.WorkingArea.Height);
                 else
-                    return (int)(this.Screen.Bounds.Height - this.Screen.WorkingArea.Height / Scale);
+                    return (int)(this.Screen.Bounds.Height * Scale - this.Screen.WorkingArea.Height);
             }
         }
         public int TaskbarTopHeight
         {
             get
             {
-                if ((this.Screen.Bounds.Width == this.Screen.WorkingArea.Width) || (this.Screen.Bounds.Height == this.Screen.WorkingArea.Height))
+                if ((this.Screen.Bounds.X == this.Screen.WorkingArea.X) || (this.Screen.Bounds.Y == this.Screen.WorkingArea.Y))
+                    return (int)(Screen.WorkingArea.Y - this.Screen.Bounds.Y);
+                else
                     return (int)(Screen.WorkingArea.Y - this.Screen.Bounds.Y * Scale);
-                else 
-                    return (int)(Screen.WorkingArea.Y - this.Screen.Bounds.Y); // x and y are not scaled
 
             }
         }
@@ -303,17 +297,17 @@ namespace Schalken.PhotoDesktop
                 if ((this.Screen.Bounds.Width == this.Screen.WorkingArea.Width) || (this.Screen.Bounds.Height == this.Screen.WorkingArea.Height))
                     return (int)(this.Screen.Bounds.Width - this.Screen.WorkingArea.Width);
                 else
-                    return (int)(this.Screen.Bounds.Width - this.Screen.WorkingArea.Width / Scale); 
+                    return (int)(this.Screen.Bounds.Width * Scale - this.Screen.WorkingArea.Width); 
             }
         }
         public int TaskbarLeftWidth
         {
             get
             {
-                if ((this.Screen.Bounds.Width == this.Screen.WorkingArea.Width) || (this.Screen.Bounds.Height == this.Screen.WorkingArea.Height))
+                if ((this.Screen.Bounds.X == this.Screen.WorkingArea.X) || (this.Screen.Bounds.Y == this.Screen.WorkingArea.Y))
                     return (int)(this.Screen.WorkingArea.X - this.Screen.Bounds.X);
                 else
-                    return (int)(this.Screen.WorkingArea.X - this.Screen.Bounds.X); // x and y are not scaled
+                    return (int)(this.Screen.WorkingArea.X - this.Screen.Bounds.X * Scale); 
             }
         }
 
@@ -323,32 +317,31 @@ namespace Schalken.PhotoDesktop
             this.Scale = scale;
 
             if ((screen.Bounds.Width == screen.WorkingArea.Width) || (screen.Bounds.Height == screen.WorkingArea.Height)) // 20160808: something strange: when changing the zoom; before change; bounds are excluding scaling; afterwards including scaling
-                UnscaledBounds = new Rectangle(
-                                        (int)(screen.Bounds.X),
-                                        (int)(screen.Bounds.Y),
-                                        (int)(screen.Bounds.Width),
-                                        (int)(screen.Bounds.Height));
-            else
-                UnscaledBounds = new Rectangle(
-                                        (int)(Math.Round(screen.Bounds.X * scale)),
-                                        (int)(Math.Round(screen.Bounds.Y * scale)),
-                                        (int)(Math.Round(screen.Bounds.Width * scale)),
-                                        (int)(Math.Round(screen.Bounds.Height * scale)));
+            {
+                this.Origin = new Point(
+                                    (int)(screen.Bounds.X), 
+                                    (int)(screen.Bounds.Y));
 
-            // scaling working area
-            if ((screen.Bounds.Width == screen.WorkingArea.Width) || (screen.Bounds.Height == screen.WorkingArea.Height)) // 20160808: something strange: when changing the zoom; before change; bounds are excluding scaling; afterwards including scaling
-                UnscaledWorkingArea = new Rectangle(
-                                        (int)(screen.Bounds.X - Math.Round(this.TaskbarLeftWidth * scale)),
-                                        (int)(screen.Bounds.Y - Math.Round(this.TaskbarTopHeight * scale)),
-                                        (int)(screen.Bounds.Width - Math.Round((this.TaskbarRightWidth + this.TaskbarLeftWidth) * scale)),
-                                        (int)(screen.Bounds.Height - Math.Round((this.TaskbarTopHeight + this.TaskbarBottomHeight) * scale)));
+                this.Size = new Size(
+                                    (int)(screen.Bounds.Width), 
+                                    (int)(screen.Bounds.Height));
+            }
             else
-                UnscaledWorkingArea = new Rectangle(
-                                        (int)(Math.Round((screen.Bounds.X - this.TaskbarLeftWidth) * scale)),
-                                        (int)(Math.Round((screen.Bounds.Y - this.TaskbarTopHeight) * scale)),
-                                        (int)(Math.Round((screen.Bounds.Width - this.TaskbarRightWidth - this.TaskbarLeftWidth) * scale)),
-                                        (int)(Math.Round((screen.Bounds.Height - this.TaskbarTopHeight - this.TaskbarBottomHeight) * scale)));
-            //UnscaledWorkingArea = screen.WorkingArea;
+            {
+                this.Origin = new Point(
+                                    (int)(screen.Bounds.X),
+                                    (int)(screen.Bounds.Y));
+
+                this.Size = new Size(
+                    (int)(Math.Round(screen.Bounds.Width * scale)),
+                    (int)(Math.Round(screen.Bounds.Height * scale)));
+            }
+
+            WorkingArea = new Rectangle(
+                                        (int)(this.TaskbarLeftWidth),
+                                        (int)(this.TaskbarTopHeight),
+                                        (int)(this.Size.Width - (this.TaskbarRightWidth + this.TaskbarLeftWidth)),
+                                        (int)(this.Size.Height - (this.TaskbarTopHeight + this.TaskbarBottomHeight)));
         }
 
         public static Dpi GetSystemDpi()

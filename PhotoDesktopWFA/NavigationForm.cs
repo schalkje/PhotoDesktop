@@ -110,8 +110,8 @@ namespace Schalken.PhotoDesktop.WFA
             // Top = 0;
 
             // if mode = bottom-right
-            Left = windowScreen.UnscaledBounds.Width - Width; //Size.Width;
-            Top = windowScreen.UnscaledBounds.Height - Height;
+            Left = windowScreen.WorkingArea.Right - Width; //Size.Width;
+            Top = windowScreen.WorkingArea.Bottom - Height;
 
 
             base.OnShown(e);

@@ -96,7 +96,7 @@ namespace Schalken.PhotoDesktop
 
 
             //using (var virtualScreenBitmap = new Bitmap(ScaledScreen.DesktopRectangle.Width, ScaledScreen.DesktopRectangle.Height))
-            using (var virtualScreenBitmap = CreateScreenBitmap(scaledScreens))
+            using (var virtualScreenBitmap = CreateScreenBitmap())
             {
                 using (var virtualScreenGraphic = Graphics.FromImage(virtualScreenBitmap))
                 {
@@ -117,32 +117,32 @@ namespace Schalken.PhotoDesktop
                                 0,
                                 0),
                             new Point(
-                                monitorBitmap.Width,
-                                monitorBitmap.Height));
+                                scaledScreen.Width,
+                                scaledScreen.Height));
                         monitorGraphics.DrawLine(boundsCrossPen,
                             new Point(
-                                monitorBitmap.Width,
+                                scaledScreen.Width,
                                 0),
                             new Point(
                                 0,
-                                monitorBitmap.Height));
+                                scaledScreen.Height));
 
                         // draw workarea cross
                         Pen workareaCrossPen = new Pen(Color.Green, 4);
                         monitorGraphics.DrawLine(workareaCrossPen,
                             new Point(
-                                scaledScreen.UnscaledWorkingArea.X,
-                                scaledScreen.UnscaledWorkingArea.Y),
+                                scaledScreen.WorkingArea.Left,
+                                scaledScreen.WorkingArea.Top),
                             new Point(
-                                scaledScreen.UnscaledWorkingArea.Width + scaledScreen.UnscaledWorkingArea.X,
-                                scaledScreen.UnscaledWorkingArea.Height + scaledScreen.UnscaledWorkingArea.Y));
+                                scaledScreen.WorkingArea.Right,
+                                scaledScreen.WorkingArea.Bottom));
                         monitorGraphics.DrawLine(workareaCrossPen,
                             new Point(
-                                scaledScreen.UnscaledWorkingArea.Width + scaledScreen.UnscaledWorkingArea.X,
-                                scaledScreen.UnscaledWorkingArea.Y),
+                                scaledScreen.WorkingArea.Left,
+                                scaledScreen.WorkingArea.Bottom),
                             new Point(
-                                scaledScreen.TaskbarLeftWidth,
-                                scaledScreen.UnscaledWorkingArea.Height + scaledScreen.UnscaledWorkingArea.Y));
+                                scaledScreen.WorkingArea.Right,
+                                scaledScreen.WorkingArea.Top));
 
 
                         // https://code.msdn.microsoft.com/DPI-Tutorial-sample-64134744/sourcecode?fileId=86763&pathId=1297537410
@@ -152,14 +152,18 @@ namespace Schalken.PhotoDesktop
                                        scaledScreen.TaskbarTopHeight + 10 * scaledScreen.Scale));
 
                         monitorGraphics.DrawString(scaledScreen.DeviceName, font, Brushes.LightGreen,
-                            new PointF(scaledScreen.TaskbarLeftWidth + scaledScreen.UnscaledWorkingArea.Width - 200 * scaledScreen.Scale,
-                                       scaledScreen.TaskbarTopHeight + scaledScreen.UnscaledWorkingArea.Height - 50 * scaledScreen.Scale));
+                            new PointF(scaledScreen.TaskbarLeftWidth + scaledScreen.WorkingArea.Width - 200 * scaledScreen.Scale,
+                                       scaledScreen.TaskbarTopHeight + scaledScreen.WorkingArea.Height - 50 * scaledScreen.Scale));
 
                         DrawTestLegenda(monitorGraphics, scaledScreen);
 
-                        Rectangle rectangle = new Rectangle(scaledScreen.UnscaledBounds.X - ScaledScreen.DesktopRectangle.X, scaledScreen.UnscaledBounds.Y - ScaledScreen.DesktopRectangle.Y, scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
+                        Rectangle screenRectangle = new Rectangle(
+                            scaledScreen.Origin.X - ScaledScreen.DesktopOrigin.X,
+                            scaledScreen.Origin.Y - ScaledScreen.DesktopOrigin.Y,
+                            scaledScreen.Size.Width,
+                            scaledScreen.Size.Height);
 
-                        virtualScreenGraphic.DrawImage(monitorBitmap, rectangle);
+                        virtualScreenGraphic.DrawImage(monitorBitmap, screenRectangle);
                     }
 
                     virtualScreenBitmap.Save(WallpaperPath + defaultBackgroundFileName, ImageFormat.Bmp);
@@ -169,22 +173,9 @@ namespace Schalken.PhotoDesktop
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 0u, WallpaperPath + defaultBackgroundFileName, SPIF_UPDATEINIFILE);
         }
 
-        private static Bitmap CreateScreenBitmap(ScaledScreen[] scaledScreens)
+        private static Bitmap CreateScreenBitmap()
         {
-            Rectangle unscaledDesktopRectangle = new Rectangle();
-            foreach (ScaledScreen scaledScreen in scaledScreens)
-            {
-                unscaledDesktopRectangle.X = Math.Min(unscaledDesktopRectangle.X, scaledScreen.UnscaledBounds.X);
-                unscaledDesktopRectangle.Y = Math.Min(unscaledDesktopRectangle.Y, scaledScreen.Screen.Bounds.Y);
-                unscaledDesktopRectangle.Width = Math.Max(unscaledDesktopRectangle.Width, scaledScreen.UnscaledBounds.Right);
-                unscaledDesktopRectangle.Height = Math.Max(unscaledDesktopRectangle.Height, scaledScreen.UnscaledBounds.Bottom);
-            }
-            // shift to 0,0
-            unscaledDesktopRectangle.Width -= unscaledDesktopRectangle.X;
-            unscaledDesktopRectangle.Height -= unscaledDesktopRectangle.Y;
-            unscaledDesktopRectangle.X = 0;
-            unscaledDesktopRectangle.Y = 0;
-            return new Bitmap(unscaledDesktopRectangle.Width, unscaledDesktopRectangle.Height);
+            return new Bitmap(ScaledScreen.DesktopSize.Width, ScaledScreen.DesktopSize.Height);
         }
 
         public static void CreateLogonScreenImage(DesktopImage desktopImage, string fullfilename)
@@ -196,15 +187,15 @@ namespace Schalken.PhotoDesktop
             ScaledScreen[] scaledScreens = ScaledScreen.AllScaledScreens;
             ScaledScreen scaledScreen = scaledScreens[0];
 
-            using (var virtualScreenBitmap = new Bitmap(ScaledScreen.DesktopRectangle.Width, ScaledScreen.DesktopRectangle.Height))
+            using (var virtualScreenBitmap = new Bitmap(ScaledScreen.DesktopSize.Width, ScaledScreen.DesktopSize.Height))
             {
                 using (var virtualScreenGraphic = Graphics.FromImage(virtualScreenBitmap))
                 {
-                    var monitorBitmap = new Bitmap(scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
+                    var monitorBitmap = new Bitmap(scaledScreen.Width, scaledScreen.Height);
                     var monitorGraphics = Graphics.FromImage(monitorBitmap);
 
                     // standard background
-                    monitorGraphics.FillRectangle(SystemBrushes.Info, 0, 0, scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
+                    monitorGraphics.FillRectangle(SystemBrushes.Info, 0, 0, scaledScreen.Width, scaledScreen.Height);
 
                     // todo: extension add different centering zoom options: fill, fill center
                     if (desktopImage != null)
@@ -214,7 +205,7 @@ namespace Schalken.PhotoDesktop
                     DrawLegenda(monitorGraphics, scaledScreen, desktopImage, null);
 
                     // determine rectangle where the image will reside
-                    Rectangle screenRectangle = new Rectangle(scaledScreen.UnscaledBounds.X - ScaledScreen.DesktopRectangle.X, scaledScreen.UnscaledBounds.Y - ScaledScreen.DesktopRectangle.Y, scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
+                    Rectangle screenRectangle = new Rectangle(scaledScreen.X, scaledScreen.Y, scaledScreen.Width, scaledScreen.Height);
 
                     // draw the image on the fill desktop image
                     virtualScreenGraphic.DrawImage(monitorBitmap, screenRectangle);
@@ -253,7 +244,7 @@ namespace Schalken.PhotoDesktop
             {
                 if (deviceName.Equals(scaledScreen.DeviceName))
                 {
-                    var monitorBitmap = new Bitmap(scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
+                    var monitorBitmap = new Bitmap(scaledScreen.Width, scaledScreen.Height);
                     var monitorGraphics = Graphics.FromImage(monitorBitmap);
 
                     return GetLegendaRect(monitorGraphics, scaledScreen);
@@ -272,7 +263,7 @@ namespace Schalken.PhotoDesktop
 
             ScaledScreen[] scaledScreens = ScaledScreen.AllScaledScreens;
 
-            using (var virtualScreenBitmap = CreateScreenBitmap(scaledScreens))
+            using (var virtualScreenBitmap = CreateScreenBitmap())
             {
                 using (var virtualScreenGraphic = Graphics.FromImage(virtualScreenBitmap))
                 {
@@ -283,12 +274,12 @@ namespace Schalken.PhotoDesktop
 
                         var desktopImage = images[scaledScreen.DeviceName];
 
-                        //var monitorDimensions = scaledScreen.Bounds;
-                        var monitorBitmap = new Bitmap(scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
+                        // get drawing ground
+                        var monitorBitmap = new Bitmap(scaledScreen.Width, scaledScreen.Height);
                         var monitorGraphics = Graphics.FromImage(monitorBitmap);
 
                         // standard background
-                        monitorGraphics.FillRectangle(SystemBrushes.Info, 0, 0, scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
+                        monitorGraphics.FillRectangle(SystemBrushes.Desktop, 0, 0, monitorBitmap.Width, monitorBitmap.Height);
 
                         // todo: extension add different centering zoom options: fill, fill center
                         if (desktopImage != null)
@@ -301,7 +292,11 @@ namespace Schalken.PhotoDesktop
                         DrawLegenda(monitorGraphics, scaledScreen, desktopImage, controlerForm);
 
                         // determine rectangle where the image will reside
-                        Rectangle screenRectangle = new Rectangle(scaledScreen.UnscaledBounds.X - ScaledScreen.DesktopRectangle.X, scaledScreen.UnscaledBounds.Y - ScaledScreen.DesktopRectangle.Y, scaledScreen.UnscaledBounds.Width, scaledScreen.UnscaledBounds.Height);
+                        Rectangle screenRectangle = new Rectangle(
+                            scaledScreen.Origin.X - ScaledScreen.DesktopOrigin.X,
+                            scaledScreen.Origin.Y - ScaledScreen.DesktopOrigin.Y,
+                            scaledScreen.Size.Width,
+                            scaledScreen.Size.Height);
 
                         // draw the image on the fill desktop image
                         virtualScreenGraphic.DrawImage(monitorBitmap, screenRectangle);
