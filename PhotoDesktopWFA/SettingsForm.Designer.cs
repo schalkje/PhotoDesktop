@@ -60,6 +60,7 @@
             this.btnNext = new System.Windows.Forms.Button();
             this.btnPrevious = new System.Windows.Forms.Button();
             this.lbDebug = new System.Windows.Forms.ListBox();
+            this.lbScreens = new System.Windows.Forms.ListBox();
             this.btnTest = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudTimerValue)).BeginInit();
             this.gbOrder.SuspendLayout();
@@ -75,7 +76,7 @@
             this.tbBaseFolder.Location = new System.Drawing.Point(202, 288);
             this.tbBaseFolder.Margin = new System.Windows.Forms.Padding(4);
             this.tbBaseFolder.Name = "tbBaseFolder";
-            this.tbBaseFolder.Size = new System.Drawing.Size(970, 20);
+            this.tbBaseFolder.Size = new System.Drawing.Size(968, 20);
             this.tbBaseFolder.TabIndex = 7;
             this.tbBaseFolder.Text = "C:\\OneDrive\\Afbeeldingen\\";
             // 
@@ -86,14 +87,14 @@
             this.tbFolder.Location = new System.Drawing.Point(202, 250);
             this.tbFolder.Margin = new System.Windows.Forms.Padding(4);
             this.tbFolder.Name = "tbFolder";
-            this.tbFolder.Size = new System.Drawing.Size(970, 20);
+            this.tbFolder.Size = new System.Drawing.Size(968, 20);
             this.tbFolder.TabIndex = 6;
             this.tbFolder.Text = "C:\\OneDrive\\Afbeeldingen\\Background Selection";
             // 
             // btnAddFolder
             // 
             this.btnAddFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddFolder.Location = new System.Drawing.Point(1181, 250);
+            this.btnAddFolder.Location = new System.Drawing.Point(1179, 250);
             this.btnAddFolder.Margin = new System.Windows.Forms.Padding(4);
             this.btnAddFolder.Name = "btnAddFolder";
             this.btnAddFolder.Size = new System.Drawing.Size(100, 70);
@@ -111,7 +112,7 @@
             this.lbFolders.Location = new System.Drawing.Point(15, 325);
             this.lbFolders.Margin = new System.Windows.Forms.Padding(4);
             this.lbFolders.Name = "lbFolders";
-            this.lbFolders.Size = new System.Drawing.Size(1268, 316);
+            this.lbFolders.Size = new System.Drawing.Size(721, 316);
             this.lbFolders.TabIndex = 9;
             this.lbFolders.Click += new System.EventHandler(this.lbFolders_Click);
             // 
@@ -164,24 +165,24 @@
             // rbSeconds
             // 
             this.rbSeconds.AutoSize = true;
+            this.rbSeconds.Checked = true;
             this.rbSeconds.Location = new System.Drawing.Point(7, 19);
             this.rbSeconds.Margin = new System.Windows.Forms.Padding(4);
             this.rbSeconds.Name = "rbSeconds";
             this.rbSeconds.Size = new System.Drawing.Size(65, 17);
             this.rbSeconds.TabIndex = 15;
+            this.rbSeconds.TabStop = true;
             this.rbSeconds.Text = "seconds";
             this.rbSeconds.UseVisualStyleBackColor = true;
             // 
             // rbMinutes
             // 
             this.rbMinutes.AutoSize = true;
-            this.rbMinutes.Checked = true;
             this.rbMinutes.Location = new System.Drawing.Point(7, 44);
             this.rbMinutes.Margin = new System.Windows.Forms.Padding(4);
             this.rbMinutes.Name = "rbMinutes";
             this.rbMinutes.Size = new System.Drawing.Size(61, 17);
             this.rbMinutes.TabIndex = 16;
-            this.rbMinutes.TabStop = true;
             this.rbMinutes.Text = "minutes";
             this.rbMinutes.UseVisualStyleBackColor = true;
             // 
@@ -212,12 +213,12 @@
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(1154, 655);
+            this.btnOk.Location = new System.Drawing.Point(1152, 655);
             this.btnOk.Margin = new System.Windows.Forms.Padding(4);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(128, 41);
             this.btnOk.TabIndex = 19;
-            this.btnOk.Text = "Save";
+            this.btnOk.Text = "&Save";
             this.btnOk.UseVisualStyleBackColor = true;
             // 
             // btnCancel
@@ -229,7 +230,7 @@
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(122, 38);
             this.btnCancel.TabIndex = 20;
-            this.btnCancel.Text = "Cancel";
+            this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // rbOrderRandom
@@ -376,6 +377,7 @@
             // btnOpenExplorerOnLogonImageLocation
             // 
             this.btnOpenExplorerOnLogonImageLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnOpenExplorerOnLogonImageLocation.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnOpenExplorerOnLogonImageLocation.Location = new System.Drawing.Point(8, 106);
             this.btnOpenExplorerOnLogonImageLocation.Margin = new System.Windows.Forms.Padding(4);
             this.btnOpenExplorerOnLogonImageLocation.Name = "btnOpenExplorerOnLogonImageLocation";
@@ -383,7 +385,6 @@
             this.btnOpenExplorerOnLogonImageLocation.TabIndex = 34;
             this.btnOpenExplorerOnLogonImageLocation.Text = "Open Explorer";
             this.btnOpenExplorerOnLogonImageLocation.UseVisualStyleBackColor = true;
-            this.btnOpenExplorerOnLogonImageLocation.Click += new System.EventHandler(this.btnOpenExplorerOnLogonImageLocation_Click);
             // 
             // btnNext
             // 
@@ -411,21 +412,38 @@
             // 
             // lbDebug
             // 
+            this.lbDebug.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbDebug.BackColor = System.Drawing.SystemColors.Control;
+            this.lbDebug.ForeColor = System.Drawing.Color.Green;
             this.lbDebug.FormattingEnabled = true;
             this.lbDebug.Location = new System.Drawing.Point(758, 76);
+            this.lbDebug.MultiColumn = true;
             this.lbDebug.Name = "lbDebug";
-            this.lbDebug.Size = new System.Drawing.Size(378, 134);
+            this.lbDebug.Size = new System.Drawing.Size(521, 134);
             this.lbDebug.TabIndex = 37;
+            // 
+            // lbScreens
+            // 
+            this.lbScreens.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbScreens.BackColor = System.Drawing.SystemColors.Control;
+            this.lbScreens.ForeColor = System.Drawing.Color.Green;
+            this.lbScreens.FormattingEnabled = true;
+            this.lbScreens.Location = new System.Drawing.Point(745, 325);
+            this.lbScreens.Name = "lbScreens";
+            this.lbScreens.Size = new System.Drawing.Size(536, 316);
+            this.lbScreens.TabIndex = 38;
             // 
             // btnTest
             // 
             this.btnTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnTest.Location = new System.Drawing.Point(1144, 13);
+            this.btnTest.Location = new System.Drawing.Point(1152, 38);
             this.btnTest.Margin = new System.Windows.Forms.Padding(4);
             this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(137, 38);
-            this.btnTest.TabIndex = 38;
-            this.btnTest.Text = "Test";
+            this.btnTest.Size = new System.Drawing.Size(127, 38);
+            this.btnTest.TabIndex = 39;
+            this.btnTest.Text = "&Test";
             this.btnTest.UseVisualStyleBackColor = true;
             this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
@@ -433,8 +451,9 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(1296, 710);
+            this.ClientSize = new System.Drawing.Size(1294, 710);
             this.Controls.Add(this.btnTest);
+            this.Controls.Add(this.lbScreens);
             this.Controls.Add(this.lbDebug);
             this.Controls.Add(this.btnPrevious);
             this.Controls.Add(this.btnNext);
@@ -507,6 +526,7 @@
         private System.Windows.Forms.Button btnPrevious;
         private System.Windows.Forms.ListBox lbDebug;
         private System.Windows.Forms.RadioButton rbSwitchRotate;
+        private System.Windows.Forms.ListBox lbScreens;
         private System.Windows.Forms.Button btnTest;
     }
 }

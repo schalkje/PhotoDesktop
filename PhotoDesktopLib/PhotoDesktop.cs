@@ -70,6 +70,10 @@ namespace Schalken.PhotoDesktop
                 NextAlternately();
         }
 
+        public void Test()
+        {
+        }
+
         public string GetMainScreenName()
         {
             return Screen.AllScreens[0].DeviceName;

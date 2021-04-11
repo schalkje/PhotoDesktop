@@ -29,6 +29,23 @@ namespace Schalken.PhotoDesktop.WFA
         {
             this._photoDesktop = photoDesktop;
             RefreshStackDebug();
+
+
+            ScaledScreen[] scaledScreens = ScaledScreen.AllScaledScreens;
+            foreach (var scaledScreen in scaledScreens)
+            {
+                lbScreens.Items.Add("Device: " + scaledScreen.DeviceName);
+                lbScreens.Items.Add("   Width x Height: " + scaledScreen.Width + " x " + scaledScreen.Height);
+                lbScreens.Items.Add("   Scale: " + scaledScreen.Scale);
+                lbScreens.Items.Add("   DPI: Angular=" + scaledScreen.DpiAngular + ", Effective=" + scaledScreen.DpiEffective + ", Raw=" + scaledScreen.DpiRaw + ", System=" + scaledScreen.DpiSystem);
+                lbScreens.Items.Add("   Taskbar: Left, Top, Right, Bottom: "  + scaledScreen.TaskbarLeftWidth + ", " + scaledScreen.TaskbarTopHeight + ", " + scaledScreen.TaskbarRightWidth + ", " + scaledScreen.TaskbarBottomHeight);
+                lbScreens.Items.Add("   Screen Bounds: X x Y, Width x Height: " + scaledScreen.Screen.Bounds.X + " x " + scaledScreen.Screen.Bounds.Y + ", " + scaledScreen.Screen.Bounds.Width + " x " + scaledScreen.Screen.Bounds.Height);
+                lbScreens.Items.Add("   Screen WorkingArea: X x Y, Width x Height: " + scaledScreen.Screen.WorkingArea.X + " x " + scaledScreen.Screen.WorkingArea.Y + ", " + scaledScreen.Screen.WorkingArea.Width + " x " + scaledScreen.Screen.WorkingArea.Height);
+                lbScreens.Items.Add("   Unscaled Bounds: X x Y, Width x Height: " + scaledScreen.UnscaledBounds.X + " x " + scaledScreen.UnscaledBounds.Y + ", " + scaledScreen.UnscaledBounds.Width + " x " + scaledScreen.UnscaledBounds.Height);
+                lbScreens.Items.Add("   Unscaled Working Area: X x Y, Width x Height: " + scaledScreen.UnscaledWorkingArea.X + " x " + scaledScreen.UnscaledWorkingArea.Y + ", " + scaledScreen.UnscaledWorkingArea.Width + " x " + scaledScreen.UnscaledWorkingArea.Height);
+                lbScreens.Items.Add("");
+
+            }
         }
 
 
