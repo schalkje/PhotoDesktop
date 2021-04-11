@@ -7,13 +7,20 @@ using System.Threading.Tasks;
 namespace Schalken.PhotoDesktop.WFA
 {
 
-    public partial class MainForm : Form //TransparentForm
+    public partial class NavigationForm : Form //TransparentForm
     {
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern Int32 SystemParametersInfo(UInt32 action, UInt32 uParam, String vParam, UInt32 winIni);
 
-
+        private int _screen;
+        public int NavigationFormScreen
+        {
+            get
+            {
+                return _screen;
+            }
+        }
 
         /// <summary>
         /// Parameter documentation:
@@ -67,7 +74,21 @@ namespace Schalken.PhotoDesktop.WFA
         /// http://www.codeproject.com/Articles/101272/Creation-of-Multi-monitor-Screenshots-Using-WinAPI
         /// http://connect.microsoft.com/VisualStudio/feedback/details/526951/screen-object-physicalwidthincentimeters-physicalheightincentimeters-displaymode
         /// </summary>
-        public MainForm()
+        public NavigationForm(int screen)
+        {
+            _screen = screen;
+
+            InitializeComponent();
+
+            LoadSettings();
+
+            // on startup switch
+            if (Properties.Settings.Default.ChangeOnStart)
+                _photoDesktop.Next();
+        }
+
+
+        public NavigationForm()
         {
             InitializeComponent();
 
@@ -94,16 +115,6 @@ namespace Schalken.PhotoDesktop.WFA
 
 
             base.OnShown(e);
-
-            // if debug mode; show settings
-#if DEBUG
-            SettingsForm settingsForm = new SettingsForm(_photoDesktop);
-            if (settingsForm.ShowDialog() == DialogResult.OK)
-            {
-                LoadSettings(settingsForm.RefreshImageList);
-            }
-#endif
-
         }
 
 

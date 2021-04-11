@@ -65,6 +65,10 @@ namespace Schalken.PhotoDesktop
                 NextAlternately();
         }
 
+        public void Test()
+        {
+        }
+
 
         public void Previous()
         {

@@ -126,18 +126,18 @@ namespace Schalken.PhotoDesktop
                         Pen workareaCrossPen = new Pen(Color.Green, 4);
                         monitorGraphics.DrawLine(workareaCrossPen,
                             new Point(
-                                scaledScreen.TaskbarLeftWidth,
-                                scaledScreen.TaskbarTopHeight),
+                                scaledScreen.UnscaledWorkingArea.X,
+                                scaledScreen.UnscaledWorkingArea.Y),
                             new Point(
-                                scaledScreen.UnscaledWorkingArea.Width + scaledScreen.TaskbarLeftWidth,
-                                scaledScreen.UnscaledWorkingArea.Height + scaledScreen.TaskbarTopHeight));
+                                scaledScreen.UnscaledWorkingArea.Width + scaledScreen.UnscaledWorkingArea.X,
+                                scaledScreen.UnscaledWorkingArea.Height + scaledScreen.UnscaledWorkingArea.Y));
                         monitorGraphics.DrawLine(workareaCrossPen,
                             new Point(
-                                scaledScreen.UnscaledWorkingArea.Width + scaledScreen.TaskbarLeftWidth,
-                                scaledScreen.TaskbarTopHeight),
+                                scaledScreen.UnscaledWorkingArea.Width + scaledScreen.UnscaledWorkingArea.X,
+                                scaledScreen.UnscaledWorkingArea.Y),
                             new Point(
                                 scaledScreen.TaskbarLeftWidth,
-                                scaledScreen.UnscaledWorkingArea.Height + scaledScreen.TaskbarTopHeight));
+                                scaledScreen.UnscaledWorkingArea.Height + scaledScreen.UnscaledWorkingArea.Y));
 
 
                         // https://code.msdn.microsoft.com/DPI-Tutorial-sample-64134744/sourcecode?fileId=86763&pathId=1297537410

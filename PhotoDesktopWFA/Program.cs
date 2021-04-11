@@ -21,7 +21,10 @@ namespace Schalken.PhotoDesktop.WFA
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-                        MainForm mainForm = new MainForm();
+
+            // create main navigation form for each screen
+
+            MainForm mainForm = new MainForm();
             mainForm.Visible = true;
             mainForm.WindowVisible = false;
 

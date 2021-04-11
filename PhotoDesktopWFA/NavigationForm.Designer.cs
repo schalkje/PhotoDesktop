@@ -1,6 +1,6 @@
 ﻿namespace Schalken.PhotoDesktop.WFA
 {
-    partial class MainForm
+    partial class NavigationForm
     {
         /// <summary>
         /// Required designer variable.

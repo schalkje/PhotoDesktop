@@ -15,52 +15,52 @@ namespace Schalken.PhotoDesktop
 
         // https://msdn.microsoft.com/en-us/library/windows/desktop/dd145062.aspx
         [DllImport("User32.dll")]
-        private static extern IntPtr MonitorFromPoint([In]Point pt, [In]uint dwFlags);
+        private static extern IntPtr MonitorFromPoint([In] Point pt, [In] uint dwFlags);
 
-        [DllImport("User32.dll", SetLastError = true)] 
- 	    private static extern IntPtr MonitorFromWindow(IntPtr hwnd,MONITOR_DEFAULTTO dwFlags);
+        [DllImport("User32.dll", SetLastError = true)]
+        private static extern IntPtr MonitorFromWindow(IntPtr hwnd, MONITOR_DEFAULTTO dwFlags);
 
         private enum MONITOR_DEFAULTTO : uint
- 	    { 
- 		    MONITOR_DEFAULTTONULL = 0x00000000, 
- 		    MONITOR_DEFAULTTOPRIMARY = 0x00000001, 
- 	    	MONITOR_DEFAULTTONEAREST = 0x00000002, 
-     	}
+        {
+            MONITOR_DEFAULTTONULL = 0x00000000,
+            MONITOR_DEFAULTTOPRIMARY = 0x00000001,
+            MONITOR_DEFAULTTONEAREST = 0x00000002,
+        }
 
         // https://msdn.microsoft.com/en-us/library/windows/desktop/dn280510.aspx
         [DllImport("Shcore.dll")]
-        private static extern int GetDpiForMonitor([In]IntPtr hmonitor, [In]DpiType dpiType, [Out]out uint dpiX, [Out]out uint dpiY);
+        private static extern int GetDpiForMonitor([In] IntPtr hmonitor, [In] DpiType dpiType, [Out] out uint dpiX, [Out] out uint dpiY);
 
         [DllImport("Shcore.dll")]
-        private static extern int GetProcessDpiAwareness([In]IntPtr hprocess, [Out]out PROCESS_DPI_AWARENESS awareness);
+        private static extern int GetProcessDpiAwareness([In] IntPtr hprocess, [Out] out PROCESS_DPI_AWARENESS awareness);
 
         [DllImport("Shcore.dll")]
-        private static extern int SetProcessDpiAwareness([In]PROCESS_DPI_AWARENESS awareness);
+        private static extern int SetProcessDpiAwareness([In] PROCESS_DPI_AWARENESS awareness);
 
-        [DllImport("Gdi32.dll", SetLastError = true)] 
-     	private static extern int GetDeviceCaps(IntPtr hdc, int nIndex); 
-     
-    
-     	private const int LOGPIXELSX = 88; 
-     	private const int LOGPIXELSY = 90;
+        [DllImport("Gdi32.dll", SetLastError = true)]
+        private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
 
-        [DllImport("User32.dll", SetLastError = true)] 
-     	private static extern IntPtr GetDC(IntPtr hWnd);
 
-       [DllImport("User32.dll", SetLastError = true)] 
-     	[return: MarshalAs(UnmanagedType.Bool)] 
- 	    private static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
+        private const int LOGPIXELSX = 88;
+        private const int LOGPIXELSY = 90;
+
+        [DllImport("User32.dll", SetLastError = true)]
+        private static extern IntPtr GetDC(IntPtr hWnd);
+
+        [DllImport("User32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
 
         private enum WindowMessage : int
- 	    { 
- 	    	WM_DPICHANGED = 0x02E0, 
-     	}
+        {
+            WM_DPICHANGED = 0x02E0,
+        }
 
 
 
 
-    public enum DpiType
+        public enum DpiType
         {
             Effective = 0,
             Angular = 1,
@@ -99,7 +99,7 @@ namespace Schalken.PhotoDesktop
         {
 
             PROCESS_DPI_AWARENESS awareness;
-            
+
             var result = GetProcessDpiAwareness(
                 IntPtr.Zero, // current process
                 out awareness);
@@ -171,7 +171,7 @@ namespace Schalken.PhotoDesktop
             var hmonitor = MonitorFromPoint(point, MONITOR_DEFAULTTONEAREST);
 
             int result = GetDpiForMonitor(hmonitor, dpiType, out dpiX, out dpiY);
-            switch (result )
+            switch (result)
             {
                 case S_OK: return;
                 case E_INVALIDARG:
@@ -195,14 +195,14 @@ namespace Schalken.PhotoDesktop
                     throw new ArgumentException("Unknown error. See https://msdn.microsoft.com/en-us/library/windows/desktop/dn280510.aspx for more information.");
                 default:
                     throw new COMException("Unknown error. See https://msdn.microsoft.com/en-us/library/windows/desktop/dn280510.aspx for more information.");
-            }            
+            }
         }
 
 
 
         public static ScaledScreen[] AllScaledScreens
         {
-            get 
+            get
             {
                 Screen[] screens = System.Windows.Forms.Screen.AllScreens;
 
@@ -211,7 +211,7 @@ namespace Schalken.PhotoDesktop
                 // local temp variables
                 int minX = 0, minY = 0, maxX = 0, maxY = 0;
 
-                for (int i = 0; i<screens.Length; i++)
+                for (int i = 0; i < screens.Length; i++)
                 {
                     var screen = screens[i];
                     float dpiScale = GetScreenScaleFromEffective(screen);
@@ -278,17 +278,21 @@ namespace Schalken.PhotoDesktop
         {
             get
             {
-                if (UnscaledBounds.Y == UnscaledWorkingArea.Y)
-                    return (int)(UnscaledBounds.Height - UnscaledWorkingArea.Height);
+                if ((this.Screen.Bounds.Width == this.Screen.WorkingArea.Width) || (this.Screen.Bounds.Height == this.Screen.WorkingArea.Height))
+                    return (int)(this.Screen.Bounds.Height - this.Screen.WorkingArea.Height);
                 else
-                    return 0;
+                    return (int)(this.Screen.Bounds.Height - this.Screen.WorkingArea.Height / Scale);
             }
         }
         public int TaskbarTopHeight
         {
             get
             {
-                return (int)(UnscaledWorkingArea.Y - UnscaledBounds.Y);
+                if ((this.Screen.Bounds.Width == this.Screen.WorkingArea.Width) || (this.Screen.Bounds.Height == this.Screen.WorkingArea.Height))
+                    return (int)(Screen.WorkingArea.Y - this.Screen.Bounds.Y * Scale);
+                else 
+                    return (int)(Screen.WorkingArea.Y - this.Screen.Bounds.Y); // x and y are not scaled
+
             }
         }
 
@@ -296,26 +300,29 @@ namespace Schalken.PhotoDesktop
         {
             get
             {
-                if (UnscaledBounds.X == UnscaledWorkingArea.X)
-                    return (int)(UnscaledBounds.Width - UnscaledWorkingArea.Width);
+                if ((this.Screen.Bounds.Width == this.Screen.WorkingArea.Width) || (this.Screen.Bounds.Height == this.Screen.WorkingArea.Height))
+                    return (int)(this.Screen.Bounds.Width - this.Screen.WorkingArea.Width);
                 else
-                    return 0;
+                    return (int)(this.Screen.Bounds.Width - this.Screen.WorkingArea.Width / Scale); 
             }
         }
         public int TaskbarLeftWidth
         {
             get
             {
-                return (int)(UnscaledWorkingArea.X - UnscaledBounds.X);
+                if ((this.Screen.Bounds.Width == this.Screen.WorkingArea.Width) || (this.Screen.Bounds.Height == this.Screen.WorkingArea.Height))
+                    return (int)(this.Screen.WorkingArea.X - this.Screen.Bounds.X);
+                else
+                    return (int)(this.Screen.WorkingArea.X - this.Screen.Bounds.X); // x and y are not scaled
             }
         }
 
-        public ScaledScreen(Screen screen, float scale) 
+        public ScaledScreen(Screen screen, float scale)
         {
             this.Screen = screen;
-            this.Scale = scale;         
-            
-            if ((screen.Bounds.Width==screen.WorkingArea.Width) || (screen.Bounds.Height == screen.WorkingArea.Height)) // 20160808: something strange: when changing the zoom; before change; bounds are excuding scaling; afterwards including scaling
+            this.Scale = scale;
+
+            if ((screen.Bounds.Width == screen.WorkingArea.Width) || (screen.Bounds.Height == screen.WorkingArea.Height)) // 20160808: something strange: when changing the zoom; before change; bounds are excluding scaling; afterwards including scaling
                 UnscaledBounds = new Rectangle(
                                         (int)(screen.Bounds.X),
                                         (int)(screen.Bounds.Y),
@@ -328,34 +335,46 @@ namespace Schalken.PhotoDesktop
                                         (int)(Math.Round(screen.Bounds.Width * scale)),
                                         (int)(Math.Round(screen.Bounds.Height * scale)));
 
-            // on Windows 10 multi screen scaling for workarea is not necessary
-            UnscaledWorkingArea = screen.WorkingArea;
+            // scaling working area
+            if ((screen.Bounds.Width == screen.WorkingArea.Width) || (screen.Bounds.Height == screen.WorkingArea.Height)) // 20160808: something strange: when changing the zoom; before change; bounds are excluding scaling; afterwards including scaling
+                UnscaledWorkingArea = new Rectangle(
+                                        (int)(screen.Bounds.X - Math.Round(this.TaskbarLeftWidth * scale)),
+                                        (int)(screen.Bounds.Y - Math.Round(this.TaskbarTopHeight * scale)),
+                                        (int)(screen.Bounds.Width - Math.Round((this.TaskbarRightWidth + this.TaskbarLeftWidth) * scale)),
+                                        (int)(screen.Bounds.Height - Math.Round((this.TaskbarTopHeight + this.TaskbarBottomHeight) * scale)));
+            else
+                UnscaledWorkingArea = new Rectangle(
+                                        (int)(Math.Round((screen.Bounds.X - this.TaskbarLeftWidth) * scale)),
+                                        (int)(Math.Round((screen.Bounds.Y - this.TaskbarTopHeight) * scale)),
+                                        (int)(Math.Round((screen.Bounds.Width - this.TaskbarRightWidth - this.TaskbarLeftWidth) * scale)),
+                                        (int)(Math.Round((screen.Bounds.Height - this.TaskbarTopHeight - this.TaskbarBottomHeight) * scale)));
+            //UnscaledWorkingArea = screen.WorkingArea;
         }
 
         public static Dpi GetSystemDpi()
- 	    { 
- 		    var screen = IntPtr.Zero; 
- 
+        {
+            var screen = IntPtr.Zero;
 
- 		    try 
- 		    { 
- 			    screen = GetDC(IntPtr.Zero); 
- 
 
- 			    return new Dpi( 
- 				    (uint)GetDeviceCaps(screen, LOGPIXELSX), 
- 				    (uint)GetDeviceCaps(screen, LOGPIXELSY)); 
- 		    } 
- 		    finally 
- 		    { 
- 			    if (screen != IntPtr.Zero) 
- 				    ReleaseDC(IntPtr.Zero, screen); 
- 		    } 
- 	    } 
+            try
+            {
+                screen = GetDC(IntPtr.Zero);
+
+
+                return new Dpi(
+                    (uint)GetDeviceCaps(screen, LOGPIXELSX),
+                    (uint)GetDeviceCaps(screen, LOGPIXELSY));
+            }
+            finally
+            {
+                if (screen != IntPtr.Zero)
+                    ReleaseDC(IntPtr.Zero, screen);
+            }
+        }
 
 
         /// <summary>
-        
+
         /// </summary>
         /// <param name="screen"></param>
         /// <returns></returns>
