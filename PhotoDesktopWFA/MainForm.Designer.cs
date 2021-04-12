@@ -44,6 +44,7 @@
             this.photoTimer = new System.Windows.Forms.Timer(this.components);
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.star1 = new System.Windows.Forms.Label();
+            this.imageList_16x16 = new System.Windows.Forms.ImageList(this.components);
             this.btnPrev = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Label();
             this.star2 = new System.Windows.Forms.Label();
@@ -53,7 +54,6 @@
             this.star5 = new System.Windows.Forms.Label();
             this.btnDislike = new System.Windows.Forms.Label();
             this.btnSettings = new System.Windows.Forms.Label();
-            this.imageList_16x16 = new System.Windows.Forms.ImageList(this.components);
             this.imageList_20x20 = new System.Windows.Forms.ImageList(this.components);
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -181,6 +181,15 @@
             this.star1.Visible = false;
             this.star1.Click += new System.EventHandler(this.btnStar_Click);
             // 
+            // imageList_16x16
+            // 
+            this.imageList_16x16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList_16x16.ImageStream")));
+            this.imageList_16x16.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList_16x16.Images.SetKeyName(0, "pd_star_t_16x16.png");
+            this.imageList_16x16.Images.SetKeyName(1, "pd_starred_16x16.png");
+            this.imageList_16x16.Images.SetKeyName(2, "pd_dislike_16x16 .png");
+            this.imageList_16x16.Images.SetKeyName(3, "pd_settings_16x16.png");
+            // 
             // btnPrev
             // 
             this.btnPrev.BackColor = System.Drawing.Color.DarkRed;
@@ -227,7 +236,7 @@
             this.label4.ImageList = this.imageList;
             this.label4.Location = new System.Drawing.Point(166, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(0, 13);
+            this.label4.Size = new System.Drawing.Size(0, 20);
             this.label4.TabIndex = 16;
             // 
             // star3
@@ -295,15 +304,6 @@
             this.btnSettings.Visible = false;
             this.btnSettings.Click += new System.EventHandler(this.menuSettings_Click);
             // 
-            // imageList_16x16
-            // 
-            this.imageList_16x16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList_16x16.ImageStream")));
-            this.imageList_16x16.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList_16x16.Images.SetKeyName(0, "pd_star_t_16x16.png");
-            this.imageList_16x16.Images.SetKeyName(1, "pd_starred_16x16.png");
-            this.imageList_16x16.Images.SetKeyName(2, "pd_dislike_16x16 .png");
-            this.imageList_16x16.Images.SetKeyName(3, "pd_settings_16x16.png");
-            // 
             // imageList_20x20
             // 
             this.imageList_20x20.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList_20x20.ImageStream")));
@@ -334,6 +334,7 @@
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(400, 100);
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(400, 100);
             this.Name = "MainForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

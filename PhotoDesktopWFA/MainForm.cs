@@ -84,9 +84,6 @@ namespace Schalken.PhotoDesktop.WFA
             // get name for main window; add this mainform to the main screen
             _displayScreenName = _photoDesktop.GetMainScreenName();
             _photoDesktop.ControlerForms.Add(_displayScreenName, this);
-
-
-            //ShowSettings();
         }
 
         protected override void OnShown(EventArgs e)
@@ -109,14 +106,9 @@ namespace Schalken.PhotoDesktop.WFA
 
             base.OnShown(e);
 
-            //Width = 400;
-            //Height = 100;
-            //Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
-            //Top = windowScreen.UnscaledWorkingArea.Height - Height;
-
             // if debug mode; show settings
 #if DEBUG
-            ShowSettings();
+            //ShowSettings();
 #endif
         }
 

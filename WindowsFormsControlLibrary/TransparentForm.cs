@@ -26,7 +26,7 @@ namespace WindowsFormsControlLibrary
                 e.Graphics.FillRectangle(Brushes.Green, e.ClipRectangle);
 
             // empty function, so no background
-            // base.OnPaintBackground(e);
+            //base.OnPaintBackground(e);
         }
     }
 }

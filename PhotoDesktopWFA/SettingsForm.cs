@@ -30,9 +30,13 @@ namespace Schalken.PhotoDesktop.WFA
             this._photoDesktop = photoDesktop;
             RefreshStackDebug();
 
+
             lbScreens.Items.Add("ScaledScreen: ");
             lbScreens.Items.Add("   DesktopOrigin: X x Y: " + ScaledScreen.DesktopOrigin.X + " x " + ScaledScreen.DesktopOrigin.Y);
             lbScreens.Items.Add("   DesktopSize: Width x Height: " + ScaledScreen.DesktopSize.Width + " x " + ScaledScreen.DesktopSize.Height);
+            lbScreens.Items.Add("");
+
+            lbScreens.Items.Add("   GetMainScreenName: " + _photoDesktop.GetMainScreenName());
             lbScreens.Items.Add("");
 
             ScaledScreen[] scaledScreens = ScaledScreen.AllScaledScreens;
