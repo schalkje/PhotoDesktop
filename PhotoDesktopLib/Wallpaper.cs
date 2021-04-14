@@ -25,13 +25,6 @@ namespace Schalken.PhotoDesktop
         private static readonly UInt32 SPI_GETDESKWALLPAPER = 0x73;
         private static readonly int MAX_PATH = 260;
 
-        // image properties
-        // https://docs.microsoft.com/en-us/dotnet/api/system.drawing.imaging.propertyitem.id?redirectedfrom=MSDN&view=dotnet-plat-ext-3.1#System_Drawing_Imaging_PropertyItem_Id
-        private static int PropertyTagExifDTOrig = 0x9003; // date taken
-        private static int PropertyTagExifUserComment = 0x9286; // user comment
-        private static int PropertyTagStarRating = 18246; // star rating taken
-
-        private static Regex dateRegex = new Regex(":");
 
         static string defaultBackgroundFileName = @"DefaultBackground.bmp";
 
@@ -199,7 +192,7 @@ namespace Schalken.PhotoDesktop
 
                     // todo: extension add different centering zoom options: fill, fill center
                     if (desktopImage != null)
-                        DrawImageFillCentered(ref monitorGraphics, desktopImage.Image, new Rectangle(0, 0, monitorBitmap.Width, monitorBitmap.Height));
+                        DrawImageFillCentered(ref monitorGraphics, desktopImage.GetImage(), new Rectangle(0, 0, monitorBitmap.Width, monitorBitmap.Height));
 
                     // add text to image
                     DrawLegenda(monitorGraphics, scaledScreen, desktopImage, null);
@@ -283,7 +276,7 @@ namespace Schalken.PhotoDesktop
 
                         // todo: extension add different centering zoom options: fill, fill center
                         if (desktopImage != null)
-                            DrawImageFillCentered(ref monitorGraphics, desktopImage.Image, new Rectangle(0, 0, monitorBitmap.Width, monitorBitmap.Height));
+                            DrawImageFillCentered(ref monitorGraphics, desktopImage.GetImage(), new Rectangle(0, 0, monitorBitmap.Width, monitorBitmap.Height));
 
                         // add text to image
                         Form controlerForm = null;
@@ -376,20 +369,7 @@ namespace Schalken.PhotoDesktop
             Rectangle legendaRect = GetLegendaRect(monitorGraphics, scaledScreen);
 
 
-            // search for date taken
-            DateTime dateTaken = DateTime.Now;
-            //String tags = imageData.Image.Tag;            
-            
-            
-            foreach (PropertyItem propItem in imageData.Image.PropertyItems)
-            {
-                if (propItem.Id == PropertyTagExifDTOrig)
-                {
-                    string dateTakenString = dateRegex.Replace(Encoding.UTF8.GetString(propItem.Value), "-", 2);
-                    dateTaken = DateTime.Parse(dateTakenString);
-
-                }
-            }
+            DateTime dateTaken = imageData.DateTaken;
 
             // test for controler form
             if (controlerForm != null)
@@ -430,7 +410,7 @@ namespace Schalken.PhotoDesktop
                 (int)(25 * textScale),
                 new Rectangle(legendaRect.X, legendaRect.Y + (int)(20 * textScale), legendaRect.Width, (int)(25 * textScale)),
                 stringFormat);
-            path.AddString(string.Format("{0} x {1}", imageData.Image.Width, imageData.Image.Height),
+            path.AddString(string.Format("{0} x {1}", imageData.Size.Width, imageData.Size.Height),
                 FontFamily.GenericSansSerif,
                 (int)FontStyle.Regular,
                 (int)(16 * textScale),
@@ -511,7 +491,7 @@ namespace Schalken.PhotoDesktop
                 (int)(25 * textScale),
                 new Rectangle(legendaRect.X, legendaRect.Y + (int)(20 * textScale), legendaRect.Width, (int)(25 * textScale)),
                 stringFormat);
-            path.AddString(string.Format("{0} x {1}", imageData.Image.Width, imageData.Image.Height),
+            path.AddString(string.Format("{0} x {1}", imageData.Size.Width, imageData.Size.Height),
                 FontFamily.GenericSansSerif,
                 (int)FontStyle.Regular,
                 (int)(16 * textScale),
@@ -519,16 +499,7 @@ namespace Schalken.PhotoDesktop
                 stringFormat);
 
             // search for date taken
-            DateTime dateTaken = DateTime.Now;
-            foreach (PropertyItem propItem in imageData.Image.PropertyItems)
-            {
-                if (propItem.Id == PropertyTagExifDTOrig)
-                {
-                    string dateTakenString = dateRegex.Replace(Encoding.UTF8.GetString(propItem.Value), "-", 2);
-                    dateTaken = DateTime.Parse(dateTakenString);
-
-                }
-            }
+            DateTime dateTaken = imageData.DateTaken;
 
             path.AddString(dateTaken.ToString("dd-MM-yyyy hh:mm"),
                 FontFamily.GenericSansSerif,

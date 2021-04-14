@@ -4,6 +4,10 @@ using Shell32;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 
 //using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
 //using Microsoft.WindowsAPICodePack.Shell;
@@ -12,6 +16,13 @@ namespace Schalken.PhotoDesktop
 {
     public class DesktopImage
     {
+        // image properties
+        // https://docs.microsoft.com/en-us/dotnet/api/system.drawing.imaging.propertyitem.id?redirectedfrom=MSDN&view=dotnet-plat-ext-3.1#System_Drawing_Imaging_PropertyItem_Id
+        private static int PropertyTagExifDTOrig = 0x9003; // date taken
+        private static int PropertyTagExifUserComment = 0x9286; // user comment
+        private static int PropertyTagStarRating = 18246; // star rating taken
+
+        private static Regex dateRegex = new Regex(":");
 
         public string Basepath { get; set; }
         public string FullFilename { get; set; }
@@ -45,30 +56,71 @@ namespace Schalken.PhotoDesktop
             }
         }
         //public string Location { get; set; }
-        //public Size Size { get; set; }
+        private Size _size;
+        public Size Size
+        {
+            get
+            {
+                if (!_propertiesInitialized)
+                    InitializeProperties();
+                return _size;
+            }
+        }
 
-        public Image Image { get; set; }
+
+        private Image SafeImageFromFile(string filePath)
+        {
+            //'Ref:  http://stackoverflow.com/questions/18250848/how-to-prevent-the-image-fromfile-method-to-lock-the-file
+            // https://stackoverflow.com/questions/18250848/how-to-prevent-the-image-fromfile-method-to-lock-the-file
+            FileStream _imageFilestream;
+            Bitmap image;
+
+            _imageFilestream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+            using (Bitmap b = new Bitmap(_imageFilestream))
+            {
+                image = new Bitmap(b.Width, b.Height, b.PixelFormat);
+                using (Graphics g = Graphics.FromImage(image))
+                {
+                    g.DrawImage(b, Point.Empty);
+                    g.Flush();
+
+                }
+            }
+            _imageFilestream.Close();
+            return image;
+        }
+
+        /// <summary>
+        /// Get the image from a file
+        /// 
+        /// The file remains locked until the Image is disposed.
+        /// </summary>
+        /// <returns></returns>
+        public Image GetImage()
+        {
+            try
+            {
+                if (!_propertiesInitialized)
+                    InitializeProperties();
+                return SafeImageFromFile(FullFilename);
+                //Image image = Image.FromFile(FullFilename);
+                //if (!_propertiesInitialized)
+                //    InitializeProperties(image);
+                //return image;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         #region Constructors
 
         public DesktopImage(string basepath, string filename)
         {
-            try
-            {
-                FullFilename = filename;
-                Basepath = basepath;
-
-                // load image
-                Image = Image.FromFile(filename);
-                //Image.pro
-
-                //GetProperties();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            FullFilename = filename;
+            Basepath = basepath;
 
         }
 
@@ -114,7 +166,7 @@ namespace Schalken.PhotoDesktop
         // https://dzone.com/articles/extracting-file-metadata-c-and
         //private void GetProperties()
         //{
-            
+
         //    // based on: https://blog.dotnetframework.org/2014/12/10/read-extended-properties-of-a-file-in-c/
         //    List<string> arrHeaders = new List<string>();
 
@@ -158,7 +210,7 @@ namespace Schalken.PhotoDesktop
             get
             {
                 ShellFile file = ShellFile.FromFilePath(this.FullFilename);
-                int result = 0;
+                int result;
                 var value = file.Properties.System.Rating.Value;
                 if (value == null || value < 1U)
                     result = 0;
@@ -172,11 +224,14 @@ namespace Schalken.PhotoDesktop
                     result = 4;
                 else
                     result = 5;
-                file.Dispose(); 
+                file.Dispose();
                 return result;
             }
             set
             {
+                //this.Image.SetPropertyItem(new System.Drawing.Imaging.PropertyItem().) // use image to set properties?
+                // dispose of image and reload when necessary
+
                 ShellFile file = ShellFile.FromFilePath(this.FullFilename); //"E:\\OneDrive\\Afbeeldingen\\test.jpg");
                 uint ratingValue = 0;
                 if (value < 1)
@@ -192,46 +247,95 @@ namespace Schalken.PhotoDesktop
                 else
                     ratingValue = 100;
 
-                file.Properties.System.Rating.Value = ratingValue;
+                try
+                {
+
+                    // https://stackoverflow.com/questions/59562232/error-microsoft-windowsapicodepack-shell-propertysystem-propertysystemexceptio
+                    //file.Properties.System.Rating.Value = ratingValue;
+                    //file.Properties.System.
+                    ShellPropertyWriter propertyWriter = file.Properties.GetPropertyWriter();
+                    propertyWriter.WriteProperty<uint?>(file.Properties.System.Rating, ratingValue);
+
+                    //propertyWriter.WriteProperty(SystemProperties.System.Rating, new uint[] { ratingValue });
+                    propertyWriter.Close();
+                    file.Dispose();
+                }
+                catch (Exception e)
+                {
+                }
             }
         }
+
+
+        DateTime _dateTaken = DateTime.Now;
+        public DateTime DateTaken
+        {
+            get
+            {
+                if (!_propertiesInitialized)
+                    InitializeProperties();
+                return _dateTaken;
+            }
+        }
+        private bool _propertiesInitialized = false;
+        private void InitializeProperties()
+        {
+            Image image = Image.FromFile(FullFilename);
+
+            // initialize size
+            _size.Width = image.Width;
+            _size.Height = image.Height;
+
+            // other properties
+            foreach (PropertyItem propItem in image.PropertyItems)
+            {
+                // search for date taken
+                if (propItem.Id == PropertyTagExifDTOrig)
+                {
+                    string dateTakenString = dateRegex.Replace(Encoding.UTF8.GetString(propItem.Value), "-", 2);
+                    _dateTaken = DateTime.Parse(dateTakenString);
+                }
+            }
+            image.Dispose();
+        }
+
         /// <summary>
         /// Base on: https://www.exceptionshub.com/readwrite-extended-file-properties-c.html
         /// </summary>
 
-            //private void GetProperties()
-            //{
-            //    // based on: https://blog.dotnetframework.org/2014/12/10/read-extended-properties-of-a-file-in-c/
-            //    List<string> arrHeaders = new List<string>();
+        //private void GetProperties()
+        //{
+        //    // based on: https://blog.dotnetframework.org/2014/12/10/read-extended-properties-of-a-file-in-c/
+        //    List<string> arrHeaders = new List<string>();
 
-            //    Shell32.Shell shell = new Shell32.Shell();
-            //    var strFileName = this.FullFilename;
-            //    Shell32.Folder objFolder = shell.NameSpace(System.IO.Path.GetDirectoryName(strFileName));
-            //    Shell32.FolderItem folderItem = objFolder.ParseName(System.IO.Path.GetFileName(strFileName));
-            //    Shell32.FolderItem2 item2;
+        //    Shell32.Shell shell = new Shell32.Shell();
+        //    var strFileName = this.FullFilename;
+        //    Shell32.Folder objFolder = shell.NameSpace(System.IO.Path.GetDirectoryName(strFileName));
+        //    Shell32.FolderItem folderItem = objFolder.ParseName(System.IO.Path.GetFileName(strFileName));
+        //    Shell32.FolderItem2 item2;
 
-            //    // https://docs.microsoft.com/en-us/windows/win32/shell/shellfolderitem-extendedproperty?redirectedfrom=MSDN
-            //    //https://github.com/Microsoft/Windows-classic-samples/tree/master/Samples/Win7Samples/winui/shell/appplatform/PropertyEdit
-            //    item2.ExtendedProperty("Tag") = "test";
+        //    // https://docs.microsoft.com/en-us/windows/win32/shell/shellfolderitem-extendedproperty?redirectedfrom=MSDN
+        //    //https://github.com/Microsoft/Windows-classic-samples/tree/master/Samples/Win7Samples/winui/shell/appplatform/PropertyEdit
+        //    item2.ExtendedProperty("Tag") = "test";
 
-            //    for (int i = 0; i < short.MaxValue; i++)
-            //    {
-            //        string header = objFolder.GetDetailsOf(null, i);
-            //        if (String.IsNullOrEmpty(header))
-            //            break;
-            //        arrHeaders.Add(header);
-            //    }
-            //    string result = "";
-            //    for (int i = 0; i < arrHeaders.Count; i++)
-            //    {
-            //        //https://www.exceptionshub.com/readwrite-extended-file-properties-c.html
-            //        //ShellPropertyWriter
+        //    for (int i = 0; i < short.MaxValue; i++)
+        //    {
+        //        string header = objFolder.GetDetailsOf(null, i);
+        //        if (String.IsNullOrEmpty(header))
+        //            break;
+        //        arrHeaders.Add(header);
+        //    }
+        //    string result = "";
+        //    for (int i = 0; i < arrHeaders.Count; i++)
+        //    {
+        //        //https://www.exceptionshub.com/readwrite-extended-file-properties-c.html
+        //        //ShellPropertyWriter
 
-            //        //folderItem.Verbs.
-            //        _properties.Add(arrHeaders[i], objFolder.GetDetailsOf(folderItem, i));
-            //    }
-            //}
-            #endregion File properties
+        //        //folderItem.Verbs.
+        //        _properties.Add(arrHeaders[i], objFolder.GetDetailsOf(folderItem, i));
+        //    }
+        //}
+        #endregion File properties
 
-        }
     }
+}
