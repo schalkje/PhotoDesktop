@@ -205,32 +205,37 @@ namespace Schalken.PhotoDesktop
         //}
 
 
+        private int _starRating = -1;
         public int StarRating
         {
             get
             {
-                ShellFile file = ShellFile.FromFilePath(this.FullFilename);
-                int result;
-                var value = file.Properties.System.Rating.Value;
-                if (value == null || value < 1U)
-                    result = 0;
-                else if (value <= 12)
-                    result = 1;
-                else if (value <= 37)
-                    result = 2;
-                else if (value <= 62)
-                    result = 3;
-                else if (value <= 87)
-                    result = 4;
-                else
-                    result = 5;
-                file.Dispose();
-                return result;
+                if (_starRating < 0)
+                {
+                    ShellFile file = ShellFile.FromFilePath(this.FullFilename);
+
+                    var value = file.Properties.System.Rating.Value;
+                    if (value == null || value < 1U)
+                        _starRating = 0;
+                    else if (value <= 12)
+                        _starRating = 1;
+                    else if (value <= 37)
+                        _starRating = 2;
+                    else if (value <= 62)
+                        _starRating = 3;
+                    else if (value <= 87)
+                        _starRating = 4;
+                    else
+                        _starRating = 5;
+                    file.Dispose();
+                }
+                return _starRating;
             }
             set
             {
                 //this.Image.SetPropertyItem(new System.Drawing.Imaging.PropertyItem().) // use image to set properties?
                 // dispose of image and reload when necessary
+                _starRating = -1;
 
                 ShellFile file = ShellFile.FromFilePath(this.FullFilename); //"E:\\OneDrive\\Afbeeldingen\\test.jpg");
                 uint ratingValue = 0;
@@ -259,6 +264,8 @@ namespace Schalken.PhotoDesktop
                     //propertyWriter.WriteProperty(SystemProperties.System.Rating, new uint[] { ratingValue });
                     propertyWriter.Close();
                     file.Dispose();
+
+                    
                 }
                 catch (Exception e)
                 {

@@ -170,7 +170,7 @@
             // 
             // star1
             // 
-            this.star1.BackColor = System.Drawing.Color.DarkRed;
+            this.star1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.star1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.star1.ImageIndex = 1;
             this.star1.ImageList = this.imageList_16x16;
@@ -216,7 +216,7 @@
             // 
             // star2
             // 
-            this.star2.BackColor = System.Drawing.Color.DarkRed;
+            this.star2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.star2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.star2.ImageIndex = 1;
             this.star2.ImageList = this.imageList_16x16;
@@ -236,12 +236,12 @@
             this.label4.ImageList = this.imageList;
             this.label4.Location = new System.Drawing.Point(166, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(0, 20);
+            this.label4.Size = new System.Drawing.Size(0, 13);
             this.label4.TabIndex = 16;
             // 
             // star3
             // 
-            this.star3.BackColor = System.Drawing.Color.DarkRed;
+            this.star3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.star3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.star3.ImageIndex = 1;
             this.star3.ImageList = this.imageList_16x16;
@@ -254,7 +254,7 @@
             // 
             // star4
             // 
-            this.star4.BackColor = System.Drawing.Color.DarkRed;
+            this.star4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.star4.Cursor = System.Windows.Forms.Cursors.Hand;
             this.star4.ImageIndex = 0;
             this.star4.ImageList = this.imageList_16x16;
@@ -267,7 +267,7 @@
             // 
             // star5
             // 
-            this.star5.BackColor = System.Drawing.Color.DarkRed;
+            this.star5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.star5.Cursor = System.Windows.Forms.Cursors.Hand;
             this.star5.ImageIndex = 0;
             this.star5.ImageList = this.imageList_16x16;

@@ -71,12 +71,12 @@ namespace Schalken.PhotoDesktop.WFA
         /// http://connect.microsoft.com/VisualStudio/feedback/details/526951/screen-object-physicalwidthincentimeters-physicalheightincentimeters-displaymode
         /// </summary>
 
-        public MainForm()
+        public MainForm() : base()
         {
             InitializeComponent();
 
             LoadSettings();
-
+            
             // on startup switch
             if (Properties.Settings.Default.ChangeOnStart)
                 _photoDesktop.Next();
@@ -84,7 +84,36 @@ namespace Schalken.PhotoDesktop.WFA
             // get name for main window; add this mainform to the main screen
             _displayScreenName = _photoDesktop.GetMainScreenName();
             _photoDesktop.ControlerForms.Add(_displayScreenName, this);
+
+
+            //this.SizeChanged += TransparentForm_SizeChanged;
+            //this.ClientSizeChanged += TransparentForm_ClientSizeChanged;
+            //this.VisibleChanged += MainForm_VisibleChanged;
         }
+
+        //private void MainForm_VisibleChanged(object sender, EventArgs e)
+        //{
+        //    MessageBox.Show("FORM1 visible changes - 2!");
+        //}
+
+        //private void TransparentForm_ClientSizeChanged(object sender, EventArgs e)
+        //{
+        //    if (this.WindowState == FormWindowState.Minimized)
+        //    {
+        //        MessageBox.Show("FORM1 MINIMIZED - 2!");
+        //        this.WindowState = FormWindowState.Normal;
+        //    }
+        //}
+
+        //private void TransparentForm_SizeChanged(object sender, EventArgs e)
+        //{
+        //    if (this.WindowState == FormWindowState.Minimized)
+        //    {
+        //        MessageBox.Show("FORM1 MINIMIZED!");
+        //        this.WindowState = FormWindowState.Normal;
+
+        //    }
+        //}
 
         protected override void OnShown(EventArgs e)
         {
@@ -119,13 +148,26 @@ namespace Schalken.PhotoDesktop.WFA
             {
                 DesktopImage imageData = (DesktopImage)this.Tag;
                 if (imageData.StarRating > 0) star1.ImageIndex = 1; else star1.ImageIndex = 0;
+                star1.Hide();
+                star1.Show();
                 if (imageData.StarRating > 1) star2.ImageIndex = 1; else star2.ImageIndex = 0;
+                star2.Hide();
+                star2.Show();
                 if (imageData.StarRating > 2) star3.ImageIndex = 1; else star3.ImageIndex = 0;
+                star3.Refresh();
+                star3.Hide();
+                star3.Show();
+                star3.Invalidate(true);
                 if (imageData.StarRating > 3) star4.ImageIndex = 1; else star4.ImageIndex = 0;
+                star4.Hide();
+                star4.Show();
                 if (imageData.StarRating > 4) star5.ImageIndex = 1; else star5.ImageIndex = 0;
+                star5.Hide();
+                star5.Show();
+                //this.Invalidate(true);
             }
 
-            base.Refresh();
+            //base.Refresh();
         }
 
         private bool _windowVisible = false;
@@ -289,7 +331,21 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnNext_Click(object sender, EventArgs e)
         {
+            StartLongAction();
             _photoDesktop.Next();
+            EndLongAction();
+        }
+
+        Cursor _storedCursor;
+        private void EndLongAction()
+        {
+            this.Cursor = _storedCursor;
+        }
+
+        private void StartLongAction()
+        {
+            _storedCursor = this.Cursor;
+            this.Cursor = Cursors.WaitCursor;
         }
 
         private void btnDislike_Click(object sender, EventArgs e)
@@ -299,7 +355,9 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnPrev_Click(object sender, EventArgs e)
         {
+            StartLongAction();
             _photoDesktop.Previous();
+            EndLongAction();
         }
 
         private void btnHide_Click(object sender, EventArgs e)
@@ -309,7 +367,7 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnStar_Click(object sender, EventArgs e)
         {
-            
+            StartLongAction();   
             if (_displayScreenName != null && this.Tag is DesktopImage)
             {
                 DesktopImage imageData = (DesktopImage)this.Tag;
@@ -319,7 +377,11 @@ namespace Schalken.PhotoDesktop.WFA
                 else if (sender == star4 && imageData.StarRating != 4) imageData.StarRating = 4;
                 else if (sender == star5 && imageData.StarRating != 5) imageData.StarRating = 5;
                 else imageData.StarRating = 0;
+
+                // refresh display
+                this.Refresh();
             }
+            EndLongAction();
         }
 
 

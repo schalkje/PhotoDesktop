@@ -18,7 +18,10 @@ namespace WindowsFormsControlLibrary
 
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             //this.BackColor = Color.Transparent;
+
         }
+
+
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
