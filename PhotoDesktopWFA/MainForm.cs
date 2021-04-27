@@ -285,7 +285,7 @@ namespace Schalken.PhotoDesktop.WFA
 
 
             if (folders.Count == 0)
-                folders.Add("E:\\OneDrive\\Afbeeldingen\\Background Selection");
+                folders.Add("E:\\OneDrive\\Afbeeldingen\\Background Selection\\Test");
 #endif
 
             ImageList images = new ImageList(folders);

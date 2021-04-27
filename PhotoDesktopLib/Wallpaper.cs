@@ -600,7 +600,9 @@ namespace Schalken.PhotoDesktop
             }
 
             Rectangle rect = new Rectangle(x, y, width, height);
-            g.DrawImage(img, rect);
+            Rectangle imageRect = new Rectangle(0, 0, img.Width, img.Height);
+
+            g.DrawImage(img, rect, imageRect, GraphicsUnit.Pixel);
         }
     }
 

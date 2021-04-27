@@ -70,8 +70,7 @@ namespace Schalken.PhotoDesktop
 
         private Image SafeImageFromFile(string filePath)
         {
-            //'Ref:  http://stackoverflow.com/questions/18250848/how-to-prevent-the-image-fromfile-method-to-lock-the-file
-            // https://stackoverflow.com/questions/18250848/how-to-prevent-the-image-fromfile-method-to-lock-the-file
+            // Ref:  http://stackoverflow.com/questions/18250848/how-to-prevent-the-image-fromfile-method-to-lock-the-file
             FileStream _imageFilestream;
             Bitmap image;
 
@@ -79,12 +78,16 @@ namespace Schalken.PhotoDesktop
 
             using (Bitmap b = new Bitmap(_imageFilestream))
             {
-                image = new Bitmap(b.Width, b.Height, b.PixelFormat);
+                int horizontalDPI = 96;
+                int verticalDPI = horizontalDPI;
+                image = new Bitmap(b.Width , b.Height, b.PixelFormat);
+
                 using (Graphics g = Graphics.FromImage(image))
                 {
-                    g.DrawImage(b, Point.Empty);
+                    Rectangle srcRect = new Rectangle(0, 0, b.Width, b.Height);
+                    Rectangle dstRect = new Rectangle(0, 0, b.Width, b.Height);
+                    g.DrawImage(b, dstRect, srcRect, GraphicsUnit.Pixel);
                     g.Flush();
-
                 }
             }
             _imageFilestream.Close();
