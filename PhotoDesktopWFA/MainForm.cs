@@ -147,23 +147,30 @@ namespace Schalken.PhotoDesktop.WFA
             if (_displayScreenName != null && this.Tag is DesktopImage)
             {
                 DesktopImage imageData = (DesktopImage)this.Tag;
-                if (imageData.StarRating > 0) star1.ImageIndex = 1; else star1.ImageIndex = 0;
-                star1.Hide();
-                star1.Show();
-                if (imageData.StarRating > 1) star2.ImageIndex = 1; else star2.ImageIndex = 0;
-                star2.Hide();
-                star2.Show();
-                if (imageData.StarRating > 2) star3.ImageIndex = 1; else star3.ImageIndex = 0;
-                star3.Refresh();
-                star3.Hide();
-                star3.Show();
-                star3.Invalidate(true);
-                if (imageData.StarRating > 3) star4.ImageIndex = 1; else star4.ImageIndex = 0;
-                star4.Hide();
-                star4.Show();
-                if (imageData.StarRating > 4) star5.ImageIndex = 1; else star5.ImageIndex = 0;
-                star5.Hide();
-                star5.Show();
+                star1.IsSelected = imageData.StarRating >= 1;
+                star2.IsSelected = imageData.StarRating >= 2;
+                star3.IsSelected = imageData.StarRating >= 3;
+                star4.IsSelected = imageData.StarRating >= 4;
+                star5.IsSelected = imageData.StarRating >= 5;
+
+                //if (imageData.StarRating > 0) star1.ImageIndex = 1; else star1.ImageIndex = 0;
+                //star1.Hide();
+                //star1.Show();
+                //if (imageData.StarRating > 1) star2.ImageIndex = 1; else star2.ImageIndex = 0;
+                //star2.Hide();
+                //star2.Show();
+                //if (imageData.StarRating > 2) star3.ImageIndex = 1; else star3.ImageIndex = 0;
+                //star3.Refresh();
+                //star3.Hide();
+                //star3.Show();
+                //star3.Invalidate(true);
+                //if (imageData.StarRating > 3) star4.ImageIndex = 1; else star4.ImageIndex = 0;
+                //star4.Hide();
+                //star4.Show();
+                //if (imageData.StarRating > 4) star5.ImageIndex = 1; else star5.ImageIndex = 0;
+                //star5.Invalidate(true);
+                //star5.Hide();
+                //star5.Show();
                 //this.Invalidate(true);
             }
 
@@ -285,7 +292,7 @@ namespace Schalken.PhotoDesktop.WFA
 
 
             if (folders.Count == 0)
-                folders.Add("E:\\OneDrive\\Afbeeldingen\\Background Selection\\Test");
+                folders.Add("E:\\OneDrive\\Afbeeldingen\\Background Selection");
 #endif
 
             ImageList images = new ImageList(folders);
@@ -340,12 +347,14 @@ namespace Schalken.PhotoDesktop.WFA
         private void EndLongAction()
         {
             this.Cursor = _storedCursor;
+            this.photoTimer.Start();
         }
 
         private void StartLongAction()
         {
             _storedCursor = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
+            this.photoTimer.Stop();
         }
 
         private void btnDislike_Click(object sender, EventArgs e)
@@ -379,7 +388,7 @@ namespace Schalken.PhotoDesktop.WFA
                 else imageData.StarRating = 0;
 
                 // refresh display
-                this.Refresh();
+                _photoDesktop.Refresh();
             }
             EndLongAction();
         }
@@ -395,7 +404,11 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void menuNext_Click(object sender, EventArgs e)
         {
+            StartLongAction();
+
             _photoDesktop.Next();
+
+            EndLongAction();
         }
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)

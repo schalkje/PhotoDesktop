@@ -43,15 +43,15 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.photoTimer = new System.Windows.Forms.Timer(this.components);
             this.imageList = new System.Windows.Forms.ImageList(this.components);
-            this.star1 = new System.Windows.Forms.Label();
             this.imageList_16x16 = new System.Windows.Forms.ImageList(this.components);
             this.btnPrev = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Label();
-            this.star2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.star3 = new System.Windows.Forms.Label();
-            this.star4 = new System.Windows.Forms.Label();
-            this.star5 = new System.Windows.Forms.Label();
+            this.star1 = new WindowsFormsControlLibrary.ImageButton();
+            this.star2 = new WindowsFormsControlLibrary.ImageButton();
+            this.star3 = new WindowsFormsControlLibrary.ImageButton();
+            this.star4 = new WindowsFormsControlLibrary.ImageButton();
+            this.star5 = new WindowsFormsControlLibrary.ImageButton();
             this.btnDislike = new System.Windows.Forms.Label();
             this.btnSettings = new System.Windows.Forms.Label();
             this.imageList_20x20 = new System.Windows.Forms.ImageList(this.components);
@@ -168,19 +168,6 @@
             this.imageList.Images.SetKeyName(13, "pd_starred.png");
             this.imageList.Images.SetKeyName(14, "pd_starred_16x16.png");
             // 
-            // star1
-            // 
-            this.star1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.star1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.star1.ImageIndex = 1;
-            this.star1.ImageList = this.imageList_16x16;
-            this.star1.Location = new System.Drawing.Point(0, 4);
-            this.star1.Name = "star1";
-            this.star1.Size = new System.Drawing.Size(16, 16);
-            this.star1.TabIndex = 11;
-            this.star1.Visible = false;
-            this.star1.Click += new System.EventHandler(this.btnStar_Click);
-            // 
             // imageList_16x16
             // 
             this.imageList_16x16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList_16x16.ImageStream")));
@@ -214,19 +201,6 @@
             this.btnNext.Visible = false;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
-            // star2
-            // 
-            this.star2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.star2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.star2.ImageIndex = 1;
-            this.star2.ImageList = this.imageList_16x16;
-            this.star2.Location = new System.Drawing.Point(16, 4);
-            this.star2.Name = "star2";
-            this.star2.Size = new System.Drawing.Size(16, 16);
-            this.star2.TabIndex = 15;
-            this.star2.Visible = false;
-            this.star2.Click += new System.EventHandler(this.btnStar_Click);
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -239,12 +213,56 @@
             this.label4.Size = new System.Drawing.Size(0, 13);
             this.label4.TabIndex = 16;
             // 
+            // star1
+            // 
+            this.star1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.star1.CanbeSelected = true;
+            this.star1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.star1.FixedSize = true;
+            this.star1.ImageKey = "pd_star_t_16x16.png";
+            this.star1.ImageKeyActive = "pd_starred_16x16.png";
+            this.star1.ImageKeyDefault = "pd_star_t_16x16.png";
+            this.star1.ImageKeySelected = "pd_starred_16x16.png";
+            this.star1.ImageList = this.imageList_16x16;
+            this.star1.IsSelected = false;
+            this.star1.Location = new System.Drawing.Point(0, 4);
+            this.star1.Name = "star1";
+            this.star1.Size = new System.Drawing.Size(16, 16);
+            this.star1.TabIndex = 11;
+            this.star1.Visible = false;
+            this.star1.Click += new System.EventHandler(this.btnStar_Click);
+            // 
+            // star2
+            // 
+            this.star2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.star2.CanbeSelected = true;
+            this.star2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.star2.FixedSize = true;
+            this.star2.ImageKey = "pd_star_t_16x16.png";
+            this.star2.ImageKeyActive = "pd_starred_16x16.png";
+            this.star2.ImageKeyDefault = "pd_star_t_16x16.png";
+            this.star2.ImageKeySelected = "pd_starred_16x16.png";
+            this.star2.ImageList = this.imageList_16x16;
+            this.star2.IsSelected = false;
+            this.star2.Location = new System.Drawing.Point(16, 4);
+            this.star2.Name = "star2";
+            this.star2.Size = new System.Drawing.Size(16, 16);
+            this.star2.TabIndex = 15;
+            this.star2.Visible = false;
+            this.star2.Click += new System.EventHandler(this.btnStar_Click);
+            // 
             // star3
             // 
             this.star3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.star3.CanbeSelected = false;
             this.star3.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.star3.ImageIndex = 1;
+            this.star3.FixedSize = true;
+            this.star3.ImageKey = "pd_star_t_16x16.png";
+            this.star3.ImageKeyActive = "pd_starred_16x16.png";
+            this.star3.ImageKeyDefault = "pd_star_t_16x16.png";
+            this.star3.ImageKeySelected = "pd_starred_16x16.png";
             this.star3.ImageList = this.imageList_16x16;
+            this.star3.IsSelected = false;
             this.star3.Location = new System.Drawing.Point(32, 4);
             this.star3.Name = "star3";
             this.star3.Size = new System.Drawing.Size(16, 16);
@@ -255,9 +273,15 @@
             // star4
             // 
             this.star4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.star4.CanbeSelected = false;
             this.star4.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.star4.ImageIndex = 0;
+            this.star4.FixedSize = true;
+            this.star4.ImageKey = "pd_star_t_16x16.png";
+            this.star4.ImageKeyActive = "pd_starred_16x16.png";
+            this.star4.ImageKeyDefault = "pd_star_t_16x16.png";
+            this.star4.ImageKeySelected = "pd_starred_16x16.png";
             this.star4.ImageList = this.imageList_16x16;
+            this.star4.IsSelected = false;
             this.star4.Location = new System.Drawing.Point(48, 4);
             this.star4.Name = "star4";
             this.star4.Size = new System.Drawing.Size(16, 16);
@@ -268,9 +292,15 @@
             // star5
             // 
             this.star5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.star5.CanbeSelected = false;
             this.star5.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.star5.ImageIndex = 0;
+            this.star5.FixedSize = true;
+            this.star5.ImageKey = "pd_star_t_16x16.png";
+            this.star5.ImageKeyActive = "pd_dislike_16x16 .png";
+            this.star5.ImageKeyDefault = "pd_star_t_16x16.png";
+            this.star5.ImageKeySelected = "pd_starred_16x16.png";
             this.star5.ImageList = this.imageList_16x16;
+            this.star5.IsSelected = false;
             this.star5.Location = new System.Drawing.Point(64, 4);
             this.star5.Name = "star5";
             this.star5.Size = new System.Drawing.Size(16, 16);
@@ -282,7 +312,7 @@
             // 
             this.btnDislike.BackColor = System.Drawing.Color.DarkRed;
             this.btnDislike.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDislike.ImageIndex = 2;
+            this.btnDislike.ImageKey = "pd_dislike_16x16 .png";
             this.btnDislike.ImageList = this.imageList_16x16;
             this.btnDislike.Location = new System.Drawing.Point(132, 74);
             this.btnDislike.Name = "btnDislike";
@@ -363,14 +393,14 @@
         private System.Windows.Forms.ToolStripMenuItem menuSettings;
         private System.Windows.Forms.Timer photoTimer;
         private System.Windows.Forms.ImageList imageList;
-        private System.Windows.Forms.Label star1;
         private System.Windows.Forms.Label btnNext;
         private System.Windows.Forms.Label btnPrev;
-        private System.Windows.Forms.Label star2;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label star3;
-        private System.Windows.Forms.Label star4;
-        private System.Windows.Forms.Label star5;
+        private WindowsFormsControlLibrary.ImageButton star1;
+        private WindowsFormsControlLibrary.ImageButton star2;
+        private WindowsFormsControlLibrary.ImageButton star3;
+        private WindowsFormsControlLibrary.ImageButton star4;
+        private WindowsFormsControlLibrary.ImageButton star5;
         private System.Windows.Forms.Label btnDislike;
         private System.Windows.Forms.Label btnSettings;
         private System.Windows.Forms.ImageList imageList_16x16;

@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Windows.Storage;
+using WindowsFormsControlLibrary;
 
 namespace Schalken.PhotoDesktop
 {
@@ -389,10 +390,10 @@ namespace Schalken.PhotoDesktop
                         int y = label.Top + controlerForm.Top;
                         int width = label.Width;
                         int height = label.Height;
-
                         monitorGraphics.DrawImage(image, x, y, width, height);
                     }
                 }
+
             }
 
             System.Drawing.StringFormat stringFormat = (StringFormat)StringFormat.GenericDefault.Clone();

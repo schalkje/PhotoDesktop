@@ -89,7 +89,7 @@
             this.tbFolder.Name = "tbFolder";
             this.tbFolder.Size = new System.Drawing.Size(968, 20);
             this.tbFolder.TabIndex = 6;
-            this.tbFolder.Text = "C:\\OneDrive\\Afbeeldingen\\Background Selection\\Test";
+            this.tbFolder.Text = "C:\\OneDrive\\Afbeeldingen\\Background Selection";
             // 
             // btnAddFolder
             // 

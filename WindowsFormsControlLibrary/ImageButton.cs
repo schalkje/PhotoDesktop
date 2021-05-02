@@ -52,27 +52,27 @@ namespace WindowsFormsControlLibrary
         }
         #endregion
 
-        public new ImageList ImageList
-        {
-            get
-            {
-                return base.ImageList;
-            }
-            set
-            {
-                base.ImageList = value;
+        //public new ImageList ImageList
+        //{
+        //    get
+        //    {
+        //        return base.ImageList;
+        //    }
+        //    set
+        //    {
+        //        base.ImageList = value;
 
-                // on first setup initialize image indexes
-                //if (imageKeyActive == null &&
-                //    imageKeyDefault == null &&
-                //    imageKeySelected == null &&
-                //    ImageList.Images.Count > 0)
-                //{
-                //    ImageKeyDefault = ImageList.Images.Keys[Math.Min(0, ImageList.Images.Count - 1)];
-                //    ImageKeyActive = ImageList.Images.Keys[Math.Min(1, ImageList.Images.Count - 1)];
-                //}
-            }
-        }
+        //        // on first setup initialize image indexes
+        //        //if (imageKeyActive == null &&
+        //        //    imageKeyDefault == null &&
+        //        //    imageKeySelected == null &&
+        //        //    ImageList.Images.Count > 0)
+        //        //{
+        //        //    ImageKeyDefault = ImageList.Images.Keys[Math.Min(0, ImageList.Images.Count - 1)];
+        //        //    ImageKeyActive = ImageList.Images.Keys[Math.Min(1, ImageList.Images.Count - 1)];
+        //        //}
+        //    }
+        //}
 
         bool fixedSize = true;
         public Boolean FixedSize
@@ -157,7 +157,7 @@ namespace WindowsFormsControlLibrary
             }
         }
 
-        bool isSelected = false;
+        bool _isSelected = false;
         [
             Category("ImageButton"),
             Description("Boolean to check if the option is selected."),
@@ -166,21 +166,25 @@ namespace WindowsFormsControlLibrary
         ]
         public bool IsSelected
         {
-            get { return isSelected; }
+            get { return _isSelected; }
             set
             {
-                isSelected = value;
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
 
-                DrawCurrent();
+                    DrawCurrent();
+                }
             }
         }
 
         private void DrawCurrent()
         {
-            if (isSelected)
+            if (_isSelected)
                 base.ImageKey = imageKeySelected;
             else
                 base.ImageKey = imageKeyDefault;
+            //base.Update();
         }
 
         bool canbeSelected = false;
@@ -209,8 +213,8 @@ namespace WindowsFormsControlLibrary
             Text = "";
             AutoSize = false;
 
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            this.BackColor = Color.White;
+            //SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            //this.BackColor = Color.Transparent; // White;
             //this.BackColor = Color.Black;
 
             MouseEnter += ImageButton_MouseEnter;
@@ -232,24 +236,23 @@ namespace WindowsFormsControlLibrary
         private void ImageButton_MouseEnter(object sender, EventArgs e)
         {
             base.ImageKey = ImageKeyActive;
-            
         }
 
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            // empty function, so no background
-            //if (this.DesignMode)
-            //{
-            //    e.Graphics.FillRectangle(Brushes.Black, e.ClipRectangle);
+        //protected override void OnPaintBackground(PaintEventArgs e)
+        //{
+        //    // empty function, so no background
+        //    //if (this.DesignMode)
+        //    //{
+        //    //    e.Graphics.FillRectangle(Brushes.Black, e.ClipRectangle);
 
-            //    Pen border = new Pen(Color.White);
-            //    border.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+        //    //    Pen border = new Pen(Color.White);
+        //    //    border.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
 
-            //    e.Graphics.DrawRectangle(border, 0, 0, e.ClipRectangle.Width - 1, e.ClipRectangle.Height - 1);
-            //}
-            //base.OnPaintBackground(e);
+        //    //    e.Graphics.DrawRectangle(border, 0, 0, e.ClipRectangle.Width - 1, e.ClipRectangle.Height - 1);
+        //    //}
+        //    //base.OnPaintBackground(e);
 
-        }
+        //}
 
     }
 }
