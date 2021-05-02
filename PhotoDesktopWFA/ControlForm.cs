@@ -11,56 +11,11 @@ using System.Reflection;
 namespace Schalken.PhotoDesktop.WFA
 {
 
-    public partial class MainForm : TransparentForm //   Form //
+    public partial class ControlForm : TransparentForm //   Form //
     {
-        public Point offset = new Point(0,80);
+        public Point offset = new Point(0, 80);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        private static extern Int32 SystemParametersInfo(UInt32 action, UInt32 uParam, String vParam, UInt32 winIni);
-
-        /// <summary>
-        /// Parameter documentation:
-        /// https://msdn.microsoft.com/en-us/library/windows/desktop/ms724947(v=vs.85).aspx
-        /// </summary>
-
-
-        // all codes: https://www.autoitscript.com/autoit3/docs/appendix/WinMsgCodes.htm
-        private static readonly UInt32 WM_DISPLAYCHANGE = 0x007E;
-
-
-        // todo: implement dpi changed
-        protected override void WndProc(ref Message message)
-        {
-            if (message.Msg == WM_DISPLAYCHANGE)
-            {
-                // start redo task, with 500 ms delay
-                var t = Task.Run(async delegate
-                {
-                    await Task.Delay(TimeSpan.FromMilliseconds(500));
-                    Redo();
-                });
-            }
-
-            //todo: Next code is candidate for removal
-            //if (message.Msg == WM_SETTINGCHANGE)
-            //{
-            //    switch (message.WParam.ToInt32())
-            //    {
-
-            //        case (int)SystemParametersInfoAction.SPI_SETWORKAREA:
-            //            // fires with:
-            //            // - text size % change
-            //            this.Redo();
-            //            break;
-            //        case (int)SystemParametersInfoAction.SPI_SETDESKWALLPAPER:
-            //            // Handle that wallpaper has been changed
-            //            break;
-            //    }
-            //}
-
-            base.WndProc(ref message);
-        }
-
+        private MainForm _mainForm;
         private string _displayScreenName = null;
 
 
@@ -71,49 +26,14 @@ namespace Schalken.PhotoDesktop.WFA
         /// http://connect.microsoft.com/VisualStudio/feedback/details/526951/screen-object-physicalwidthincentimeters-physicalheightincentimeters-displaymode
         /// </summary>
 
-        public MainForm() : base()
+        public ControlForm(MainForm mainForm, string displayScreenName) : base()
         {
             InitializeComponent();
 
-            LoadSettings();
-            
-            // on startup switch
-            if (Properties.Settings.Default.ChangeOnStart)
-                _photoDesktop.Next();
+            _mainForm = mainForm;
+            _displayScreenName = displayScreenName;
+         }
 
-            // get name for main window; add this mainform to the main screen
-            _displayScreenName = _photoDesktop.GetMainScreenName();
-            _photoDesktop.ControlerForms.Add(_displayScreenName, this);
-
-
-            //this.SizeChanged += TransparentForm_SizeChanged;
-            //this.ClientSizeChanged += TransparentForm_ClientSizeChanged;
-            //this.VisibleChanged += MainForm_VisibleChanged;
-        }
-
-        //private void MainForm_VisibleChanged(object sender, EventArgs e)
-        //{
-        //    MessageBox.Show("FORM1 visible changes - 2!");
-        //}
-
-        //private void TransparentForm_ClientSizeChanged(object sender, EventArgs e)
-        //{
-        //    if (this.WindowState == FormWindowState.Minimized)
-        //    {
-        //        MessageBox.Show("FORM1 MINIMIZED - 2!");
-        //        this.WindowState = FormWindowState.Normal;
-        //    }
-        //}
-
-        //private void TransparentForm_SizeChanged(object sender, EventArgs e)
-        //{
-        //    if (this.WindowState == FormWindowState.Minimized)
-        //    {
-        //        MessageBox.Show("FORM1 MINIMIZED!");
-        //        this.WindowState = FormWindowState.Normal;
-
-        //    }
-        //}
 
         protected override void OnShown(EventArgs e)
         {
@@ -155,18 +75,7 @@ namespace Schalken.PhotoDesktop.WFA
             }
         }
 
-        internal void StopTimer()
-        {
-            this.photoTimer.Stop();
-        }
-
-        internal void StartTimer()
-        {
-            this.photoTimer.Start();
-        }
-
         private bool _windowVisible = false;
-        public static PhotoDesktop _photoDesktop;
 
         // store the original size when made invisible by setting dimensions to 0x0
         private int _storedWidth = 0;
@@ -203,62 +112,14 @@ namespace Schalken.PhotoDesktop.WFA
         private void Redo()
         {
             // todo: temporary implementation; refresh background based on current
-            _photoDesktop.Next();
+            MainForm._photoDesktop.Next();
         }
 
 
 
-        #region Settings
-
-        private void LoadSettings(bool refreshImageList = false)
+        private void ShowSettings()
         {
-            if (_photoDesktop is null || refreshImageList)
-                _photoDesktop = new PhotoDesktop(LoadImageListFromSettings());
-
-            SetTimerfromSettings();
-            _photoDesktop.OrderMode = Properties.Settings.Default.Order.Equals("Random", StringComparison.CurrentCultureIgnoreCase) ? PhotoDesktop.OrderModes.Random : PhotoDesktop.OrderModes.Sequential;
-            _photoDesktop.MultiSwitchMode = Properties.Settings.Default.MultiSwitch.Equals("Same time", StringComparison.CurrentCultureIgnoreCase) ? PhotoDesktop.MultiSwitchModes.SameTime : Properties.Settings.Default.MultiSwitch.Equals("Rotate", StringComparison.CurrentCultureIgnoreCase) ? PhotoDesktop.MultiSwitchModes.Rotate: PhotoDesktop.MultiSwitchModes.Alternately;
-            _photoDesktop.LogonImage = Properties.Settings.Default.CreateLogonImage;
-            _photoDesktop.LogonImageFolder = Properties.Settings.Default.LogonImageFolder;
-        }
-
-        private void SetTimerfromSettings()
-        {
-
-            int interval = Properties.Settings.Default.TimerValue;
-
-            if (Properties.Settings.Default.TimerUnit.Equals("second", StringComparison.CurrentCultureIgnoreCase))
-            {
-                interval = interval * 1000;
-            }
-            else if (Properties.Settings.Default.TimerUnit.Equals("minute", StringComparison.CurrentCultureIgnoreCase))
-            {
-                interval = interval * 60 * 1000;
-            }
-            else if (Properties.Settings.Default.TimerUnit.Equals("hour", StringComparison.CurrentCultureIgnoreCase))
-            {
-            }
-            else
-            {
-                interval = interval * 60 * 60 * 1000;
-            }
-            photoTimer.Interval = interval;
-        }
-
-        public void ShowSettings()
-        {
-            // disable timer
-            this.photoTimer.Enabled = false;
-
-            // show settings form
-            SettingsForm settingsForm = new SettingsForm(_photoDesktop);
-            if (settingsForm.ShowDialog() == DialogResult.OK)
-            {
-                LoadSettings(settingsForm.RefreshImageList);
-            }
-
-            // enable timer again
-            this.photoTimer.Enabled = true;
+            _mainForm.ShowSettings();
         }
 
 
@@ -268,43 +129,7 @@ namespace Schalken.PhotoDesktop.WFA
             MessageBox.Show("Not yet implemented", "PhotoDesktop", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
-        private ImageList LoadImageListFromSettings()
-        {
 
-
-            StringCollection folders = Properties.Settings.Default.Folders;
-
-#if DEBUG
-            if (folders is null)
-                folders = new StringCollection();
-
-
-            if (folders.Count == 0)
-                folders.Add("E:\\OneDrive\\Afbeeldingen\\Background Selection");
-#endif
-
-            ImageList images = new ImageList(folders);
-
-            // store images
-            foreach (ImageListItem item in images.Images)
-            {
-                //System.Collections.Specialized.NameValueCollection
-                //if (Properties.ViewedImages.Default.Images.)
-                if (Properties.Settings.Default.Images == null)
-                    Properties.Settings.Default.Images = new NameValueCollection();
-                //if (!Properties.Settings.Default.Images.HasKeys())
-                //    return null;
-                string value = Properties.Settings.Default.Images.Get(item.NameString);
-                if (value == null)
-                    Properties.Settings.Default.Images.Add(item.NameString, item.ValueString);
-                else
-                    Properties.Settings.Default.Images.Set(item.NameString, item.ValueString);
-            }
-
-            return images;
-        }
-
-        #endregion Settings
 
         #region EventHandlers
 
@@ -317,7 +142,7 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void btnNextBackground_Click(object sender, EventArgs e)
         {
-            _photoDesktop.Next();
+            MainForm._photoDesktop.Next();
         }
         private void menuSettings_Click(object sender, EventArgs e)
         {
@@ -327,7 +152,7 @@ namespace Schalken.PhotoDesktop.WFA
         private void btnNext_Click(object sender, EventArgs e)
         {
             StartLongAction();
-            _photoDesktop.Next();
+            MainForm._photoDesktop.Next();
             EndLongAction();
         }
 
@@ -335,14 +160,14 @@ namespace Schalken.PhotoDesktop.WFA
         private void EndLongAction()
         {
             this.Cursor = _storedCursor;
-            this.photoTimer.Start();
+            _mainForm.StartTimer();
         }
 
         private void StartLongAction()
         {
             _storedCursor = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
-            this.photoTimer.Stop();
+            _mainForm.StopTimer();
         }
 
         private void btnDislike_Click(object sender, EventArgs e)
@@ -353,7 +178,7 @@ namespace Schalken.PhotoDesktop.WFA
         private void btnPrev_Click(object sender, EventArgs e)
         {
             StartLongAction();
-            _photoDesktop.Previous();
+            MainForm._photoDesktop.Previous();
             EndLongAction();
         }
 
@@ -376,7 +201,7 @@ namespace Schalken.PhotoDesktop.WFA
                 else imageData.StarRating = 0;
 
                 // refresh display
-                _photoDesktop.Refresh();
+                MainForm._photoDesktop.Refresh();
             }
             EndLongAction();
         }
@@ -394,7 +219,7 @@ namespace Schalken.PhotoDesktop.WFA
         {
             StartLongAction();
 
-            _photoDesktop.Next();
+            MainForm._photoDesktop.Next();
 
             EndLongAction();
         }
@@ -413,19 +238,21 @@ namespace Schalken.PhotoDesktop.WFA
 
         private void notifyIcon_DoubleClick(object sender, EventArgs e)
         {
-            // stop timer
-            photoTimer.Stop();
+            StartLongAction();
 
             // show next image
-            _photoDesktop.Next();
+            MainForm._photoDesktop.Next();
 
-            // reset time
-            photoTimer.Start();
+            EndLongAction();
         }
 
         private void photoTimer_Tick(object sender, EventArgs e)
         {
-            _photoDesktop.Next();
+            StartLongAction();
+
+            MainForm._photoDesktop.Next();
+
+            EndLongAction();
         }
 
         private void btnGetCurrentWallPaper_Validated(object sender, EventArgs e)
@@ -436,7 +263,7 @@ namespace Schalken.PhotoDesktop.WFA
 
 
         //private bool WithinBounds(Control control)
-        private void MainForm_MouseMove(object sender, MouseEventArgs e)
+        private void ControlForm_MouseMove(object sender, MouseEventArgs e)
         {
             bool showHand = false;
             foreach (Control control in this.Controls)
@@ -456,7 +283,7 @@ namespace Schalken.PhotoDesktop.WFA
 
         }
 
-        private void MainForm_Click(object sender, EventArgs e)
+        private void ControlForm_Click(object sender, EventArgs e)
         {
             Point point = this.PointToClient(Cursor.Position);
             int x = point.X;
