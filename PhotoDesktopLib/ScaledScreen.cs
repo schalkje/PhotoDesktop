@@ -323,8 +323,8 @@ namespace Schalken.PhotoDesktop
                                     (int)(screen.Bounds.Y));
 
                 this.Size = new Size(
-                                    (int)(screen.Bounds.Width), 
-                                    (int)(screen.Bounds.Height));
+                                    (int)(Math.Round(screen.Bounds.Width * scale)),
+                                    (int)(Math.Round(screen.Bounds.Height * scale)));
             }
             else
             {
@@ -333,15 +333,15 @@ namespace Schalken.PhotoDesktop
                                     (int)(screen.Bounds.Y));
 
                 this.Size = new Size(
-                    (int)(Math.Round(screen.Bounds.Width * scale)),
-                    (int)(Math.Round(screen.Bounds.Height * scale)));
+                                    (int)(screen.Bounds.Width),
+                                    (int)(screen.Bounds.Height));
             }
 
             WorkingArea = new Rectangle(
                                         (int)(this.TaskbarLeftWidth),
                                         (int)(this.TaskbarTopHeight),
-                                        (int)(this.Size.Width - (this.TaskbarRightWidth + this.TaskbarLeftWidth)),
-                                        (int)(this.Size.Height - (this.TaskbarTopHeight + this.TaskbarBottomHeight)));
+                                        (int)(this.Size.Width - (this.TaskbarRightWidth + this.TaskbarLeftWidth) * scale),
+                                        (int)(this.Size.Height - (this.TaskbarTopHeight + this.TaskbarBottomHeight) * scale));
         }
 
         public static Dpi GetSystemDpi()

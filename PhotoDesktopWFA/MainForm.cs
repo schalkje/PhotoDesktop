@@ -13,6 +13,8 @@ namespace Schalken.PhotoDesktop.WFA
 
     public partial class MainForm : TransparentForm //   Form //
     {
+        public static PhotoDesktop _photoDesktop;
+
         public Point offset = new Point(0,80);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -61,8 +63,6 @@ namespace Schalken.PhotoDesktop.WFA
             base.WndProc(ref message);
         }
 
-        private string _displayScreenName = null;
-
 
         /// <summary>
         /// check:
@@ -77,13 +77,23 @@ namespace Schalken.PhotoDesktop.WFA
 
             LoadSettings();
             
+            // get name for main window; add this mainform to the main screen
+            //_displayScreenName = _photoDesktop.GetMainScreenName();
+            //_photoDesktop.ControlerForms.Add(_displayScreenName, this);
+
+            // create controller forms for each screen
+            Screen[] screens = Screen.AllScreens;
+            for (int i = screens.Length - 1; i >= 0; i--)
+            {
+                Screen screen = screens[i];
+                ControlForm controlForm = new ControlForm(this, screen.DeviceName);
+                _photoDesktop.ControlerForms.Add(screen.DeviceName, controlForm);
+                controlForm.Visible = true;
+            }
+
             // on startup switch
             if (Properties.Settings.Default.ChangeOnStart)
                 _photoDesktop.Next();
-
-            // get name for main window; add this mainform to the main screen
-            _displayScreenName = _photoDesktop.GetMainScreenName();
-            _photoDesktop.ControlerForms.Add(_displayScreenName, this);
 
 
             //this.SizeChanged += TransparentForm_SizeChanged;
@@ -115,45 +125,45 @@ namespace Schalken.PhotoDesktop.WFA
         //    }
         //}
 
-        protected override void OnShown(EventArgs e)
-        {
-            ScaledScreen windowScreen = ScaledScreen.AllScaledScreens[0];
+        //        protected override void OnShown(EventArgs e)
+        //        {
+        //            ScaledScreen windowScreen = ScaledScreen.AllScaledScreens[0];
 
-            // if mode = top-right
-            // Left = windowScreen.UnscaledBounds.Width - Width; //Size.Width;
-            // Top = 0;
+        //            // if mode = top-right
+        //            // Left = windowScreen.UnscaledBounds.Width - Width; //Size.Width;
+        //            // Top = 0;
 
-            // if mode = bottom-right
-            //Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
-            //Top = windowScreen.UnscaledWorkingArea.Height - Height;
+        //            // if mode = bottom-right
+        //            //Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
+        //            //Top = windowScreen.UnscaledWorkingArea.Height - Height;
 
-            // position this window to legenda position
-            Rectangle legendaRect = Wallpaper.GetLegendaRect(_photoDesktop.GetMainScreenName());
-            this.Left = legendaRect.Left + offset.X;
-            this.Top = legendaRect.Top - this.Height + offset.Y;
-
-
-            base.OnShown(e);
-
-            // if debug mode; show settings
-#if DEBUG
-            //ShowSettings();
-#endif
-        }
+        //            // position this window to legenda position
+        //            Rectangle legendaRect = Wallpaper.GetLegendaRect(_photoDesktop.GetMainScreenName());
+        //            this.Left = legendaRect.Left + offset.X;
+        //            this.Top = legendaRect.Top - this.Height + offset.Y;
 
 
-        public override void Refresh()
-        {
-            if (_displayScreenName != null && this.Tag is DesktopImage)
-            {
-                DesktopImage imageData = (DesktopImage)this.Tag;
-                star1.IsSelected = imageData.StarRating >= 1;
-                star2.IsSelected = imageData.StarRating >= 2;
-                star3.IsSelected = imageData.StarRating >= 3;
-                star4.IsSelected = imageData.StarRating >= 4;
-                star5.IsSelected = imageData.StarRating >= 5;
-            }
-        }
+        //            base.OnShown(e);
+
+        //            // if debug mode; show settings
+        //#if DEBUG
+        //            //ShowSettings();
+        //#endif
+        //        }
+
+
+        //public override void Refresh()
+        //{
+        //    if (_displayScreenName != null && this.Tag is DesktopImage)
+        //    {
+        //        DesktopImage imageData = (DesktopImage)this.Tag;
+        //        star1.IsSelected = imageData.StarRating >= 1;
+        //        star2.IsSelected = imageData.StarRating >= 2;
+        //        star3.IsSelected = imageData.StarRating >= 3;
+        //        star4.IsSelected = imageData.StarRating >= 4;
+        //        star5.IsSelected = imageData.StarRating >= 5;
+        //    }
+        //}
 
         internal void StopTimer()
         {
@@ -166,7 +176,6 @@ namespace Schalken.PhotoDesktop.WFA
         }
 
         private bool _windowVisible = false;
-        public static PhotoDesktop _photoDesktop;
 
         // store the original size when made invisible by setting dimensions to 0x0
         private int _storedWidth = 0;
@@ -356,39 +365,6 @@ namespace Schalken.PhotoDesktop.WFA
             _photoDesktop.Previous();
             EndLongAction();
         }
-
-        private void btnHide_Click(object sender, EventArgs e)
-        {
-            this.WindowVisible = !this.WindowVisible;
-        }
-
-        private void btnStar_Click(object sender, EventArgs e)
-        {
-            StartLongAction();   
-            if (_displayScreenName != null && this.Tag is DesktopImage)
-            {
-                DesktopImage imageData = (DesktopImage)this.Tag;
-                if (sender == star1 && imageData.StarRating != 1) imageData.StarRating = 1;
-                else if (sender == star2 && imageData.StarRating != 2) imageData.StarRating = 2;
-                else if (sender == star3 && imageData.StarRating != 3) imageData.StarRating = 3;
-                else if (sender == star4 && imageData.StarRating != 4) imageData.StarRating = 4;
-                else if (sender == star5 && imageData.StarRating != 5) imageData.StarRating = 5;
-                else imageData.StarRating = 0;
-
-                // refresh display
-                _photoDesktop.Refresh();
-            }
-            EndLongAction();
-        }
-
-
-
-        private void btnOpenImage_Click(object sender, EventArgs e)
-        {
-            // todo: open the image in the default image viewer
-            OpenCurrentImage();
-        }
-
 
         private void menuNext_Click(object sender, EventArgs e)
         {

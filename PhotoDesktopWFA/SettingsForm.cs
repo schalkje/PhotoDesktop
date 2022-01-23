@@ -23,12 +23,16 @@ namespace Schalken.PhotoDesktop.WFA
         public SettingsForm()
         {
             InitializeComponent();
+
+            Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            this.Text = string.Format("Setting ({0}.{1}:{2})", version.Major, version.Minor, version.Build);
         }
 
         public SettingsForm(PhotoDesktop photoDesktop) : this()
         {
             this._photoDesktop = photoDesktop;
             RefreshStackDebug();
+
 
 
             lbScreens.Items.Add("ScaledScreen: ");

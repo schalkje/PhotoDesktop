@@ -32,34 +32,39 @@ namespace Schalken.PhotoDesktop.WFA
 
             _mainForm = mainForm;
             _displayScreenName = displayScreenName;
-         }
-
-
-        protected override void OnShown(EventArgs e)
-        {
-            ScaledScreen windowScreen = ScaledScreen.AllScaledScreens[0];
-
-            // if mode = top-right
-            // Left = windowScreen.UnscaledBounds.Width - Width; //Size.Width;
-            // Top = 0;
-
-            // if mode = bottom-right
-            //Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
-            //Top = windowScreen.UnscaledWorkingArea.Height - Height;
 
             // position this window to legenda position
-            Rectangle legendaRect = Wallpaper.GetLegendaRect(_photoDesktop.GetMainScreenName());
+            Rectangle legendaRect = Wallpaper.GetLegendaRect(_displayScreenName);
             this.Left = legendaRect.Left + offset.X;
             this.Top = legendaRect.Top - this.Height + offset.Y;
-
-
-            base.OnShown(e);
-
-            // if debug mode; show settings
-#if DEBUG
-            //ShowSettings();
-#endif
         }
+
+
+//        protected override void OnShown(EventArgs e)
+//        {
+//            //ScaledScreen windowScreen = ScaledScreen.AllScaledScreens[0];
+
+//            // if mode = top-right
+//            // Left = windowScreen.UnscaledBounds.Width - Width; //Size.Width;
+//            // Top = 0;
+
+//            // if mode = bottom-right
+//            //Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
+//            //Top = windowScreen.UnscaledWorkingArea.Height - Height;
+
+//            // position this window to legenda position
+//            Rectangle legendaRect = Wallpaper.GetLegendaRect(_displayScreenName);
+//            this.Left = legendaRect.Left + offset.X;
+//            this.Top = legendaRect.Top - this.Height + offset.Y;
+
+
+//            base.OnShown(e);
+
+//            // if debug mode; show settings
+//#if DEBUG
+//            //ShowSettings();
+//#endif
+//        }
 
 
         public override void Refresh()
