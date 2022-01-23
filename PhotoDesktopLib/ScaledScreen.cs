@@ -178,6 +178,11 @@ namespace Schalken.PhotoDesktop
         {
             get
             {
+                var result = ScaledScreen.GetPerMonitorDPIAware();
+                if (result != ScaledScreen.PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE)
+                    ScaledScreen.SetPerMonitorDPIAware();
+                
+                
                 Screen[] screens = System.Windows.Forms.Screen.AllScreens;
 
                 ScaledScreen[] scaledScreens = new ScaledScreen[screens.Length];
@@ -316,32 +321,44 @@ namespace Schalken.PhotoDesktop
             this.Screen = screen;
             this.Scale = scale;
 
-            if ((screen.Bounds.Width == screen.WorkingArea.Width) || (screen.Bounds.Height == screen.WorkingArea.Height)) // 20160808: something strange: when changing the zoom; before change; bounds are excluding scaling; afterwards including scaling
-            {
-                this.Origin = new Point(
-                                    (int)(screen.Bounds.X), 
-                                    (int)(screen.Bounds.Y));
 
-                this.Size = new Size(
-                                    (int)(Math.Round(screen.Bounds.Width * scale)),
-                                    (int)(Math.Round(screen.Bounds.Height * scale)));
-            }
-            else
-            {
-                this.Origin = new Point(
-                                    (int)(screen.Bounds.X),
-                                    (int)(screen.Bounds.Y));
-
-                this.Size = new Size(
-                                    (int)(screen.Bounds.Width),
-                                    (int)(screen.Bounds.Height));
-            }
-
+            this.Origin = new Point(
+                                (int)(screen.Bounds.X),
+                                (int)(screen.Bounds.Y));
+            this.Size = new Size(
+                                (int)(screen.Bounds.Width),
+                                (int)(screen.Bounds.Height));
             WorkingArea = new Rectangle(
                                         (int)(this.TaskbarLeftWidth),
                                         (int)(this.TaskbarTopHeight),
-                                        (int)(this.Size.Width - (this.TaskbarRightWidth + this.TaskbarLeftWidth) * scale),
-                                        (int)(this.Size.Height - (this.TaskbarTopHeight + this.TaskbarBottomHeight) * scale));
+                                        (int)(this.Size.Width - (this.TaskbarRightWidth + this.TaskbarLeftWidth) ),
+                                        (int)(this.Size.Height - (this.TaskbarTopHeight + this.TaskbarBottomHeight) ));
+            //if ((screen.Bounds.Width == screen.WorkingArea.Width) || (screen.Bounds.Height == screen.WorkingArea.Height)) // 20160808: something strange: when changing the zoom; before change; bounds are excluding scaling; afterwards including scaling
+            //{
+            //    this.Origin = new Point(
+            //                        (int)(screen.Bounds.X), 
+            //                        (int)(screen.Bounds.Y));
+
+            //    this.Size = new Size(
+            //                        (int)(Math.Round(screen.Bounds.Width * scale)),
+            //                        (int)(Math.Round(screen.Bounds.Height * scale)));
+            //}
+            //else
+            //{
+            //    this.Origin = new Point(
+            //                        (int)(screen.Bounds.X),
+            //                        (int)(screen.Bounds.Y));
+
+            //    this.Size = new Size(
+            //                        (int)(screen.Bounds.Width),
+            //                        (int)(screen.Bounds.Height));
+            //}
+
+            //WorkingArea = new Rectangle(
+            //                            (int)(this.TaskbarLeftWidth),
+            //                            (int)(this.TaskbarTopHeight),
+            //                            (int)(this.Size.Width - (this.TaskbarRightWidth + this.TaskbarLeftWidth) * scale),
+            //                            (int)(this.Size.Height - (this.TaskbarTopHeight + this.TaskbarBottomHeight) * scale));
         }
 
         public static Dpi GetSystemDpi()

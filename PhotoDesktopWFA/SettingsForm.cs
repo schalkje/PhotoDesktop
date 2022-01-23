@@ -428,5 +428,11 @@ namespace Schalken.PhotoDesktop.WFA
             }
 
         }
+
+        private void btnApply_Click(object sender, EventArgs e)
+        {
+            SaveSettings();
+            _photoDesktop.Refresh();
+        }
     }
 }

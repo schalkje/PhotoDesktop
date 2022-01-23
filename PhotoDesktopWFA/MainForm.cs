@@ -76,18 +76,18 @@ namespace Schalken.PhotoDesktop.WFA
             InitializeComponent();
 
             LoadSettings();
-            
+
             // get name for main window; add this mainform to the main screen
             //_displayScreenName = _photoDesktop.GetMainScreenName();
             //_photoDesktop.ControlerForms.Add(_displayScreenName, this);
 
             // create controller forms for each screen
-            Screen[] screens = Screen.AllScreens;
-            for (int i = screens.Length - 1; i >= 0; i--)
+            ScaledScreen[] scaledScreens = ScaledScreen.AllScaledScreens;
+            for (int i = scaledScreens.Length - 1; i >= 0; i--)
             {
-                Screen screen = screens[i];
-                ControlForm controlForm = new ControlForm(this, screen.DeviceName);
-                _photoDesktop.ControlerForms.Add(screen.DeviceName, controlForm);
+                ScaledScreen scaledScreen = scaledScreens[i];
+                ControlForm controlForm = new ControlForm(this, scaledScreen);
+                _photoDesktop.ControlerForms.Add(scaledScreen.DeviceName, controlForm);
                 controlForm.Visible = true;
             }
 

@@ -251,10 +251,6 @@ namespace Schalken.PhotoDesktop
 
         public static void CreateBackgroundImage(Dictionary<string, DesktopImage> images, Dictionary<string, Form> controlerForms)
         {
-            var result = ScaledScreen.GetPerMonitorDPIAware();
-            if (result != ScaledScreen.PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE)
-                ScaledScreen.SetPerMonitorDPIAware();
-
             ScaledScreen[] scaledScreens = ScaledScreen.AllScaledScreens;
 
             using (var virtualScreenBitmap = CreateScreenBitmap())
@@ -386,8 +382,8 @@ namespace Schalken.PhotoDesktop
                     if (!label.Visible)
                     {
                         Image image = label.Image;
-                        int x = label.Left + controlerForm.Left;
-                        int y = label.Top + controlerForm.Top;
+                        int x = label.Left + controlerForm.Left - scaledScreen.Origin.X;
+                        int y = label.Top + controlerForm.Top - scaledScreen.Origin.Y;
                         int width = label.Width;
                         int height = label.Height;
                         monitorGraphics.DrawImage(image, x, y, width, height);
@@ -446,13 +442,19 @@ namespace Schalken.PhotoDesktop
             float textScale = scaledScreen.Scale;
 
             return new Rectangle(
-                (int)monitorGraphics.VisibleClipBounds.Width - (int)(400 * textScale)
-                - scaledScreen.TaskbarRightWidth,
-                (int)monitorGraphics.VisibleClipBounds.Height - (int)(100 * textScale)
-                - scaledScreen.TaskbarBottomHeight
-                ,
+                scaledScreen.Width - (int)(400 * textScale) - scaledScreen.TaskbarRightWidth,
+                scaledScreen.Height - (int)(100 * textScale) - scaledScreen.TaskbarBottomHeight,
                 (int)(400 * textScale),
                 (int)(100 * textScale));
+
+            //return new Rectangle(
+            //    (int)monitorGraphics.VisibleClipBounds.Width - (int)(400 * textScale)
+            //    - scaledScreen.TaskbarRightWidth,
+            //    (int)monitorGraphics.VisibleClipBounds.Height - (int)(100 * textScale)
+            //    - scaledScreen.TaskbarBottomHeight
+            //    ,
+            //    (int)(400 * textScale),
+            //    (int)(100 * textScale));
         }
 
         private static void DrawLegenda_orig(Graphics monitorGraphics, ScaledScreen scaledScreen, DesktopImage imageData)

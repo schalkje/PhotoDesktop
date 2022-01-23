@@ -14,6 +14,7 @@ namespace Schalken.PhotoDesktop.WFA
     public partial class ControlForm : TransparentForm //   Form //
     {
         public Point offset = new Point(0, 80);
+        public Point ScreenOrigin = new Point(0, 0);
 
         private MainForm _mainForm;
         private string _displayScreenName = null;
@@ -26,45 +27,51 @@ namespace Schalken.PhotoDesktop.WFA
         /// http://connect.microsoft.com/VisualStudio/feedback/details/526951/screen-object-physicalwidthincentimeters-physicalheightincentimeters-displaymode
         /// </summary>
 
-        public ControlForm(MainForm mainForm, string displayScreenName) : base()
+        public ControlForm(MainForm mainForm, ScaledScreen scaledScreen) : base()
         {
             InitializeComponent();
 
             _mainForm = mainForm;
-            _displayScreenName = displayScreenName;
+            _displayScreenName = scaledScreen.DeviceName;
 
             // position this window to legenda position
             Rectangle legendaRect = Wallpaper.GetLegendaRect(_displayScreenName);
-            this.Left = legendaRect.Left + offset.X;
-            this.Top = legendaRect.Top - this.Height + offset.Y;
+            this.ScreenOrigin = new Point (
+                (int)(legendaRect.Left) + offset.X,
+                (int)(legendaRect.Top) - this.Height + offset.Y
+            );
+
+            this.Left = ScreenOrigin.X + scaledScreen.Origin.X;
+            this.Top = ScreenOrigin.Y + scaledScreen.Origin.Y;
+
         }
 
 
-//        protected override void OnShown(EventArgs e)
-//        {
-//            //ScaledScreen windowScreen = ScaledScreen.AllScaledScreens[0];
+        //        protected override void OnShown(EventArgs e)
+        //        {
+        //            //ScaledScreen windowScreen = ScaledScreen.AllScaledScreens[0];
 
-//            // if mode = top-right
-//            // Left = windowScreen.UnscaledBounds.Width - Width; //Size.Width;
-//            // Top = 0;
+        //            // if mode = top-right
+        //            // Left = windowScreen.UnscaledBounds.Width - Width; //Size.Width;
+        //            // Top = 0;
 
-//            // if mode = bottom-right
-//            //Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
-//            //Top = windowScreen.UnscaledWorkingArea.Height - Height;
+        //            // if mode = bottom-right
+        //            //Left = windowScreen.UnscaledWorkingArea.Width - Width; //Size.Width;
+        //            //Top = windowScreen.UnscaledWorkingArea.Height - Height;
 
-//            // position this window to legenda position
-//            Rectangle legendaRect = Wallpaper.GetLegendaRect(_displayScreenName);
-//            this.Left = legendaRect.Left + offset.X;
-//            this.Top = legendaRect.Top - this.Height + offset.Y;
+        //            // position this window to legenda position
+        //            Rectangle legendaRect = Wallpaper.GetLegendaRect(_displayScreenName);
+        //            this.Left = legendaRect.Left + offset.X;
+        //            this.Top = legendaRect.Top - this.Height + offset.Y;
 
 
-//            base.OnShown(e);
+        //            base.OnShown(e);
 
-//            // if debug mode; show settings
-//#if DEBUG
-//            //ShowSettings();
-//#endif
-//        }
+        //            // if debug mode; show settings
+        //#if DEBUG
+        //            //ShowSettings();
+        //#endif
+        //        }
 
 
         public override void Refresh()

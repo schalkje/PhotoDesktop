@@ -62,6 +62,7 @@
             this.lbDebug = new System.Windows.Forms.ListBox();
             this.lbScreens = new System.Windows.Forms.ListBox();
             this.btnTest = new System.Windows.Forms.Button();
+            this.btnApply = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudTimerValue)).BeginInit();
             this.gbOrder.SuspendLayout();
             this.gbMultiSwitch.SuspendLayout();
@@ -218,7 +219,7 @@
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(128, 41);
             this.btnOk.TabIndex = 19;
-            this.btnOk.Text = "&Save";
+            this.btnOk.Text = "&Save && Close";
             this.btnOk.UseVisualStyleBackColor = true;
             // 
             // btnCancel
@@ -447,11 +448,24 @@
             this.btnTest.UseVisualStyleBackColor = true;
             this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
+            // btnApply
+            // 
+            this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnApply.Location = new System.Drawing.Point(1008, 656);
+            this.btnApply.Margin = new System.Windows.Forms.Padding(4);
+            this.btnApply.Name = "btnApply";
+            this.btnApply.Size = new System.Drawing.Size(128, 41);
+            this.btnApply.TabIndex = 40;
+            this.btnApply.Text = "&Apply";
+            this.btnApply.UseVisualStyleBackColor = true;
+            this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
+            // 
             // SettingsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(1294, 710);
+            this.Controls.Add(this.btnApply);
             this.Controls.Add(this.btnTest);
             this.Controls.Add(this.lbScreens);
             this.Controls.Add(this.lbDebug);
@@ -528,5 +542,6 @@
         private System.Windows.Forms.RadioButton rbSwitchRotate;
         private System.Windows.Forms.ListBox lbScreens;
         private System.Windows.Forms.Button btnTest;
+        private System.Windows.Forms.Button btnApply;
     }
 }
